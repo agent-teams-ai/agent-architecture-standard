@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "0.1",
+  "status": "private-provisional-unpublished",
+  "standardVersions": ["0.1.0-rc.1"],
+  "envelopeVersions": ["0.1"],
+  "operations": [{ "id": "validate-overlay@1", "aasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777" }],
+  "profiles": [],
+  "limits": { "maxInputBytes": 1, "maxDepth": 1, "maxTargets": 1, "maxOutputBytes": 1 },
+  "extensions": {},
+  "criticalExtensions": {},
+  "unexpected": true
+}

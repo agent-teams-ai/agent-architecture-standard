@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aas.invalid/private/v0/registry.schema.json",
+  "title": "AAS registry edition",
+  "x-aas-status": "private-provisional-unpublished",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry", "edition", "previousEdition", "status", "entries", "changes"],
+  "properties": {
+    "registry": { "enum": ["operations", "resolutions", "diagnostics", "profiles", "extensions", "envelope-versions"] },
+    "edition": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+    "previousEdition": { "type": ["string", "null"], "pattern": "^[1-9][0-9]*$" },
+    "status": { "const": "provisional" },
+    "entries": {
+      "type": "array", "maxItems": 10000,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "kind", "owner", "contact", "status", "semanticAuthority", "introducedEdition", "vectors", "collisionReview"],
+        "properties": {
+          "id": { "anyOf": [{ "$ref": "common.schema.json#/$defs/identifier" }, { "$ref": "common.schema.json#/$defs/envelopeVersion" }] },
+          "kind": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z][a-z0-9-]*$" },
+          "owner": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "contact": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "status": { "enum": ["provisional", "active", "deprecated", "withdrawn", "reserved"] },
+          "semanticAuthority": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "introducedEdition": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+          "replacement": { "$ref": "common.schema.json#/$defs/identifier" },
+          "semanticsAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+          "orderingRank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+          "vectors": { "type": "array", "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 512 } },
+          "collisionReview": { "type": "string", "minLength": 1, "maxLength": 512 }
+        }
+      }
+    },
+    "changes": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } }
+  }
+}

@@ -1,0 +1,49 @@
+name: private-phase-1-verification
+
+on:
+  pull_request:
+  push:
+    branches: [feat/v0-normative-artifacts]
+
+permissions:
+  contents: read
+
+jobs:
+  reproducibility:
+    name: ${{ matrix.os }} reproducibility
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:fast
+      - run: pnpm check:generated
+      - run: pnpm check:package
+
+  conformance-skeleton:
+    name: independent conformance skeleton (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:conformance

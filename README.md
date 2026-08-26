@@ -1,6 +1,6 @@
 # Agent Architecture Standard
 
-Status: Phase 0 normative scaffold overview; unpublished; identifiers provisional
+Status: private Phase 1 normative-artifact implementation; unpublished; identifiers provisional
 
 This README is an index and has no independent semantic authority.
 
@@ -10,10 +10,11 @@ inputs, and reporting deterministic enforcement results. Agent Architecture
 Protocol (AAP) is only the request/response and negotiation component of AAS. It
 is not a second umbrella standard or an independently promoted product.
 
-This repository contains specification artifacts only. It contains no runtime,
-transport, plugin system, policy-module compiler, architecture inference,
-package scaffold, or release automation. The documents deliberately describe an
-experimental 0.x boundary and do not claim that an implementation exists.
+This repository contains specification artifacts plus private deterministic
+generation and verification tooling. It contains no provider runtime,
+transport, plugin system, policy-module compiler, architecture inference, or
+release automation. The artifacts describe an experimental 0.x boundary and
+do not constitute a published release or conformance claim.
 
 All public identifiers in this scaffold are provisional. Before any public 0.x
 schema, identifier, conformance claim, or package, normative-standard authority

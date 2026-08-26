@@ -1,0 +1,20 @@
+{
+  "registry": "operations",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    {
+      "id": "validate-overlay@1",
+      "kind": "operation",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/core.md#initial-public-operation-boundary",
+      "introducedEdition": "1",
+      "vectors": ["vectors/schema/positive/overlay.json", "vectors/schema/negative/overlay-unknown-field.json"],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    }
+  ],
+  "changes": ["Initial provisional edition; no identifier is active."]
+}

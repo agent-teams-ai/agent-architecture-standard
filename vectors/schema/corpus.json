@@ -1,0 +1,12 @@
+{
+  "schemaId": "https://schemas.aas.invalid/private/v0/corpus-index",
+  "cases": [
+    { "id": "provider-positive", "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json", "path": "vectors/schema/positive/provider.json", "valid": true },
+    { "id": "overlay-positive", "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "path": "vectors/schema/positive/overlay.json", "valid": true },
+    { "id": "result-positive", "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json", "path": "vectors/schema/positive/result.json", "valid": true },
+    { "id": "provider-unknown-field", "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json", "path": "vectors/schema/negative/provider-unknown-field.json", "valid": false },
+    { "id": "overlay-unknown-field", "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "path": "vectors/schema/negative/overlay-unknown-field.json", "valid": false },
+    { "id": "windows-drive-path", "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "path": "vectors/schema/negative/windows-drive-path.json", "valid": false },
+    { "id": "windows-backslash-path", "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "path": "vectors/schema/negative/windows-backslash-path.json", "valid": false }
+  ]
+}

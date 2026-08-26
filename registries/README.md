@@ -1,21 +1,22 @@
 # Registry index and lifecycle
 
-Status: normative index; Phase 0 placeholders only; all values provisional
+Status: normative index; private Phase 1 editions; all values provisional and unpublished
 
 Registries own identifier spelling, kind, allocation, owner, and lifecycle.
 Their general lifecycle is defined in [core §7](../spec/core.md#7-registry-lifecycle). Registries are checked-in
 immutable ledgers, not hosted discovery services or marketplaces.
 
-No value is active in Phase 0. Text that resembles an identifier in the
-specification is provisional and MUST NOT support a public claim.
+No value is active. The private edition-1 files below are provisional and MUST
+NOT support a public claim.
 
-| Future registry | Owns | Initial status |
-| --- | --- | --- |
-| `operations` | operation identifiers and profile association | provisional |
-| `resolutions` | closed core resolution and problem reason identifiers | provisional |
-| `diagnostics` | stable diagnostic and remediation action codes | provisional |
-| `profiles` | core canonicalization, path, security, and conformance profile IDs | provisional |
-| `extensions` | centrally reserved extension IDs and allowed locations | provisional |
+| Registry file | Owns | Edition | Status |
+| --- | --- | --- | --- |
+| [`operations.json`](operations.json) | operation identifiers and profile association | 1 | provisional |
+| [`resolutions.json`](resolutions.json) | closed core resolution and problem reason identifiers | 1 | provisional |
+| [`diagnostics.json`](diagnostics.json) | stable diagnostic and remediation action codes | 1 | provisional |
+| [`profiles.json`](profiles.json) | core canonicalization, path, security, and conformance profile IDs | 1 | provisional |
+| [`extensions.json`](extensions.json) | centrally reserved extension IDs and allowed locations | 1 | provisional |
+| [`envelope-versions.json`](envelope-versions.json) | immutable envelope versions and deterministic ordering | 1 | provisional |
 
 The following is an index-entry checklist projected from
 [core §3](../spec/core.md#3-artifact-authority-and-conflicts) and

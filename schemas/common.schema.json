@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aas.invalid/private/v0/common.schema.json",
+  "title": "AAS provisional common types",
+  "x-aas-status": "private-provisional-unpublished",
+  "$defs": {
+    "nonnegativeInteger": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "aasIdentity": { "type": "string", "pattern": "^aas:v0:sha256:[0-9a-f]{64}$" },
+    "contentDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "identifier": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "^(?:[a-z][a-z0-9-]*(?:@[0-9]+)?|[a-z][a-z0-9.-]*:[^\\s]+|[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+\\.[a-z0-9][a-z0-9._-]*)$" },
+    "version": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[0-9]+(?:\\.[0-9]+){0,2}(?:-rc\\.[1-9][0-9]*)?$" },
+    "envelopeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$", "maxLength": 32 },
+    "portablePath": { "type": "string", "minLength": 1, "maxLength": 4096, "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^/]+(?:/[^/]+)*$" },
+    "extensionMap": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": { "$ref": "#/$defs/identifier" },
+      "additionalProperties": true
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "type": ["string", "boolean", "null"] },
+        { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+        { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/jsonValue" } },
+        { "type": "object", "maxProperties": 10000, "additionalProperties": { "$ref": "#/$defs/jsonValue" } }
+      ]
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxInputBytes", "maxDepth", "maxTargets", "maxOutputBytes"],
+      "properties": {
+        "maxInputBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxDepth": { "type": "integer", "minimum": 1, "maximum": 256 },
+        "maxTargets": { "type": "integer", "minimum": 1, "maximum": 100000 },
+        "maxOutputBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+      }
+    },
+    "profileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "aasIdentity"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "aasIdentity": { "$ref": "#/$defs/aasIdentity" }
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["aasIdentity", "contentDigest", "byteLength", "mediaType"],
+      "properties": {
+        "aasIdentity": { "$ref": "#/$defs/aasIdentity" },
+        "contentDigest": { "$ref": "#/$defs/contentDigest" },
+        "byteLength": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 127, "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+$" }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 0
+}

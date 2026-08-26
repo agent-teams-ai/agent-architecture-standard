@@ -1,0 +1,33 @@
+{
+  "registry": "envelope-versions",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    {
+      "id": "0.1",
+      "kind": "envelope-version",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/core.md#6-compatibility-axes",
+      "introducedEdition": "1",
+      "orderingRank": 1,
+      "vectors": ["version-matrix.json"],
+      "collisionReview": "Private provisional version; not admitted, active, public, or qualified. Public review remains blocked by D1."
+    },
+    {
+      "id": "0.2",
+      "kind": "envelope-version",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "version-matrix.json",
+      "introducedEdition": "1",
+      "orderingRank": 2,
+      "vectors": ["version-matrix.json"],
+      "collisionReview": "Private reserved matrix-only value; no schema exists and it is not admitted, active, public, or qualified."
+    }
+  ],
+  "changes": ["Initial private provisional envelope ordering. No version is active or public."]
+}

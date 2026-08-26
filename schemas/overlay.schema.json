@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aas.invalid/private/v0/overlay.schema.json",
+  "title": "AAS overlay declaration and validation receipt",
+  "x-aas-status": "private-provisional-unpublished",
+  "$defs": {
+    "operation": { "type": "object", "additionalProperties": false, "required": ["op", "path"], "properties": { "op": { "enum": ["add", "replace", "delete"] }, "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "contentAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "expectedAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } } },
+    "overlay": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "baseSnapshotAasIdentity", "operations"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "baseSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "operations": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/operation" } } } },
+    "receipt": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "resultAasIdentity", "bindingAasIdentity", "integrationSnapshotAasIdentity", "integrationRevisionAasIdentity"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "resultAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "integrationSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "integrationRevisionAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } } }
+  },
+  "oneOf": [{ "$ref": "#/$defs/overlay" }, { "$ref": "#/$defs/receipt" }]
+}

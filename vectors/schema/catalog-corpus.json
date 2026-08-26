@@ -1,0 +1,12 @@
+{
+  "status": "private-provisional-unqualified",
+  "cases": [
+    { "id": "duplicate-schema-id", "expectedDiagnostic": "aas.schema.duplicate-id" },
+    { "id": "aliased-schema-id", "expectedDiagnostic": "aas.schema.alias-id" },
+    { "id": "unknown-schema-id", "expectedDiagnostic": "aas.schema.unknown-id" },
+    { "id": "external-reference-cycle", "expectedDiagnostic": "aas.schema.ref-cycle" },
+    { "id": "unknown-local-reference", "expectedDiagnostic": "aas.schema.unknown-id" },
+    { "id": "network-reference", "expectedDiagnostic": "aas.schema.network-ref" },
+    { "id": "windows-case-collision", "expectedDiagnostic": "aas.schema.duplicate-id" }
+  ]
+}

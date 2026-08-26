@@ -1,0 +1,486 @@
+{
+  "manifestVersion": "1",
+  "standardVersion": "0.1.0-rc.1",
+  "status": "provisional-unpublished",
+  "schemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "identityPolicy": {
+    "contentDigest": "raw-sha256-over-exact-content-bytes",
+    "aasIdentity": "domain-framed-identity-deferred-to-phase-2"
+  },
+  "artifacts": [
+    {
+      "path": "generated/artifact-manifest.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:4c91c6b90af31b0c91cf80a479b9413f50a25eea553d954482bc72023efd3904",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1155,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/artifacts.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:3d5419ba48f82cd63b1e2ac98932f89ab3c4db90587fe3a0851024b84cdedcd0",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1663,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/common.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:5d82f05a2ba58914674131a9750cdc6ca69464bc1c154a7a9d63b893b14f9e27",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1340,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/conformance.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:eaf28a2a72d543635ab52b719b6bc7b71aa4fe6764f7f30523e448054d216952",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 2300,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/envelope.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:8f97a2d329f7c7ef5bbb9c5bd5983ba9e1f243d332490ae05ca8c379744bc09b",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3093,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/identity-documents.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:d0af4034ededb8a406643510c0b92324cf05e2dad7cebaed7ebda5f10eb93229",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3485,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/overlay.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:355515458651050e47ae55b132fcb3d7e4f40a07b5e684ebef2c29e6566c57b2",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1215,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/policy.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:5e6442d25a56c03229a8c824226e8203cf6c52983f32807b90ab5fd1cc8c5d3f",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1949,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/provider.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:b356319710c4fc74fefff6c65463c2363aec332374e31980aa2c450792ac0c0c",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 887,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "generated/registry.d.ts",
+      "class": "generated-declaration",
+      "contentDigest": "sha256:7f705b8e93fb640bcf9f319a44c8f44e2c45f1563eb4e38ede75ff15304062da",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1269,
+      "mediaType": "text/typescript"
+    },
+    {
+      "path": "registries/README.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:4ba71dcb94dfedf477823a1b961ba3d4239acb8641daed3c459433102731439e",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 2670,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "registries/diagnostics.json",
+      "class": "registry",
+      "contentDigest": "sha256:b626ae6f00ba7233539db4d1839e180b2f8008a370aecde98b140bfab9d2d691",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 5057,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "registries/envelope-versions.json",
+      "class": "registry",
+      "contentDigest": "sha256:7b5dabf6e75ba6b8feb89f2e76f254e4380ae10307cc13f2ad0e3cb048f16670",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1159,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "registries/extensions.json",
+      "class": "registry",
+      "contentDigest": "sha256:a8973805ff5cf40cdc73c02593abe03cc417306002f8c8f0858caad5808dd097",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 234,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "registries/operations.json",
+      "class": "registry",
+      "contentDigest": "sha256:15eefc8942280368ad7bf23b1a5c534ce36c1bceda6567a6c5587b1fd8f1cfce",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 705,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "registries/profiles.json",
+      "class": "registry",
+      "contentDigest": "sha256:c594bfaeb6630e0145259c6e3cc0446c82fded7cd9a5261f13d6cb8657a41c71",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1426,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "registries/resolutions.json",
+      "class": "registry",
+      "contentDigest": "sha256:f348c64e7e31cf0014cc709a8039d122a68f41d5655fef63ab92a1f6a7373086",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1773,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "schemas/README.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:167b44203348d7756f3d37f59eed59734106327f9751800e74ee95c38e6da383",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3804,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "schemas/artifact-manifest.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:bfbb56ca9004294dad30a41f6751ce3c20cb91fceae7f6b39c6c67f3b5f3a2f0",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1893,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json"
+    },
+    {
+      "path": "schemas/artifacts.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:7cbb365698108f500f50d54612a4454e1dc3f76a4c37b671519ad6e76404f7db",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3178,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/artifacts.schema.json"
+    },
+    {
+      "path": "schemas/common.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:ac49fcf6903a2aeb21dd74f3347d2829c166a2d738d4e02ca403e8d2d9d2914b",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3086,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/common.schema.json"
+    },
+    {
+      "path": "schemas/conformance.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:46bad655798bb2178d2f7e3cfea9eaeff96b61b87d82bfd93b2ab1dbd9807283",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 4393,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/conformance.schema.json"
+    },
+    {
+      "path": "schemas/envelope.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:ea59e9930a4b1770e99f3f63928b3ed64aaf76d7fe6a669188cb20efe88ba59f",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 5141,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/envelope.schema.json"
+    },
+    {
+      "path": "schemas/identity-documents.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:82f69e2e1234610854fd1e2f929061fce5becf42fcff71b5fac8a15b1de1af4f",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 6632,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json"
+    },
+    {
+      "path": "schemas/overlay.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:bdb3665f35abe30670220c955bcf7579afed3ec5ca53391ad43b00d692d0918a",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1751,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/overlay.schema.json"
+    },
+    {
+      "path": "schemas/policy.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:179ba9a6c0801a91815a87bca2e173262ae706cc4388437cbee9a479aaefff91",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3666,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/policy.schema.json"
+    },
+    {
+      "path": "schemas/provider.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:368dbaeca45d2fde7cd1a3b44dde7304e545efb485418038f9737808514c4d5e",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1332,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/provider.schema.json"
+    },
+    {
+      "path": "schemas/registry.schema.json",
+      "class": "schema",
+      "contentDigest": "sha256:92e0aaf2a91bf144934a1b791cbc763639ba19486b9f85abb554f849e09203db",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 2283,
+      "mediaType": "application/json",
+      "schemaId": "https://schemas.aas.invalid/private/v0/registry.schema.json"
+    },
+    {
+      "path": "spec/core.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:73caa6fdabe991f077c27e46bb9d447b31523f86fdee0425d847bc8f286a6ccd",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 15175,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "spec/governance.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:313a1d0019ef7cb14ca4d0f30e58981940f104a9b5fc83ae7ebc0eae2c93ebe2",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 4892,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "spec/identity.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:64b2dd2ba31e66aa1da799e49974b0b12589d2f9f809aec6651c538c27b4a787",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 14926,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "spec/policy-and-enforcement.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:d7e0825bd969858f83f89e404aecb152ca4fe9e9bbe8c8e5a4470ce079e2cff3",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 19115,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "spec/security-and-conformance.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:d50875d0f274272b755cd947f72fe21a9268b4a691cf126fb0699e41f0793fa7",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 20220,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "vectors/README.md",
+      "class": "normative-prose",
+      "contentDigest": "sha256:87985a7be4185e339554d4603cf367969c6977c7dcd9ebc047371e342b23af40",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 3646,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "vectors/json/negative/bom.json",
+      "class": "vector",
+      "contentDigest": "sha256:1b3fff9b2ba26b3bb9c1cf1da83581ecc489b9db8accae6c7b751190c8dfaa9e",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 68,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/depth.json",
+      "class": "vector",
+      "contentDigest": "sha256:fa7e02ade3c9cc5c8181a9aee266c6389dd50e966b40046397d1763fa0ae035b",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 12,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/duplicate-escaped-key.json",
+      "class": "vector",
+      "contentDigest": "sha256:3c2b3670af7085e109168e9cf6f264f562767df6d0b09d2cea87da50fab3bf55",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 27,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/duplicate-key.json",
+      "class": "vector",
+      "contentDigest": "sha256:b9ff2dc22c33a908c289dfc24e2e27298162df0887d51cd8b5929f23dfc53d7a",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 22,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/fraction.json",
+      "class": "vector",
+      "contentDigest": "sha256:f2f229136b92b745be3872894a337533d46e78d1ebc89e7fc10429912aca3768",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 14,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/input-too-large.json",
+      "class": "vector",
+      "contentDigest": "sha256:3a37782e8974c48eebf2a0517c866ad15641c53b3d31993188796b56aeb79624",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 12,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/lone-surrogate.json",
+      "class": "vector",
+      "contentDigest": "sha256:5fa12fd5001abd52a0d011246ce87a3d1577eff98e7b8eb582a58dec3b409cef",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 19,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/negative-zero.json",
+      "class": "vector",
+      "contentDigest": "sha256:507c6bacee16c66124d570297661a22819793c6aca99544a87dc023a61879377",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 13,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/prototype.json",
+      "class": "vector",
+      "contentDigest": "sha256:336fd4d69bd093052ae23264f2ea6999816e4793e6f43f6baa04703e17b450a6",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 32,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/trailing-root.json",
+      "class": "vector",
+      "contentDigest": "sha256:e4ad76f53bbc5e98aa72a2bee1ac2ee269cd4e83b7222bc1ff1eee09fe94c155",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 6,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/negative/unsafe-integer.json",
+      "class": "vector",
+      "contentDigest": "sha256:3dbf1f0cfab427d4d88904e4b6a441c8e9c2bc720c5356ee98aa535604f37307",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 27,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/positive/integer-boundaries.json",
+      "class": "vector",
+      "contentDigest": "sha256:40b9e01d481ac3f5e298114012dec9bd2f14c2c351dd012b833b00031a88f726",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 57,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/json/positive/null-prototype.json",
+      "class": "vector",
+      "contentDigest": "sha256:15a19b9489566ac466e723a850a43a0a3523ff3e3498bd4f73d8194053d05717",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 47,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/phase-0-remediation-v1.md",
+      "class": "vector",
+      "contentDigest": "sha256:90ac226d64160c05b11eebdd0e20062c5d29e505ab11036df68ca387225b427a",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 5549,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "vectors/schema/catalog-corpus.json",
+      "class": "vector",
+      "contentDigest": "sha256:2c312dd5800ef93112ba01debd677a4b216327362efe7f60f621a452d5feb035",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 663,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/corpus.json",
+      "class": "vector",
+      "contentDigest": "sha256:ddf2e98c76c3ca8151b7357629b797f059311f1aa16c3cc610ccb862e19ac2f7",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1353,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/negative/overlay-unknown-field.json",
+      "class": "vector",
+      "contentDigest": "sha256:5ea5450ca4f44ef47da035a485d949dbce82d5caa2b29fa55c04a6453f59f5ca",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 293,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/negative/provider-unknown-field.json",
+      "class": "vector",
+      "contentDigest": "sha256:2da013721989a1e56d5372ec966f79bc599c38266993d38a6a7a521265cab863",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 469,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/negative/windows-backslash-path.json",
+      "class": "vector",
+      "contentDigest": "sha256:7b5b519aca98dfc968e52fc1553dfa3374c38aa914b559c318bb88617bbf18d7",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 275,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/negative/windows-drive-path.json",
+      "class": "vector",
+      "contentDigest": "sha256:36aae5ccc8ef40ed92e14427b70d2a9ff9e1698a37bbe5dd791685cf46a2722f",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 282,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/positive/overlay.json",
+      "class": "vector",
+      "contentDigest": "sha256:f33b2a2dd3793cee6bb9bc1b5e2afeb6728cdb76c2b91ca73fea2f8f91643504",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 387,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/positive/provider.json",
+      "class": "vector",
+      "contentDigest": "sha256:4cc08261e50ec966e22d2891d76f524c78fe2ece638e238198734824e18309bb",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 463,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "vectors/schema/positive/result.json",
+      "class": "vector",
+      "contentDigest": "sha256:64e16ceed66b1410c19fbf592363ed4e80d74370316978daf8878f52e46ad16c",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1479,
+      "mediaType": "application/json"
+    },
+    {
+      "path": "version-matrix.json",
+      "class": "version-matrix",
+      "contentDigest": "sha256:a4861eee33370a641d8cdad3fd18095fb14f5e95a9afe8f50db1d11fd7eb4bed",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 2341,
+      "mediaType": "application/json"
+    }
+  ]
+}

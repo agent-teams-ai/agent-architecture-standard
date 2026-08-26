@@ -1,0 +1,45 @@
+{
+  "name": "agent-architecture-standard",
+  "version": "0.1.0-rc.1",
+  "private": true,
+  "description": "Unpublished provisional AAS normative artifacts and deterministic validation tooling",
+  "license": "Apache-2.0",
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "files": [
+    "artifacts.json",
+    "version-matrix.json",
+    "generated/",
+    "registries/",
+    "schemas/",
+    "spec/",
+    "vectors/"
+  ],
+  "exports": {
+    "./artifacts": "./artifacts.json",
+    "./version-matrix": "./version-matrix.json",
+    "./schemas/*": "./schemas/*.json",
+    "./registries/*": "./registries/*.json",
+    "./generated/*": "./generated/*"
+  },
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "check:index": "node scripts/check-index.mjs",
+    "check:schemas": "node scripts/check-schemas.mjs",
+    "check:corpus": "node --test test/corpus.test.mjs test/strict-json.test.mjs test/registry.test.mjs test/version-matrix.test.mjs",
+    "check:generated": "node scripts/check-clean-generation.mjs",
+    "check:package": "node scripts/check-package.mjs",
+    "check:conformance": "node --test conformance/test/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "check:fast": "pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
+    "check:changed": "pnpm check:fast",
+    "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "typescript": "7.0.2"
+  }
+}

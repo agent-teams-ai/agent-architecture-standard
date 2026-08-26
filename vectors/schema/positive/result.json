@@ -1,0 +1,32 @@
+{
+  "kind": "result",
+  "envelopeVersion": "0.1",
+  "aasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "requestAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "resolutions": [
+    {
+      "targetId": "target-1",
+      "resolution": "decided",
+      "verdict": "pass",
+      "diagnostic": {
+        "version": "0.1",
+        "code": "aas.example.ok",
+        "targetId": "target-1",
+        "resolution": "decided",
+        "verdict": "pass",
+        "mode": "advisory",
+        "bindingAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "snapshotAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "policyAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+        "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+        "requestAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "resultAasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "freshness": "fresh",
+        "omissionCount": 0,
+        "nextAction": "none"
+      }
+    }
+  ],
+  "extensions": {}
+}

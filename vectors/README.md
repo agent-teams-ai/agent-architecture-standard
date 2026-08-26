@@ -1,6 +1,6 @@
 # Conformance vector index
 
-Status: normative index; Phase 0 placeholders only; no evidence produced
+Status: normative index; private Phase 1 definition corpora; no qualification evidence produced
 
 Golden vectors are the sole authority for exact observable bytes, raw
 `contentDigest` values, framed `aasIdentity` values,
@@ -25,6 +25,9 @@ qualification-vector suite MUST instead bind an already finalized profile
 | Suite path | Owns exact examples for | Authority citations | Status |
 | --- | --- | --- | --- |
 | [phase-0-remediation-v1.md](phase-0-remediation-v1.md) | UTF-16 ordering, raw/framed identity, result self-identity, exception freshness, static hard-link rejection, and link-count race instability | `identity.md` §§2, 4–6; `policy-and-enforcement.md` §§7–9; `security-and-conformance.md` §4 | provisional; independently recomputed, not qualified |
+| [`json/`](json/) | strict byte-level JSON acceptance and deterministic rejection diagnostics | `identity.md` §2; `security-and-conformance.md` §6 | private provisional definition corpus; not independently qualified |
+| [`schema/corpus.json`](schema/corpus.json) | positive and negative closed-schema instances, including portable Windows path failures | schema index; `core.md` §3 | private provisional definition corpus; not independently qualified |
+| [`schema/catalog-corpus.json`](schema/catalog-corpus.json) | offline catalog duplicate, alias, unknown-reference, cycle, network, and case-collision failures | schema index; `core.md` §3 | private provisional definition corpus; not independently qualified |
 
 Minimum future suites are:
 

@@ -1,0 +1,41 @@
+/* Generated from schemas/artifacts.schema.json; JSON Schema is normative. Do not edit. */
+
+export type ConstrainedString = string & { readonly __aasConstrainedString: unique symbol };
+export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
+export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
+
+export type artifact = import("./common.js").artifactRef;
+
+export type coverage = {
+  "stage": "discovery" | "capture" | "classification" | "evaluation" | "overlay-reevaluation";
+  "denominator": JsonInteger;
+  "included": JsonInteger;
+  "policyExcluded": JsonInteger;
+  "unreadable": JsonInteger;
+  "unsupported": JsonInteger;
+  "unstable": JsonInteger;
+  "unknown": JsonInteger;
+  "budgetExhausted": JsonInteger;
+};
+
+export type evidence = {
+  "id": import("./common.js").identifier;
+  "artifact": import("./common.js").artifactRef;
+  "integrityStatus": "unresolved" | "digest-matched" | "snapshot-bound";
+  "producerAssurance": "self-asserted" | "policy-allowlisted" | "externally-attested";
+  "semanticStatus": "unchecked" | "schema-valid" | "conformance-checked";
+};
+
+export type snapshot = {
+  "aasIdentity": import("./common.js").aasIdentity;
+  "repositoryId": import("./common.js").identifier;
+  "captureProfile": import("./common.js").profileRef;
+  "pathProfile": import("./common.js").profileRef;
+  "entries": Array<{
+  "path": import("./common.js").portablePath;
+  "artifact": import("./common.js").artifactRef;
+}>;
+  "coverage": Array<coverage>;
+};
+
+export type AASArtifactSnapshotCoverageAndEvidenceDescriptors = (artifact) | (snapshot) | (coverage) | (evidence);

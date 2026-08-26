@@ -1,0 +1,5 @@
+{
+  "aasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "baseSnapshotAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "operations": [{ "op": "delete", "path": "src/old.ts", "unexpected": true }]
+}
