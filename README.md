@@ -30,8 +30,9 @@ plugins, sessions, caches, and a universal architecture DSL are not normative.
 If artifacts disagree, publication stops until the owner artifact and all
 derived artifacts are reconciled in one reviewed change.
 
-See [GOVERNANCE.md](GOVERNANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the
-initial [authority decision](docs/decisions/0001-authority-and-incubation.md).
+See [GOVERNANCE.md](GOVERNANCE.md), [MAINTAINERS.md](MAINTAINERS.md),
+[CONTRIBUTING.md](CONTRIBUTING.md), and the initial
+[authority decision](docs/decisions/0001-authority-and-incubation.md).
 
 ## License
 
