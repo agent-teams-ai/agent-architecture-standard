@@ -70,11 +70,12 @@ consumer rule; the normative rule is in `spec/policy-and-enforcement.md`.
 
 ## Repository governance
 
-This private repository is the intended durable specification home, but the D1
-neutral-authority prerequisite is not complete. The current steward, security
-contact, and namespace custodian are recorded in
-[MAINTAINERS.md](MAINTAINERS.md); independent conformance and release roles are
-still unassigned. See [GOVERNANCE.md](GOVERNANCE.md),
+This private repository is the current incubation specification home, and the D1
+neutral-authority prerequisite is not complete. [MAINTAINERS.md](MAINTAINERS.md)
+records `@777genius` as repository steward, normative maintainer for private
+incubation, and security responder for private incubation. The independent
+conformance maintainer and release maintainer are unassigned, and no namespace
+custodian is assigned or recorded. See [GOVERNANCE.md](GOVERNANCE.md),
 [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
 [repository decision index](docs/decisions/README.md).
 

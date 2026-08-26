@@ -7,9 +7,30 @@ is a dedicated authority boundary, not yet an independent foundation or a
 multi-vendor standards body. We will not claim organizational neutrality,
 certification, or broad consensus that does not exist.
 
-Public prerelease publication remains blocked until the roles below have named
-owners and the normative author cannot self-approve the conformance result and
-release in the same change.
+Public prerelease publication, including any public 0.x schema, identifier,
+conformance claim, or package, remains blocked unless and until all of these
+conditions are satisfied:
+
+- normative-standard authority and independent conformance authority have
+  completed relocation from private Foundation incubation to a credibly neutral
+  repository and accountable authority, with immutable history, identifiers,
+  and resolution preserved;
+- accountable normative, conformance, release, security, namespace, and
+  repository roles are assigned and operational; repository ownership,
+  credential separation, maintainer succession, namespace custody, conflict
+  resolution, and migration preservation are documented; and normative
+  approval, conformance qualification, and release publication require distinct
+  accountable acts and credentials;
+- the SPDX-identified license, contribution and DCO-or-CLA policy, Code of
+  Conduct, SECURITY policy, maintainer list, normative-change procedure, release
+  authority, namespace/support policy, supported-version policy, and
+  neutral-stewardship trigger are published; and
+- package, domain, repository, standards-catalog, acronym, and trademark
+  collision checks are recorded before public identifiers are activated.
+
+The current repository and role assignments do not satisfy this gate. A
+neutrality review or a neutral-looking repository without completed relocation
+of authority does not satisfy it.
 
 ## Roles
 
@@ -22,6 +43,10 @@ release in the same change.
   manifests, registry coordinates, and post-publication receipts.
 - **Security responder:** receives private reports and may stop publication or
   withdraw an unsafe conformance claim.
+- **Namespace steward:** owns identifiers, domains, marks, and the published
+  namespace and support policy.
+- **Repository maintainer:** owns contribution review, repository continuity,
+  and migration preservation.
 
 One person may help in several areas during private incubation, but a public
 release needs at least two human approvals and cannot have one person author,
