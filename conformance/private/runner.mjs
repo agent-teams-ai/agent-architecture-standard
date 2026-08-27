@@ -210,9 +210,14 @@ function writePipe(stream, bytes) {
   return new Promise((resolve) => {
     if (!stream) { resolve(false); return; }
     let settled = false;
-    const finish = (ok) => { if (!settled) { settled = true; resolve(ok); } };
-    stream.once('error', () => finish(false));
-    stream.end(bytes, () => finish(true));
+    const onError = () => finish(false);
+    const finish = (ok) => {
+      if (settled) return;
+      settled = true;
+      resolve(ok);
+    };
+    stream.once('error', onError);
+    stream.end(bytes, (error) => finish(error == null));
   });
 }
 
@@ -221,7 +226,9 @@ export function verifyNodePermissionContract() {
   permissionContractCheck ??= (async () => {
     if (process.versions.node.split('.')[0] !== '24') return false;
     const probe = Buffer.from("const scopes=['fs.read','fs.write','child','worker','addons'];if(!scopes.every((scope)=>process.permission?.has(scope)===false))process.exitCode=91");
-    const deadline = performance.now() + DEFAULT_BOUNDS.invocationMilliseconds + DEFAULT_BOUNDS.settlementMilliseconds;
+    const started = performance.now();
+    const invocationDeadline = started + DEFAULT_BOUNDS.invocationMilliseconds;
+    const absoluteDeadline = invocationDeadline + DEFAULT_BOUNDS.settlementMilliseconds;
     let child;
     try {
       child = spawn(process.execPath, CANDIDATE_NODE_ARGS, {
@@ -243,11 +250,12 @@ export function verifyNodePermissionContract() {
         resolve(code === 0);
       });
     });
-    const writes = writePipe(child.stdio[3], createCandidateFrame(probe));
-    const supported = await waitUntil(settled, deadline, false);
-    await teardown(child, deadline, { promise: closePromise, isClosed: () => closed });
-    await waitUntil(writes, deadline, false);
-    return supported;
+    const frameWrite = writePipe(child.stdio[3], createCandidateFrame(probe));
+    const [supported, delivered] = await waitUntil(
+      Promise.all([settled, frameWrite]), invocationDeadline, [false, false],
+    );
+    await teardown(child, absoluteDeadline, { promise: closePromise, isClosed: () => closed });
+    return supported && delivered;
   })();
   return permissionContractCheck;
 }
@@ -274,7 +282,6 @@ async function executeOne(candidateBytes, request, bounds) {
   let stdout = Buffer.alloc(0);
   let stderrBytes = 0;
   let streamFailure = false;
-  let responseSeen = false;
   let closed = false;
   let notifyEvent;
   const event = new Promise((resolve) => { notifyEvent = resolve; });
@@ -288,7 +295,7 @@ async function executeOne(candidateBytes, request, bounds) {
   child.stdout.on('data', (chunk) => {
     const available = Math.max(0, bounds.responseBytes + 1 - stdout.length);
     if (available > 0) stdout = Buffer.concat([stdout, chunk.subarray(0, available)]);
-    if (stdout.includes(0x0a)) { responseSeen = true; notifyEvent('response'); }
+    if (stdout.includes(0x0a)) notifyEvent('response');
     if (stdout.length > bounds.responseBytes) notifyEvent('oversized');
   });
   child.stderr.on('data', (chunk) => {
@@ -299,16 +306,20 @@ async function executeOne(candidateBytes, request, bounds) {
   const candidateWrite = writePipe(child.stdio[3], createCandidateFrame(candidateBytes));
   const requestWrite = writePipe(child.stdin, encoded);
   const first = await waitUntil(event, invocationDeadline, 'timeout');
+  const responseDeadline = Math.min(absoluteDeadline, performance.now() + bounds.settlementMilliseconds);
+  const responseSettlement = first === 'response'
+    ? await waitUntil(closePromise, responseDeadline, false)
+    : true;
   const cleanup = await teardown(child, absoluteDeadline, { promise: closePromise, isClosed: () => closed });
   const writes = await waitUntil(Promise.all([candidateWrite, requestWrite]), absoluteDeadline, [false, false]);
 
-  if (cleanup === 'bounded-attempt-deadline') return { failure: 'settlement-timeout', diagnostic: null, cleanup };
+  if (!responseSettlement || cleanup === 'bounded-attempt-deadline') return { failure: 'settlement-timeout', diagnostic: null, cleanup };
   if (first === 'error' || !child.pid) return { failure: 'launch-failed', diagnostic: null, cleanup };
   if (first === 'timeout') return { failure: 'timeout', diagnostic: null, cleanup };
   if (stdout.length > bounds.responseBytes || first === 'oversized' || stderrBytes > bounds.stderrBytes) {
     return { failure: 'response-too-large', diagnostic: null, cleanup };
   }
-  if (stderrBytes !== 0 || streamFailure || writes.some((ok) => !ok && !responseSeen)) {
+  if (stderrBytes !== 0 || streamFailure || writes.some((ok) => !ok)) {
     return { failure: 'malformed-response', diagnostic: null, cleanup };
   }
   const text = stdout.toString('utf8');

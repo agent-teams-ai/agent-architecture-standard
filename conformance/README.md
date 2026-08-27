@@ -25,20 +25,26 @@ The runner takes strict pre-open `lstat`/`realpath` evidence, opens one
 candidate handle, compares handle `fstat` evidence, and reads no more than
 `candidateBytes + 1`. It then compares strict post-open pathname and handle
 evidence before admitting the buffer. Nonzero `O_NOFOLLOW` and `O_NONBLOCK`
-flags are used where the platform supplies them. This rejects links, reparse
-points, junctions, non-files, substitutions, and observable races without
-blocking on a POSIX FIFO. Windows supplies no native no-follow flag through
+flags are used where the platform supplies them. This rejects a recognized
+link or reparse point at the final path, non-files, substitutions, and
+observable final-path/handle drift without blocking on a POSIX FIFO. It does
+not exclude symlink or junction traversal in ancestor path components, nor
+claim immunity to a hostile swap that restores the observed evidence before
+the next check. Windows supplies no native no-follow flag through
 Node, so the runner makes no native no-follow claim there; it uses the
 strongest deterministic pure-Node pre/post pathname and opened-handle evidence
 available. The digest is over the resulting admitted buffer.
 
-No candidate pathname or staged copy is executed. The parent closes one binary
-frame on inherited FD 3: fixed magic, bounded unsigned source length, raw
+No candidate pathname or staged copy is executed. The trusted parent produces
+and closes exactly one binary frame on inherited FD 3: fixed magic, bounded
+unsigned source length, raw
 SHA-256 binding, and exact source bytes. A fixed ESM loader uses exact-length
-`readSync` loops, requires EOF immediately after the declared source, validates
-the bound digest, and only then imports the verified bytes through a base64
-`data:` URL. Truncation, surplus, oversize, and digest mismatch all fail closed;
-stdin remains exclusively the JSON-line protocol. The permission probe uses
+`readSync` loops, validates the bound digest, and immediately imports the
+verified bytes through a base64 `data:` URL without waiting for FD 3 EOF.
+Bad magic, truncation, oversize, and digest mismatch all fail closed. Trailing
+bytes from a malicious parent are outside this private parent-owned transport
+contract and are not detected by the loader. Stdin remains exclusively the
+JSON-line protocol. The permission probe uses
 the same frame. Candidates therefore remain one file and can import only
 `node:` built-ins under the fixed permission contract. The exact spawned Node
 command is feature-tested and the run fails closed if its permission behavior
@@ -65,7 +71,9 @@ containment. The closed report calls them only `bounded-attempt-complete` or
 `bounded-attempt-deadline` and records the absent OS containment and
 uncontrolled network boundary explicitly.
 
-One absolute deadline covers invocation plus settlement work. Response, root
+An invocation deadline is followed by a distinct bounded settlement deadline.
+After the first response line, the runner waits within settlement for process
+and stdout closure and validates all captured stdout. Response, root
 exit, close, timeout, and pipe errors all enter teardown. Candidate stdin,
 stdout, stderr, FD 3, spawn errors, and taskkill errors are handled without
 echoing their contents. Fixtures cover malformed and oversized output, early

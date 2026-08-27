@@ -25,7 +25,6 @@ if(!header.subarray(0,8).equals(magic))throw new Error('candidate-frame-magic');
 const length=header.readUInt32BE(8);
 if(length<1||length>${MAX_CANDIDATE_FRAME_SOURCE_BYTES})throw new Error('candidate-frame-length');
 const source=Buffer.alloc(length);exact(source,0,length);
-const surplus=Buffer.alloc(1);if(readSync(3,surplus,0,1,null)!==0)throw new Error('candidate-frame-surplus');
 const expected=header.subarray(12,44),actual=createHash('sha256').update(source).digest();
 if(!timingSafeEqual(expected,actual))throw new Error('candidate-frame-digest');
 await import('data:text/javascript;base64,'+source.toString('base64'))

@@ -56,7 +56,8 @@ test('the exact candidate command enables the fail-closed Node 24 permission con
   assert(!CANDIDATE_NODE_ARGS.some((argument) => argument.startsWith('--allow-')));
   assert.doesNotMatch(CANDIDATE_LOADER_SOURCE, /readFileSync/);
   assert.match(CANDIDATE_LOADER_SOURCE, /readSync\(3/);
-  assert.match(CANDIDATE_LOADER_SOURCE, /candidate-frame-(?:truncated|surplus|digest)/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /candidate-frame-(?:magic|length|truncated|digest)/);
+  assert.doesNotMatch(CANDIDATE_LOADER_SOURCE, /surplus/);
   assert.match(CANDIDATE_LOADER_SOURCE, /data:text\/javascript;base64/);
   assert.equal(await verifyNodePermissionContract(), true);
 });
@@ -95,6 +96,16 @@ test('malformed and oversized candidate output is closed and bounded', async () 
   const oversized = await runSuite({ candidatePath: candidate('oversized-output.mjs'), candidateName: 'oversized', bounds: fastBounds });
   assert(oversized.invocations.every((item) => item.failure === 'response-too-large'));
   assert(JSON.stringify(oversized).length < 16000);
+});
+
+test('a valid first response followed by delayed stdout junk is rejected', async () => {
+  const report = await runSuite({
+    candidatePath: candidate('delayed-surplus-output.mjs'),
+    candidateName: 'delayed-surplus',
+    bounds: fastBounds,
+  });
+  assert(report.invocations.every((item) => item.failure === 'malformed-response'));
+  assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
 });
 
 test('report is closed and does not echo candidate secrets, stderr, env, or paths', async () => {
@@ -140,7 +151,7 @@ test('POSIX candidate admission rejects a symlink and FIFO without opening a blo
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('Windows candidate admission rejects supported symlink and junction reparse points', { skip: process.platform !== 'win32' }, async (context) => {
+test('Windows candidate admission rejects supported final-path symlink and non-file junction reparse points', { skip: process.platform !== 'win32' }, async (context) => {
   const directory = await mkdtemp(path.join(tmpdir(), 'aas-windows-admission-'));
   const artifact = path.join(directory, 'candidate.mjs');
   const link = path.join(directory, 'link.mjs');
@@ -174,10 +185,11 @@ test('early exit, delayed response, and a pipe-holding root return bounded repor
   const delayed = await runSuite({ candidatePath: candidate('timeout.mjs'), candidateName: 'delayed', bounds: timeoutBounds });
   assert(delayed.invocations.every((item) => item.failure === 'timeout'));
   const holder = await runSuite({ candidatePath: candidate('pipe-holder.mjs'), candidateName: 'pipe-holder', bounds: fastBounds });
-  assert(holder.invocations.every((item) => item.failure === 'malformed-response'));
-  for (const report of [early, delayed, holder]) {
+  assert(holder.invocations.every((item) => item.failure === 'settlement-timeout'));
+  for (const report of [early, delayed]) {
     assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
   }
+  assert(holder.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
   assert(Date.now() - started < 30000);
 });
 
