@@ -1,6 +1,6 @@
 # AAS v0 portable-bounded security and conformance
 
-Status: normative Phase 0 scaffold; unpublished; all claim IDs provisional
+Status: normative artifacts with private Phase 1 implementation; unpublished; all claim IDs provisional; D1 neutral authority unresolved
 
 ## 1. Security posture
 

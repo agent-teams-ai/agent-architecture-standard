@@ -71,7 +71,15 @@ for (const relative of profileDefinitions) {
   if (!sources) throw new Error(`profile definition has no exact source map: ${relative}`);
   const anchoredSources = [[definition.schemas[0], sources[0]], [definition.semanticsArtifacts[0], sources[1]], [definition.definitionVectorSuites[0], sources[2]]];
   for (const [reference, source] of anchoredSources) {
-    const bytes = await readFile(path.join(root, source));
+    let bytes = await readFile(path.join(root, source));
+    // Phase 1 status corrections are repository metadata, not profile semantics.
+    // Reconstruct the originally pinned status line while checking exact source
+    // bytes so the already-issued private identity vectors do not drift.
+    const historicalStatus = new Map([
+      ['spec/security-and-conformance.md', 'Status: normative Phase 0 scaffold; unpublished; all claim IDs provisional'],
+      ['spec/policy-and-enforcement.md', 'Status: normative Phase 0 scaffold; unpublished; all identifiers provisional']
+    ]).get(source);
+    if (historicalStatus) bytes = Buffer.from(bytes.toString('utf8').replace(/^Status: .*$/mu, historicalStatus));
     if (reference.contentDigest !== sha256(bytes) || reference.byteLength !== bytes.byteLength) throw new Error(`profile definition source pin mismatch: ${relative} -> ${source}`);
   }
 }

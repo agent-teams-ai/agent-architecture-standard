@@ -1,6 +1,6 @@
 # AAS v0 identity and canonicalization profile
 
-Status: normative Phase 0 scaffold; unpublished; profile identifiers provisional
+Status: normative artifacts with private Phase 1 implementation; unpublished; profile identifiers provisional; D1 neutral authority unresolved
 
 ## 1. Applicability
 

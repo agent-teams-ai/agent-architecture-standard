@@ -366,41 +366,41 @@
     {
       "path": "spec/core.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:b62e98c37acb94caf8f783700d824917654dad49d2704c44702d51cfc2c1e60f",
+      "contentDigest": "sha256:6b8886481a0ec1fa1ecf29520a7044dcfe2dd9d3097f4b4d4f5b0366c033e9d3",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 15841,
+      "byteLength": 15903,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/governance.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:313a1d0019ef7cb14ca4d0f30e58981940f104a9b5fc83ae7ebc0eae2c93ebe2",
+      "contentDigest": "sha256:8a81b61185fe0a24f69b56a29cb424277841649faaeffc447f6e6a87bfbd6432",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 4892,
+      "byteLength": 4967,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/identity.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:ce51b1f35a648eeb58669a03092c1574f29f12a5ba8432b7062d851f09d65175",
+      "contentDigest": "sha256:c46c2d5c8f6df02fbb407456853bd35e21a7bf1f5151e0eb66faa30bf00bdfb4",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 16420,
+      "byteLength": 16482,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/policy-and-enforcement.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:6374437a3e90216125c229c03c67dd838320078f84de065f836e10d00436459e",
+      "contentDigest": "sha256:1f52c67625b0bf4ce2f1b1208dbbbc3bbc69f8562fcd6bfef2ea1af69bb8a075",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 24317,
+      "byteLength": 24379,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/security-and-conformance.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:7eb9e3216a9d4117c1f4efa34ebdb5b8c9b24730aacbcb91bf1c6886d0424b51",
+      "contentDigest": "sha256:b31839345f401f9253589064ce673100b8e4681f1b9cd79f4415d1508d6fa722",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 23099,
+      "byteLength": 23161,
       "mediaType": "text/markdown"
     },
     {

@@ -1,6 +1,6 @@
 # AAS v0 effective policy, binding, and enforcement
 
-Status: normative Phase 0 scaffold; unpublished; all identifiers provisional
+Status: normative artifacts with private Phase 1 implementation; unpublished; all identifiers provisional; D1 neutral authority unresolved
 
 ## 1. Closed effective policy boundary
 
