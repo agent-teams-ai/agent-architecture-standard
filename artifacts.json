@@ -67,9 +67,9 @@
     {
       "path": "generated/artifact-manifest.d.ts",
       "class": "generated-declaration",
-      "contentDigest": "sha256:69c72f1cc0b1c24b55504ff7feb192a0a15e8793455899cba15efcaf3a0bf178",
+      "contentDigest": "sha256:818ced6ea7af3711cc636c98813cd52281c464870a637e5247429bed79990c68",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 1212,
+      "byteLength": 1235,
       "mediaType": "text/typescript"
     },
     {
@@ -107,9 +107,9 @@
     {
       "path": "generated/identity-documents.d.ts",
       "class": "generated-declaration",
-      "contentDigest": "sha256:9b2e85abe6d49455a62232059a17af5695bf60b4d08ee1b7d5d2c96e2a09f4e7",
+      "contentDigest": "sha256:d8c9be6b3c46c1e00b535bcd30616109636f46ec32e9eecb02d1ecf4ae006d34",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 4265,
+      "byteLength": 5414,
       "mediaType": "text/typescript"
     },
     {
@@ -139,18 +139,34 @@
     {
       "path": "generated/registry-values.d.ts",
       "class": "generated-declaration",
-      "contentDigest": "sha256:2a10875e0402a549859f213ec18be7e5916e42477cb619ac71703c3168e19f78",
+      "contentDigest": "sha256:1f98e24264569a30fa80d3ed250f1d0e2f669abe61a8e1ca4c5c5a1a09585616",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 1648,
+      "byteLength": 1732,
       "mediaType": "text/typescript"
     },
     {
       "path": "generated/registry.d.ts",
       "class": "generated-declaration",
-      "contentDigest": "sha256:cc2a90783ab37e5f96458dfc6176e28fbfcad6f91d9730df00528f78a71fd54f",
+      "contentDigest": "sha256:890e6ff74642ca7d13548ca4bf5aaa2cb011e3b68e7e790748feef4d625a6127",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 10015,
+      "byteLength": 10847,
       "mediaType": "text/typescript"
+    },
+    {
+      "path": "profiles/resource-accounting-v0-1-semantics.md",
+      "class": "profile-definition",
+      "contentDigest": "sha256:f0966891d956a880e274cbd0b06c668eb15ee3f25ff01479cd8e4479e43d48ba",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 951,
+      "mediaType": "text/markdown"
+    },
+    {
+      "path": "profiles/resource-accounting-v0-1.json",
+      "class": "profile-definition",
+      "contentDigest": "sha256:277c3a20000138306238f2ee553a04c229360bc8c23877ac14cf3a421af61900",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1604,
+      "mediaType": "application/json"
     },
     {
       "path": "registries/actions.json",
@@ -195,17 +211,17 @@
     {
       "path": "registries/problems.json",
       "class": "registry",
-      "contentDigest": "sha256:cf3f1143806f58bcc651ca44de290cdabc61e52b9a61e80047a9bf273f2e46d6",
+      "contentDigest": "sha256:3337379402c98879cae462fff19b60dc0949837c6ca30d7aa902d9164cc5a87e",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 544,
+      "byteLength": 1013,
       "mediaType": "application/json"
     },
     {
       "path": "registries/profiles.json",
       "class": "registry",
-      "contentDigest": "sha256:752fc2f2a0c3f474d6b9a7466ee3b4294da02b0ab5b020c3ac0619ee1dbc7f38",
+      "contentDigest": "sha256:ca6be4e8cc5b613aa5ee22dcb8cfe803e774ff52739f5430e72c626cdfcca6ea",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 1972,
+      "byteLength": 2243,
       "mediaType": "application/json"
     },
     {
@@ -227,9 +243,9 @@
     {
       "path": "schemas/artifact-manifest.schema.json",
       "class": "schema",
-      "contentDigest": "sha256:e3e741ca80b097119fc4791bcb89001fdeb3d56b1cdee949669995ca9faf1b8d",
+      "contentDigest": "sha256:8e0576861c6c885f6d926be5f3c9df74b87bb7e1fabab6062d41e07125cb3a32",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 2242,
+      "byteLength": 2264,
       "mediaType": "application/json",
       "schemaId": "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json"
     },
@@ -272,9 +288,9 @@
     {
       "path": "schemas/identity-documents.schema.json",
       "class": "schema",
-      "contentDigest": "sha256:f4c46d9e2e4ef4186c8b55c1300434dc2bafd94aece83237a1f8f09be4ab6cf7",
+      "contentDigest": "sha256:1bd4a5747789c33dd54ba6069024713204db8bb4dbf9e0a7d7515b151253e1fd",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 8584,
+      "byteLength": 11080,
       "mediaType": "application/json",
       "schemaId": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json"
     },
@@ -316,18 +332,18 @@
     {
       "path": "schemas/registry-values.schema.json",
       "class": "schema",
-      "contentDigest": "sha256:e72f9c45886131249d6145e8d01f34a9c84357c3b3bf3afcdfcfba6c47b46e83",
+      "contentDigest": "sha256:0d073529dabd304d3d504292f9aa43866894dfe3c99ffd13cc255e793126ed18",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 3401,
+      "byteLength": 3487,
       "mediaType": "application/json",
       "schemaId": "https://schemas.aas.invalid/private/v0/registry-values.schema.json"
     },
     {
       "path": "schemas/registry.schema.json",
       "class": "schema",
-      "contentDigest": "sha256:480983ac1d064e7fe8707210fbcb2ac5071034461ac420bbc908e831f4da28ed",
+      "contentDigest": "sha256:f3d3cd10c747bfd0a7195516759fa8b3c61bc6aaa0f1b715b4b48a316a92a1ca",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 3686,
+      "byteLength": 3859,
       "mediaType": "application/json",
       "schemaId": "https://schemas.aas.invalid/private/v0/registry.schema.json"
     },
@@ -350,25 +366,25 @@
     {
       "path": "spec/identity.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:9310bbc01eb17e4504fc3d4c8297ed9cb9101a0cb5aa93d759e95ca109a8e90a",
+      "contentDigest": "sha256:1ab293b1d09745e719c209da2fdabbd8f1056157e09ea13c946310756bb6087a",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 14974,
+      "byteLength": 15427,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/policy-and-enforcement.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:e99ef946c183851e008b27fdf82bce927c3e82aceed03c292aadf188e4282e7d",
+      "contentDigest": "sha256:4389b9f1c987087ae4e0923a9b39dfe398716a9dff75e8081caf42efd5647de1",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 21005,
+      "byteLength": 22162,
       "mediaType": "text/markdown"
     },
     {
       "path": "spec/security-and-conformance.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:24aae6c0a5927992f8b81c2cb8a58078283227d6b5dac573dc243fd140927cad",
+      "contentDigest": "sha256:688f17eca4137bd7c62be049f64d80040058e97135ee9c1d438d9361b322221e",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 26825,
+      "byteLength": 27580,
       "mediaType": "text/markdown"
     },
     {
@@ -378,6 +394,14 @@
       "aasIdentityStatus": "not-computed-phase-1",
       "byteLength": 3224,
       "mediaType": "text/markdown"
+    },
+    {
+      "path": "vectors/binding-selection-permutations-v1.json",
+      "class": "vector",
+      "contentDigest": "sha256:8e0cdb619af56e75ef72ccd26a4d8878232f4e8250f8117816fe9841188a9210",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1075,
+      "mediaType": "application/json"
     },
     {
       "path": "vectors/json/corpus.json",
@@ -542,17 +566,17 @@
     {
       "path": "vectors/phase-1-remediation-v1.md",
       "class": "vector",
-      "contentDigest": "sha256:9789dcc4eb6a7f8eb214cc5f8c7b89f57f866fdc9b7ed24b3565ab0e296c8288",
+      "contentDigest": "sha256:2bf7c23d9145c8953b9545c938f76311b58cd88d425afe6f14aa0824e2bf82b0",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 5909,
+      "byteLength": 6114,
       "mediaType": "text/markdown"
     },
     {
       "path": "vectors/readme.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:6e506916ecc150a677ff86c2af46249262ac9c58c8e6e2cecc259c970f809d8e",
+      "contentDigest": "sha256:979dce1ca8b1ee108504ceb5b8cb5a10b0c09c8ac9e6e97ac929ef89b99bce28",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 4764,
+      "byteLength": 5001,
       "mediaType": "text/markdown"
     },
     {
@@ -582,9 +606,9 @@
     {
       "path": "vectors/schema/definition-fixtures.json",
       "class": "vector",
-      "contentDigest": "sha256:1e2904f2e4eb0a00d8821fce0dcfda6d4b99a0085b09ea83ae50d3beaa6ad6f4",
+      "contentDigest": "sha256:80264a82e497cb86a0dcdfb38b825f389f342dffd853f3e1d7ef2c95659a775d",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 51939,
+      "byteLength": 52541,
       "mediaType": "application/json"
     },
     {
@@ -702,7 +726,7 @@
     {
       "path": "vectors/schema/positive/result.json",
       "class": "vector",
-      "contentDigest": "sha256:abcb1f2d58d4d65eb525ea37748d3e2a4a7694d360e341617e7aa46d145494d4",
+      "contentDigest": "sha256:2e4bec94a81bb652a504152a007d5a8a957395c0cce535241677eb07c711481d",
       "aasIdentityStatus": "not-computed-phase-1",
       "byteLength": 4687,
       "mediaType": "application/json"

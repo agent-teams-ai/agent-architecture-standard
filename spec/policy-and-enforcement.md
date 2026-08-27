@@ -146,9 +146,27 @@ selection algorithm:
 3. At equal specificity, a binding naming the exact rule outranks one applying
    to all rules.
 4. At equal specificity in all dimensions, the bindings MUST have identical
-   policy, profiles, budgets, mode, rollout scope, and exception set; otherwise
-   the entire binding set is invalid and produces a binding-set problem with no
-   result envelope.
+   consumer, repository, scope, portable-path profile, rollout scope, mode,
+   policy identity, profiles, accounting profile, budgets, exception set, and
+   promotion-record identity; otherwise the entire binding set is invalid and produces
+   `aas.problem.binding-set-conflict` with no result envelope.
+
+The applicability authority is one complete identity-bound `aas.binding-set.v0`
+artifact plus one identity-bearing `aas.target-selection.v0` coordinate for
+each request target. Validators MUST recompute the set, member binding, and
+coordinate identities and derive applicability internally. A caller-supplied
+applicable map is only an exact checked projection, never a completeness
+authority. Target keys close exactly and candidates form a complete bijection
+with all derived applicable members.
+
+After semantic rank is computed, the wire candidate array is ordered by
+descending rank and then ascending binding `aasIdentity`. Equivalent top-rank
+bindings use the lowest-identity binding's ID as their sole representative.
+Binding identities are lowercase ASCII, and implementations MUST compare them
+by ASCII/code-unit order without locale-sensitive collation.
+This is representation ordering, not semantic precedence. Every permutation of
+one complete set therefore yields one candidate order, selected ID, and request
+identity.
 
 Declaration order, filename order, lexical binding ID, installation order, and
 last-write-wins MUST NOT resolve ambiguity. Each request target MUST bind the

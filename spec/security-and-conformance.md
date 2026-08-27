@@ -201,14 +201,20 @@ definition version `1`, and profile `aasIdentity`), and requests and analysis
 keys MUST bind that same profile identity. Implementations MUST NOT substitute
 an unregistered profile or locally redefine these units.
 
-Before evaluation, the cross-document invocation validator MUST receive the
-request, analysis key, every binding document named by any target candidate
-set, the exact applicable binding list for every target, and every target
-overlay. There is no missing-document fallback. The accounting-profile
+Before evaluation, preflight MUST receive the request, analysis key, complete
+binding-set artifact, one target-selection coordinate per request target, and
+every target overlay. It recomputes all of their normative framed identities,
+derives applicability and precedence internally, and derives componentwise
+ceilings before evaluator work. An applicable list, if supplied, is only an
+exact checked projection. There is no missing-document fallback. The accounting-profile
 `aasIdentity` MUST be exactly equal in the request, analysis key, and every
 selected or applicable binding. The analysis-key identity MUST equal the result
 and all result headers. Candidate lists MUST form exact ordered ID, binding
-identity, and policy-identity bijections with those applicable binding lists.
+identity, and policy-identity bijections with the derived applicable bindings.
+
+Post-result reconciliation MUST reuse the completed preflight derivation. It
+checks the result and realized counters, selected binding mode, and deterministic
+rollout disposition without accepting caller-mutated authority inputs.
 
 Budget resolution uses one rule only: for each named `max*` field, the effective
 invocation ceiling is the componentwise minimum of the request budget, analysis
@@ -218,6 +224,13 @@ never means infinity or a default. Realized aggregate counters MUST be at or
 below those effective ceilings. Thus a larger re-signed request cannot weaken a
 binding, analysis-key, or overlay ceiling, while a smaller ceiling tightens the
 invocation deterministically.
+
+The exact accounting-profile identity is
+`aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249`.
+It is the `aas.profile.v0` identity of the immutable
+`profiles/resource-accounting-v0-1.json` definition. The
+registry-generated accounting profile schema admits only this identity;
+agreement on arbitrary bytes is invalid.
 
 The v0 byte counters have exactly these units:
 

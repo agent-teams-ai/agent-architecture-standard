@@ -10,7 +10,7 @@ const registryValuesPath = 'schemas/registry-values.schema.json';
 const registryEntries = async (name) => parseStrictJson(await readFile(path.join(root, `registries/${name}.json`))).entries;
 const actionIds = (await registryEntries('actions')).map(({ id }) => id);
 const problemCodes = (await registryEntries('problems')).map(({ id }) => id);
-const profileBranches = (await registryEntries('profiles')).map(({ id, role }) => {
+const profileBranches = (await registryEntries('profiles')).map(({ id, role, profileAasIdentity }) => {
   const match = /@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){0,2})$/u.exec(id);
   if (!match) throw new Error(`registered profile ID does not end in its definition version: ${id}`);
   return { role,
@@ -18,7 +18,7 @@ const profileBranches = (await registryEntries('profiles')).map(({ id, role }) =
     type: 'object', additionalProperties: false, required: ['version', 'id', 'aasIdentity'],
     properties: {
       version: { const: match[1] }, id: { const: id },
-      aasIdentity: { $ref: 'common.schema.json#/$defs/aasIdentity' }
+      aasIdentity: profileAasIdentity === undefined ? { $ref: 'common.schema.json#/$defs/aasIdentity' } : { const: profileAasIdentity }
     }}
   };
 });
@@ -153,6 +153,7 @@ const candidates = [
   ...(await walk('schemas')).filter((item) => item.endsWith('.md')),
   ...(await walk('registries')).filter((item) => item.endsWith('.json')),
   ...(await walk('registries')).filter((item) => item.endsWith('.md')),
+  ...(await walk('profiles')),
   ...(await walk('spec')).filter((item) => item.endsWith('.md')),
   'decisions/README.md',
   'decisions/phase-0-d0-d11-v1.md',
@@ -174,6 +175,7 @@ for (const relative of unique) {
     path: slash(relative),
     class: relative.startsWith('schemas/') && relative.endsWith('.json') ? 'schema'
       : relative.startsWith('registries/') && relative.endsWith('.json') ? 'registry'
+      : relative.startsWith('profiles/') ? 'profile-definition'
       : relative.startsWith('vectors/') && relative !== 'vectors/readme.md' ? 'vector'
       : relative.startsWith('generated/') ? 'generated-declaration'
       : relative.startsWith('docs/decisions/') ? 'decision-provenance'

@@ -89,7 +89,36 @@ export type analysisKey = {
   "inputAasIdentities": Array<import("./common.js").aasIdentity>;
   "budgets": import("./common.js").budgets;
   "accountingProfile": import("./registry-values.js").accountingProfile;
-  "semanticExtensions": import("./common.js").extensionMap;
+  "semanticExtensions": {
+  "request": import("./common.js").extensionMap;
+  "criticalRequest": import("./common.js").extensionMap;
+  "targets": Array<{
+  "id": import("./common.js").identifier;
+  "extensions": import("./common.js").extensionMap;
+  "criticalExtensions": import("./common.js").extensionMap;
+}>;
+};
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "operation": import("./common.js").identifier;
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
 };
 
-export type AASPrivateProvisionalIdentityBearingDocuments = (import("./artifacts.js").artifact) | (import("./artifacts.js").snapshot) | (profile) | (import("./policy.js").effectivePolicy) | (repositoryRevision) | (import("./policy.js").exception) | (promotionRecord) | (import("./policy.js").binding) | (analyzer) | (import("./overlay.js").overlay) | (import("./envelope.js").request) | (analysisKey) | (import("./envelope.js").result) | (import("./overlay.js").receipt) | (import("./conformance.js").releaseManifest);
+export type bindingSet = {
+  "aasIdentity": import("./common.js").aasIdentity;
+  "bindings": Array<import("./policy.js").binding>;
+};
+
+export type targetSelection = {
+  "aasIdentity": import("./common.js").aasIdentity;
+  "targetId": import("./common.js").identifier;
+  "consumer": import("./common.js").identifier;
+  "repository": import("./common.js").identifier;
+  "subjectId"?: import("./common.js").identifier;
+  "path": import("./common.js").portablePath;
+  "ruleId"?: import("./common.js").identifier;
+  "rolloutCohorts": Array<import("./common.js").identifier>;
+};
+
+export type AASPrivateProvisionalIdentityBearingDocuments = (import("./artifacts.js").artifact) | (import("./artifacts.js").snapshot) | (profile) | (import("./policy.js").effectivePolicy) | (repositoryRevision) | (import("./policy.js").exception) | (promotionRecord) | (import("./policy.js").binding) | (analyzer) | (import("./overlay.js").overlay) | (import("./envelope.js").request) | (analysisKey) | (bindingSet) | (targetSelection) | (import("./envelope.js").result) | (import("./overlay.js").receipt) | (import("./conformance.js").releaseManifest);

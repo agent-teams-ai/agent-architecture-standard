@@ -1,0 +1,27 @@
+{
+  "suite": "binding-selection-permutations-v1",
+  "identityOrdering": "ascending-lowercase-ascii-code-unit",
+  "cases": [
+    {
+      "inputOrder": ["binding-z", "binding-a"],
+      "bindingSetAasIdentity": "aas:v0:sha256:c2512986942a2c63eddc0df83c9c82a75626de9df0e57b96a37ada59c9b0e9d9",
+      "candidateOrder": ["binding-z", "binding-a"],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:ba7470c49c266dfd31d1011eb41180c6176d32ec30a09190e5e7b65337252f33"
+    },
+    {
+      "inputOrder": ["binding-a", "binding-z"],
+      "bindingSetAasIdentity": "aas:v0:sha256:8700ef3a754b9f7f46d5bfbd4054e9c9afdad04666cf3d391e38f6c7de2387f2",
+      "candidateOrder": ["binding-z", "binding-a"],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:ba7470c49c266dfd31d1011eb41180c6176d32ec30a09190e5e7b65337252f33"
+    }
+  ],
+  "negativeCases": [
+    {
+      "name": "equal-rank-different-path-profile",
+      "difference": "pathProfile.aasIdentity",
+      "expectedProblem": "aas.problem.binding-set-conflict"
+    }
+  ]
+}

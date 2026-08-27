@@ -271,7 +271,7 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
     },
     "budgets": {
       "maxInputBytes": 100,
@@ -324,7 +324,7 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
     },
     "budgets": {
       "maxInputBytes": 100,
@@ -353,7 +353,7 @@
     "revisionSystemProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
     },
     "nativeRevision": "abc",
     "treeAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
@@ -525,11 +525,18 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
     },
     "semanticExtensions": {
-      "com.example.semantic": true
-    }
+      "request": { "com.example.semantic": true },
+      "criticalRequest": {},
+      "targets": [{ "id": "target-1", "extensions": {}, "criticalExtensions": {} }]
+    },
+    "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
+    "operation": "validate-overlay@1",
+    "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
   },
   "request-positive": {
     "kind": "request",
@@ -704,7 +711,7 @@
     "resolution": "decided",
     "verdict": "pass",
     "bindingState": "selected",
-    "mode": "advisory",
+    "mode": "required",
     "rolloutDisposition": "included",
     "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",

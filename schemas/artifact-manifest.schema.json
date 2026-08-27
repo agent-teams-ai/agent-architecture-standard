@@ -35,7 +35,7 @@
         "required": ["path", "class", "contentDigest", "aasIdentityStatus", "byteLength", "mediaType"],
         "properties": {
           "path": { "$ref": "#/$defs/manifestPath" },
-          "class": { "enum": ["schema", "registry", "vector", "normative-prose", "decision-provenance", "generated-declaration", "version-matrix"] },
+          "class": { "enum": ["schema", "registry", "vector", "profile-definition", "normative-prose", "decision-provenance", "generated-declaration", "version-matrix"] },
           "schemaId": { "type": "string", "format": "uri" },
           "contentDigest": { "$ref": "common.schema.json#/$defs/contentDigest" },
           "aasIdentityStatus": { "const": "not-computed-phase-1" },

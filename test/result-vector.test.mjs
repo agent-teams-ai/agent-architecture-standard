@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { assertInvocationInvariants, assertRequestResultInvariants, assertResultInvariants, canonicalRequestExtensionBytes, canonicalRequestWireBytes, canonicalResultOutputBytes, computeRequestAasIdentity, computeResultAasIdentity, requestIdentityProjection } from '../lib/result-validation.mjs';
+import { assertInvocationInvariants, assertRequestResultInvariants, assertResultInvariants, canonicalRequestExtensionBytes, canonicalRequestWireBytes, canonicalResultOutputBytes, computeAnalysisKeyAasIdentity, computeBindingAasIdentity, computeBindingSetAasIdentity, computeOverlayAasIdentity, computeRequestAasIdentity, computeResultAasIdentity, computeTargetSelectionAasIdentity, deriveBindingSelection, deriveEffectiveBudgets, preflightInvocation, reconcileInvocationResult, requestIdentityProjection } from '../lib/result-validation.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const canonicalize = (value) => {
@@ -73,7 +73,7 @@ test('result self-identity vector includes the complete closed result projection
   for (const resolution of result.resolutions) delete resolution.diagnostic.resultAasIdentity;
   const payload = Buffer.from(canonicalize(result));
   assert.equal(payload.byteLength, 3311);
-  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:752958bab8e587678df43bf0dd04606aba1cc503c61c8797345cf019a1453517');
+  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:28a8d09aab493dbab3369a67d604ab539922e8389f6cd2f99b8fa3fc2306c337');
   const magic = Buffer.from('AAS-ID');
   const domain = Buffer.from('aas.result.v0');
   const profile = Buffer.from('agent-architecture-canonical-json-rfc8785@0');
@@ -248,43 +248,172 @@ test('cross-document invocation closes accounting identity, candidate provenance
   const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
   const request = structuredClone(fixtures['request-positive']);
   const result = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
+  const accountingIdentity = 'aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249';
+  request.accountingProfileAasIdentity = accountingIdentity;
   request.targets[0].input.limits = structuredClone(request.budgets);
-  request.aasIdentity = computeRequestAasIdentity(request);
-  const rawInputBytes = canonicalRequestWireBytes(request);
-  result.requestAasIdentity = request.aasIdentity;
-  result.resolutions[0].diagnostic.requestAasIdentity = request.aasIdentity;
-  result.realizedCounters.inputBytes = rawInputBytes; updateTotalWork(result);
-  result.realizedCounters.outputBytes = canonicalResultOutputBytes(result);
-  result.aasIdentity = computeResultAasIdentity(result); result.resolutions[0].diagnostic.resultAasIdentity = result.aasIdentity;
+  request.targets[0].input.aasIdentity = computeOverlayAasIdentity(request.targets[0].input);
   const binding = structuredClone(fixtures['binding-required-positive']);
-  binding.aasIdentity = request.targets[0].bindingSelection.bindingAasIdentity;
   binding.policyAasIdentity = request.targets[0].bindingSelection.policyAasIdentity;
   binding.budgets = structuredClone(request.budgets);
+  binding.accountingProfile.aasIdentity = accountingIdentity;
+  binding.aasIdentity = computeBindingAasIdentity(binding);
+  request.targets[0].bindingSelection = { state: 'selected', selectedBindingId: binding.id,
+    bindingAasIdentity: binding.aasIdentity, policyAasIdentity: binding.policyAasIdentity,
+    candidateBindings: [{ id: binding.id, aasIdentity: binding.aasIdentity, policyAasIdentity: binding.policyAasIdentity }] };
+  request.aasIdentity = computeRequestAasIdentity(request);
   const analysisKey = structuredClone(fixtures['analysis-key-positive']);
-  analysisKey.aasIdentity = result.analysisKeyAasIdentity;
   analysisKey.budgets = structuredClone(request.budgets);
-  const invocation = { request, result, analysisKey, bindings: [binding], applicableBindingsByTarget: { 'target-1': [binding] } };
+  analysisKey.accountingProfile.aasIdentity = accountingIdentity;
+  analysisKey.operationProfile.aasIdentity = request.profileAasIdentity;
+  analysisKey.evaluatorProfiles[0].aasIdentity = request.analyzerAasIdentity;
+  analysisKey.requestAasIdentity = request.aasIdentity;
+  analysisKey.operation = request.operation;
+  analysisKey.profileAasIdentity = request.profileAasIdentity;
+  analysisKey.analyzerAasIdentity = request.analyzerAasIdentity;
+  analysisKey.snapshotAasIdentity = request.snapshotAasIdentity;
+  analysisKey.inputAasIdentities = [request.snapshotAasIdentity, request.targets[0].input.aasIdentity];
+  analysisKey.semanticExtensions = { request: request.extensions, criticalRequest: request.criticalExtensions,
+    targets: request.targets.map(({ id, extensions, criticalExtensions }) => ({ id, extensions, criticalExtensions })) };
+  analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(analysisKey);
+  const bindingSet = { aasIdentity: '', bindings: [binding] };
+  bindingSet.aasIdentity = computeBindingSetAasIdentity(bindingSet);
+  const coordinate = { aasIdentity: '', targetId: 'target-1', consumer: binding.consumer, repository: binding.repository,
+    subjectId: binding.scope.subjectId, path: 'src/a.ts', ruleId: binding.scope.ruleId, rolloutCohorts: [] };
+  coordinate.aasIdentity = computeTargetSelectionAasIdentity(coordinate);
+  result.analysisKeyAasIdentity = analysisKey.aasIdentity;
+  result.requestAasIdentity = request.aasIdentity;
+  result.resolutions[0].diagnostic.analysisKeyAasIdentity = analysisKey.aasIdentity;
+  result.resolutions[0].diagnostic.requestAasIdentity = request.aasIdentity;
+  result.resolutions[0].diagnostic.overlayAasIdentity = request.targets[0].input.aasIdentity;
+  result.resolutions[0].diagnostic.bindingAasIdentity = binding.aasIdentity;
+  result.resolutions[0].diagnostic.policyAasIdentity = binding.policyAasIdentity;
+  result.resolutions[0].diagnostic.mode = binding.mode;
+  result.resolutions[0].diagnostic.rolloutDisposition = 'included';
+  result.resolutions[0].diagnostic.decisionTrace = structuredClone(request.targets[0].bindingSelection);
+  result.realizedCounters.inputBytes = canonicalRequestWireBytes(request);
+  updateTotalWork(result);
+  result.realizedCounters.outputBytes = canonicalResultOutputBytes(result);
+  result.aasIdentity = computeResultAasIdentity(result); result.resolutions[0].diagnostic.resultAasIdentity = result.aasIdentity;
+  const rawInputBytes = canonicalRequestWireBytes(request);
+  const invocation = { request, result, analysisKey, bindingSet, targetSelectionsByTarget: { 'target-1': coordinate }, applicableBindingsByTarget: { 'target-1': [binding] } };
   const validated = assertInvocationInvariants(invocation, rawInputBytes);
   assert.equal(validated.effectiveBudgets.maxReadBytes, request.budgets.maxReadBytes);
 
   const substituted = structuredClone(invocation);
   substituted.analysisKey.accountingProfile.aasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64);
+  substituted.analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(substituted.analysisKey);
   assert.throws(() => assertInvocationInvariants(substituted, rawInputBytes), /accounting profile substitution/);
+
+  const unrelated = structuredClone(invocation);
+  unrelated.analysisKey.operation = 'unrelated-operation@1';
+  unrelated.analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(unrelated.analysisKey);
+  assert.throws(() => assertInvocationInvariants(unrelated, rawInputBytes), /semantic projection is unrelated/);
+
+  const mutatedBinding = structuredClone(invocation);
+  mutatedBinding.bindingSet.bindings[0].budgets.maxReadBytes += 1;
+  mutatedBinding.bindingSet.aasIdentity = computeBindingSetAasIdentity(mutatedBinding.bindingSet);
+  assert.throws(() => assertInvocationInvariants(mutatedBinding, rawInputBytes), /binding aasIdentity does not match/);
+
+  const mutatedOverlay = structuredClone(invocation);
+  mutatedOverlay.request.targets[0].input.limits.maxReadBytes += 1;
+  mutatedOverlay.request.aasIdentity = computeRequestAasIdentity(mutatedOverlay.request);
+  mutatedOverlay.analysisKey.requestAasIdentity = mutatedOverlay.request.aasIdentity;
+  mutatedOverlay.analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(mutatedOverlay.analysisKey);
+  assert.throws(() => assertInvocationInvariants(mutatedOverlay, canonicalRequestWireBytes(mutatedOverlay.request)), /overlay aasIdentity does not match/);
 
   const wrongCandidates = structuredClone(invocation);
   wrongCandidates.applicableBindingsByTarget['target-1'] = [];
-  assert.throws(() => assertInvocationInvariants(wrongCandidates, rawInputBytes), /exact ordered applicable-set bijection/);
+  assert.throws(() => assertInvocationInvariants(wrongCandidates, rawInputBytes), /exact checked projection/);
+
+  const extraTarget = structuredClone(invocation);
+  extraTarget.targetSelectionsByTarget.extra = coordinate;
+  assert.throws(() => assertInvocationInvariants(extraTarget, rawInputBytes), /exactly equal request target keys/);
 
   const omittedCeiling = structuredClone(invocation);
   delete omittedCeiling.analysisKey.budgets.maxReadBytes;
+  omittedCeiling.analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(omittedCeiling.analysisKey);
   assert.throws(() => assertInvocationInvariants(omittedCeiling, rawInputBytes), /exact closed budget field set/);
 
-  const tighter = structuredClone(invocation);
-  tighter.bindings[0].budgets.maxReadBytes = 1;
-  tighter.applicableBindingsByTarget['target-1'][0] = tighter.bindings[0];
-  tighter.result.realizedCounters.readBytes = 2; updateTotalWork(tighter.result);
-  tighter.result.realizedCounters.outputBytes = canonicalResultOutputBytes(tighter.result);
-  tighter.result.aasIdentity = computeResultAasIdentity(tighter.result);
-  tighter.result.resolutions[0].diagnostic.resultAasIdentity = tighter.result.aasIdentity;
-  assert.throws(() => assertInvocationInvariants(tighter, rawInputBytes), /componentwise-minimum effective maxReadBytes/);
+  const limitedInvocation = structuredClone(invocation);
+  limitedInvocation.analysisKey.budgets.maxReadBytes = Math.max(1, result.realizedCounters.readBytes);
+  limitedInvocation.analysisKey.aasIdentity = computeAnalysisKeyAasIdentity(limitedInvocation.analysisKey);
+  const preflight = preflightInvocation(limitedInvocation, rawInputBytes);
+  const over = structuredClone(result); over.analysisKeyAasIdentity = limitedInvocation.analysisKey.aasIdentity;
+  over.resolutions[0].diagnostic.analysisKeyAasIdentity = limitedInvocation.analysisKey.aasIdentity;
+  over.realizedCounters.readBytes = preflight.effectiveBudgets.maxReadBytes + 1;
+  updateTotalWork(over); over.realizedCounters.outputBytes = canonicalResultOutputBytes(over);
+  over.aasIdentity = computeResultAasIdentity(over); over.resolutions[0].diagnostic.resultAasIdentity = over.aasIdentity;
+  assert.throws(() => reconcileInvocationResult(preflight, over, rawInputBytes), /componentwise-minimum effective maxReadBytes/);
+
+  const advisory = structuredClone(result); advisory.analysisKeyAasIdentity = limitedInvocation.analysisKey.aasIdentity;
+  advisory.resolutions[0].diagnostic.analysisKeyAasIdentity = limitedInvocation.analysisKey.aasIdentity;
+  advisory.resolutions[0].diagnostic.mode = 'advisory';
+  advisory.realizedCounters.outputBytes = canonicalResultOutputBytes(advisory);
+  advisory.aasIdentity = computeResultAasIdentity(advisory); advisory.resolutions[0].diagnostic.resultAasIdentity = advisory.aasIdentity;
+  assert.throws(() => reconcileInvocationResult(preflight, advisory, rawInputBytes), /selected binding mode mismatch/);
+});
+
+test('binding-set permutations use locale-independent candidate order and reject path-profile conflicts', async () => {
+  const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const vectors = parseStrictJson(await readFile(new URL('../vectors/binding-selection-permutations-v1.json', import.meta.url)));
+  const first = structuredClone(fixtures['binding-required-positive']);
+  first.id = 'binding-z'; first.aasIdentity = computeBindingAasIdentity(first);
+  const second = structuredClone(first); second.id = 'binding-a'; second.aasIdentity = computeBindingAasIdentity(second);
+  const coordinate = { aasIdentity: '', targetId: 'target-1', consumer: first.consumer, repository: first.repository,
+    subjectId: first.scope.subjectId, path: 'src/a.ts', ruleId: first.scope.ruleId, rolloutCohorts: [] };
+  coordinate.aasIdentity = computeTargetSelectionAasIdentity(coordinate);
+  const decisions = [];
+  const originalLocaleCompare = String.prototype.localeCompare;
+  String.prototype.localeCompare = () => { throw new Error('binding ordering must not use locale collation'); };
+  try {
+    for (const [index, bindings] of [[first, second], [second, first]].entries()) {
+      const set = { aasIdentity: '', bindings }; set.aasIdentity = computeBindingSetAasIdentity(set);
+      const decision = deriveBindingSelection(set, coordinate).decision;
+      decisions.push(decision);
+      assert.equal(set.aasIdentity, vectors.cases[index].bindingSetAasIdentity);
+      assert.deepEqual(decision.candidateBindings.map(({ id }) => id), [...vectors.cases[index].candidateOrder]);
+      assert.equal(decision.selectedBindingId, vectors.cases[index].selectedBindingId);
+    }
+  } finally {
+    String.prototype.localeCompare = originalLocaleCompare;
+  }
+  assert.deepEqual(decisions[0], decisions[1]);
+  assert.equal(decisions[0].selectedBindingId, decisions[0].candidateBindings[0].id);
+  const request = structuredClone(fixtures['request-positive']);
+  request.targets[0].bindingSelection = decisions[0]; request.aasIdentity = computeRequestAasIdentity(request);
+  const permuted = structuredClone(request); permuted.targets[0].bindingSelection = decisions[1]; permuted.aasIdentity = computeRequestAasIdentity(permuted);
+  assert.equal(request.aasIdentity, permuted.aasIdentity);
+  assert.equal(request.aasIdentity, vectors.cases[0].requestAasIdentity);
+
+  const conflict = structuredClone(second); conflict.policyAasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64); conflict.aasIdentity = computeBindingAasIdentity(conflict);
+  const badSet = { aasIdentity: '', bindings: [first, conflict] }; badSet.aasIdentity = computeBindingSetAasIdentity(badSet);
+  assert.throws(() => deriveBindingSelection(badSet, coordinate), /aas.problem.binding-set-conflict/);
+
+  const differentPathProfile = structuredClone(second);
+  differentPathProfile.pathProfile.aasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64);
+  differentPathProfile.aasIdentity = computeBindingAasIdentity(differentPathProfile);
+  const pathProfileConflictSet = { aasIdentity: '', bindings: [first, differentPathProfile] };
+  pathProfileConflictSet.aasIdentity = computeBindingSetAasIdentity(pathProfileConflictSet);
+  assert.equal(vectors.identityOrdering, 'ascending-lowercase-ascii-code-unit');
+  assert.equal(vectors.negativeCases[0].name, 'equal-rank-different-path-profile');
+  assert.equal(vectors.negativeCases[0].difference, 'pathProfile.aasIdentity');
+  assert.equal(vectors.negativeCases[0].expectedProblem, 'aas.problem.binding-set-conflict');
+  assert.throws(() => deriveBindingSelection(pathProfileConflictSet, coordinate), new RegExp(vectors.negativeCases[0].expectedProblem.replaceAll('.', '\\.')));
+
+  const pathBinding = structuredClone(first); pathBinding.id = 'path-binding'; delete pathBinding.scope.subjectId; pathBinding.scope.path = 'src/a.ts'; pathBinding.aasIdentity = computeBindingAasIdentity(pathBinding);
+  const precedenceSet = { aasIdentity: '', bindings: [pathBinding, first] }; precedenceSet.aasIdentity = computeBindingSetAasIdentity(precedenceSet);
+  assert.equal(deriveBindingSelection(precedenceSet, coordinate).decision.selectedBindingId, first.id);
+
+  const missingCoordinate = { ...coordinate, aasIdentity: '', subjectId: 'other', path: 'other/a.ts' };
+  missingCoordinate.aasIdentity = computeTargetSelectionAasIdentity(missingCoordinate);
+  const oneSet = { aasIdentity: '', bindings: [first] }; oneSet.aasIdentity = computeBindingSetAasIdentity(oneSet);
+  assert.deepEqual(deriveBindingSelection(oneSet, missingCoordinate).decision, { state: 'absent', reason: 'binding-missing', candidateBindings: [] });
+});
+
+test('componentwise minimum iterates safely across the maximum 100000-target source count', async () => {
+  const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const budget = fixtures['request-positive'].budgets;
+  const sources = Array.from({ length: 200002 }, () => budget);
+  assert.deepEqual(deriveEffectiveBudgets(sources), { ...budget });
+  assert.throws(() => deriveEffectiveBudgets([...sources, budget]), /source count/);
 });

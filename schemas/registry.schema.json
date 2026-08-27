@@ -32,7 +32,9 @@
           "semanticsAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
           "orderingRank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
           "vectors": { "type": "array", "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 512 } },
-          "collisionReview": { "type": "string", "minLength": 1, "maxLength": 512 }
+          "collisionReview": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "profileAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+          "definitionArtifact": { "type": "string", "minLength": 1, "maxLength": 512 }
         }
       }
     },

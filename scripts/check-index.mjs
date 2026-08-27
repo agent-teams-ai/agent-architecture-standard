@@ -4,6 +4,7 @@ import { root, walk, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
 import { sha256 } from '../lib/digests.mjs';
 import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
+import { computeProfileAasIdentity } from '../lib/result-validation.mjs';
 
 const immutableDigests = new Map([
   ['decisions/README.md', 'sha256:8aa3b8d91ec3349bbee6489182741d0e7651f1a6490be869ba1c1f6b1a11c284'],
@@ -52,11 +53,30 @@ const registryEntries = manifest.artifacts.filter((entry) => entry.class === 're
 if (registryFiles.length !== registryEntries.length || registryFiles.some((item) => registryEntries.filter((entry) => entry.path === item).length !== 1)) throw new Error('every registry must be indexed exactly once');
 const registryIndex = (await indexLinks('registries/readme.md')).filter((item) => item.endsWith('.json'));
 if (JSON.stringify([...registryIndex].sort()) !== JSON.stringify([...registryFiles].sort())) throw new Error('registry index rows do not exactly match physical registries');
+const profileArtifacts = await walk('profiles');
+const profileDefinitions = profileArtifacts.filter((item) => item.endsWith('.json'));
+const profileEntries = manifest.artifacts.filter((entry) => entry.class === 'profile-definition').map((entry) => entry.path);
+if (JSON.stringify(profileEntries.sort()) !== JSON.stringify(profileArtifacts.sort())) throw new Error('immutable profile-definition inventory is not indexed exactly');
+for (const relative of profileDefinitions) {
+  const definition = await readJson(relative);
+  if (computeProfileAasIdentity(definition) !== definition.aasIdentity) throw new Error(`profile definition identity mismatch: ${relative}`);
+  const registration = (await readJson('registries/profiles.json')).entries.find(({ id }) => id === definition.id);
+  if (!registration || registration.definitionArtifact !== relative || registration.profileAasIdentity !== definition.aasIdentity) throw new Error(`profile definition is not exactly anchored by registry: ${relative}`);
+  const anchoredSources = [
+    [definition.schemas[0], 'schemas/common.schema.json'],
+    [definition.semanticsArtifacts[0], 'profiles/resource-accounting-v0-1-semantics.md'],
+    [definition.definitionVectorSuites[0], 'vectors/phase-1-remediation-v1.md']
+  ];
+  for (const [reference, source] of anchoredSources) {
+    const bytes = await readFile(path.join(root, source));
+    if (reference.contentDigest !== sha256(bytes) || reference.byteLength !== bytes.byteLength) throw new Error(`profile definition source pin mismatch: ${relative} -> ${source}`);
+  }
+}
 const vectorFiles = (await walk('vectors')).filter((item) => item !== 'vectors/readme.md');
 const vectorEntries = manifest.artifacts.filter((entry) => entry.class === 'vector').map((entry) => entry.path);
 if (JSON.stringify([...vectorEntries].sort()) !== JSON.stringify([...vectorFiles].sort())) throw new Error('manifest vector inventory does not exactly match physical vectors');
 const vectorIndex = await indexLinks('vectors/readme.md');
-const expectedVectorRoots = ['vectors/phase-0-remediation-v1.md', 'vectors/phase-1-remediation-v1.md', 'vectors/json/', 'vectors/schema/corpus.json', 'vectors/schema/catalog-corpus.json', 'vectors/registry/corpus.json'];
+const expectedVectorRoots = ['vectors/phase-0-remediation-v1.md', 'vectors/phase-1-remediation-v1.md', 'vectors/binding-selection-permutations-v1.json', 'vectors/json/', 'vectors/schema/corpus.json', 'vectors/schema/catalog-corpus.json', 'vectors/registry/corpus.json'];
 if (JSON.stringify(vectorIndex.sort()) !== JSON.stringify(expectedVectorRoots.sort())) throw new Error('vector index rows do not exactly match the normative suite roots');
 for (const registryPath of registryFiles) {
   const registry = await readJson(registryPath);

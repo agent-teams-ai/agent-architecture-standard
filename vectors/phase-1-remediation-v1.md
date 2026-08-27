@@ -93,18 +93,20 @@ historical `phase-0-remediation-v1.md` bytes. Machine-readable instances live in
 - Positive result: `schema/positive/result.json` has `totalWork = 155`, exactly
   `1 + 1 + 1 + 1 + 1 + 0 + 150 + 0`; the mixed result has `totalWork = 215`.
   Peak counters are not summed into `totalWork`.
-- Positive invocation: request, analysis key, and applicable binding use the
-  same accounting-profile identity; every effective ceiling is the
-  componentwise minimum of request, analysis key, selected bindings, and all
-  target overlay limits.
-- Negative dispositions: a re-signed accounting-profile substitution, an
-  inexact applicable-candidate list, a realized counter above a smaller binding
-  ceiling, or a `totalWork` value differing from the exact formula fails.
+- Positive invocation: preflight recomputes the request, full analysis key,
+  complete binding set, every member binding, target coordinate, and overlay;
+  derives canonical precedence and the componentwise-minimum ceiling; and
+  post-result reconciliation reuses that frozen derivation. The accounting
+  profile identity is the single registry-anchored immutable definition.
+- Negative dispositions: partial/empty applicability masquerades, extra or
+  missing target keys, re-signed unrelated analysis keys, identity-preserving
+  budget mutation, selected-mode or rollout substitution, unsafe aggregate
+  overflow, and realized counters above the preflight ceiling all fail.
 
 ## RELEASE-RC-P1-002: numeric-successor RC grammar
 
-- Requirement: `../spec/security-and-conformance.md` §13 and current mutable
-  decision v2.
+- Requirement: `../spec/security-and-conformance.md` §13 and the current
+  Phase-1 amendment.
 - Positive: `0.1.0-rc.1` pairs with separately built `0.1.0`.
 - Negative: `1.1.0-rc.1`, build metadata, additional prerelease identifiers,
   zero/leading-zero RC numbers, and bare versions are rejected.

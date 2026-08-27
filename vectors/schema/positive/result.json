@@ -1,7 +1,7 @@
 {
   "kind": "result",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:97b0347ef84e190ce4e9313cb608f828efa1b9652c68ca709c3c48cd84c7257c",
+  "aasIdentity": "aas:v0:sha256:7057bfe6a678bd02f80fd10fb0fd3c09e6e3b5b0ef42316fcb9b9c70a071f6df",
   "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
   "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
   "resolutions": [
@@ -40,7 +40,7 @@
         "resolution": "decided",
         "verdict": "pass",
         "bindingState": "selected",
-        "mode": "advisory",
+        "mode": "required",
         "rolloutDisposition": "included",
         "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
         "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -50,7 +50,7 @@
         "overlayAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
         "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
-        "resultAasIdentity": "aas:v0:sha256:97b0347ef84e190ce4e9313cb608f828efa1b9652c68ca709c3c48cd84c7257c",
+        "resultAasIdentity": "aas:v0:sha256:7057bfe6a678bd02f80fd10fb0fd3c09e6e3b5b0ef42316fcb9b9c70a071f6df",
         "freshness": "fresh",
         "decisionTrace": {
           "state": "selected",

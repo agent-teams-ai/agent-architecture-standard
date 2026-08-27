@@ -18,6 +18,7 @@
     "artifacts.json",
     "version-matrix.json",
     "generated/",
+    "profiles/",
     "decisions/",
     "docs/decisions/",
     "registries/",

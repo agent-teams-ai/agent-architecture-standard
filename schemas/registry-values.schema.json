@@ -12,7 +12,8 @@
     },
     "problemCode": {
       "enum": [
-        "aas.problem.no-common-envelope-version"
+        "aas.problem.no-common-envelope-version",
+        "aas.problem.binding-set-conflict"
       ]
     },
     "diagnosticCode": {
@@ -123,7 +124,7 @@
               "const": "agent-architecture-resource-accounting-v0@1"
             },
             "aasIdentity": {
-              "$ref": "common.schema.json#/$defs/aasIdentity"
+              "const": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
             }
           }
         }

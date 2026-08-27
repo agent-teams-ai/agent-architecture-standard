@@ -25,6 +25,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -49,6 +51,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -73,6 +77,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -97,6 +103,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -121,6 +129,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -145,6 +155,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -169,6 +181,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
@@ -193,6 +207,8 @@ export type AASRegistryEdition = ({
   "orderingRank"?: JsonInteger;
   "vectors": Array<ConstrainedString>;
   "collisionReview": ConstrainedString;
+  "profileAasIdentity"?: import("./common.js").aasIdentity;
+  "definitionArtifact"?: ConstrainedString;
 }>) & (Array<{
   "id"?: envelopeVersionIdentifier;
   "kind"?: "envelope-version";
