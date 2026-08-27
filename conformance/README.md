@@ -63,19 +63,20 @@ Node 24 permission mode does not control network access. This slice supplies no
 network namespace, firewall policy, Windows Job Object, POSIX cgroup, or other
 OS containment. It is not a universal hostile-code sandbox. On POSIX the
 runner makes a bounded process-group kill attempt. On Windows it attempts to
-terminate the process tree with bounded `taskkill /T /F`, attempts to reap that
-helper, and then attempts to observe/reap root-process closure within the same
-deadline. No Windows cleanup outcome claims unconditional reaping or process
-containment. These are fallback teardown mechanisms, not confirmed tree
-containment. The closed report calls them only `bounded-attempt-complete` or
-`bounded-attempt-deadline` and records the absent OS containment and
-uncontrolled network boundary explicitly.
+terminate only the root process with `child.kill('SIGKILL')`, then attempts to
+observe root-process closure within the same deadline. This is sufficient for
+the private Node 24 permission contract, which denies child-process creation;
+it does not provide Windows process-tree containment. No Windows cleanup
+outcome claims unconditional termination or closure. The closed report calls
+the result only `bounded-attempt-complete` or `bounded-attempt-deadline` and
+records the absent Windows process-tree containment and uncontrolled network
+boundary explicitly.
 
 An invocation deadline is followed by a distinct bounded settlement deadline.
 After the first response line, the runner waits within settlement for process
 and stdout closure and validates all captured stdout. Response, root
 exit, close, timeout, and pipe errors all enter teardown. Candidate stdin,
-stdout, stderr, FD 3, spawn errors, and taskkill errors are handled without
+stdout, stderr, FD 3, spawn errors, and teardown errors are handled without
 echoing their contents. Fixtures cover malformed and oversized output, early
 root exit, delay, pipe holding, and denied ordinary/detached descendants.
 

@@ -82,52 +82,10 @@ function waitUntil(promise, deadline, fallback) {
   });
 }
 
-function trustedTaskkill() {
-  const candidate = process.env.SystemRoot;
-  if (typeof candidate !== 'string' || candidate.includes('\0') || !path.win32.isAbsolute(candidate)) return null;
-  const normalized = path.win32.normalize(candidate);
-  const parsed = path.win32.parse(normalized);
-  if (parsed.root.startsWith('\\\\') || path.win32.dirname(normalized) !== parsed.root
-      || path.win32.basename(normalized).toLowerCase() !== 'windows') return null;
-  const system32 = path.win32.join(normalized, 'System32');
-  return {
-    executable: path.win32.join(system32, 'taskkill.exe'),
-    options: {
-      cwd: system32,
-      env: { SystemRoot: normalized, windir: normalized },
-      shell: false,
-      windowsHide: true,
-      stdio: 'ignore',
-    },
-  };
-}
-
-async function taskkill(pid, deadline) {
-  if (remaining(deadline) === 0) return false;
-  const trusted = trustedTaskkill();
-  if (!trusted) return false;
-  let utility;
-  try {
-    utility = spawn(trusted.executable, ['/PID', String(pid), '/T', '/F'], trusted.options);
-  } catch { return false; }
-  const settled = new Promise((resolve) => {
-    utility.once('error', () => resolve(false));
-    utility.once('close', (code) => resolve(code === 0));
-  });
-  const result = await waitUntil(settled, deadline, false);
-  if (utility.exitCode === null && utility.signalCode === null) {
-    try { utility.kill('SIGKILL'); } catch { /* bounded best effort */ }
-    await waitUntil(new Promise((resolve) => utility.once('close', resolve)), deadline, false);
-  }
-  return result;
-}
-
 async function teardown(child, deadline, closeState) {
   if (!child?.pid) return 'launch-failed';
   if (process.platform === 'win32') {
-    if (!(await taskkill(child.pid, deadline))) {
-      try { child.kill('SIGKILL'); } catch { /* bounded best effort */ }
-    }
+    try { child.kill('SIGKILL'); } catch { /* bounded best effort */ }
   } else {
     try { process.kill(-child.pid, 'SIGKILL'); } catch (error) {
       if (error?.code !== 'ESRCH') {
@@ -447,7 +405,7 @@ export async function runSuite({ candidatePath, candidateName, bounds: suppliedB
       internalPrototypeSemantics: 'omitted-unobservable',
       nodePermissionControls: 'fs-child-worker-addon-denied',
       networkIsolation: 'not-controlled-by-node24-permissions',
-      osProcessContainment: 'absent-bounded-group-or-taskkill-attempt-only',
+      osProcessContainment: 'windows-tree-containment-absent-posix-group-or-bounded-root-termination-closure-attempt-only',
       runtimeExecutionAttestation: 'not-provided',
       multiFileClosureAttestation: 'not-provided-node-fs-denied',
       sourceBindings: 'post-load-observed-sources-not-executed-byte-attestation',
