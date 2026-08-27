@@ -16,7 +16,7 @@
   "required": ["manifestVersion", "standardVersion", "status", "schemaDialect", "identityPolicy", "artifacts"],
   "properties": {
     "manifestVersion": { "const": "1" },
-    "standardVersion": { "$ref": "common.schema.json#/$defs/version" },
+    "standardVersion": { "$ref": "common.schema.json#/$defs/canonicalSemVer" },
     "status": { "const": "provisional-unpublished" },
     "schemaDialect": { "const": "https://json-schema.org/draft/2020-12/schema" },
     "identityPolicy": {

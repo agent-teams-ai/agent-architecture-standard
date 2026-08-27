@@ -45,6 +45,15 @@ test('npm spawn errors retain their cause and command context', () => {
   );
 });
 
+test('npm runs its JavaScript CLI directly on POSIX without PATH lookup', () => {
+  let invocation;
+  runNpmSync(['pack'], {}, {
+    platform: 'linux', execPath: '/opt/node/bin/node',
+    spawnSync(command, args) { invocation = { command, args }; return { status: 0, stdout: '', stderr: '' }; }
+  });
+  assert.deepEqual(invocation, { command: '/opt/node/bin/node', args: ['/opt/node/lib/node_modules/npm/bin/npm-cli.js', 'pack'] });
+});
+
 test('package inventory rejects Windows case-fold collisions', () => {
   assert.throws(
     () => assertPortablePackageInventory(['README.md', 'readme.md']),
@@ -63,4 +72,10 @@ test('manifest/package paths are lowercase ASCII POSIX and Windows-safe', () => 
   assert.throws(() => assertPortablePackageInventory(['schemas/lpt9.fixture']), /non-portable/);
   assert.throws(() => assertPortablePackageInventory(['schemas/trailing.']), /non-portable/);
   assert.doesNotThrow(() => assertPortablePackageInventory(['README.md', 'LICENSE', 'schemas/readme.md']));
+});
+
+test('package paths enforce byte and segment bounds', () => {
+  assert.throws(() => assertPortablePackageInventory([`${'a'.repeat(256)}.json`]), /bounded/);
+  assert.throws(() => assertPortablePackageInventory([Array(65).fill('a').join('/')]), /bounded/);
+  assert.throws(() => assertPortablePackageInventory([`${'a'.repeat(250)}/${'b'.repeat(250)}/`.repeat(9) + 'x']), /bounded/);
 });

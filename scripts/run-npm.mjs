@@ -6,7 +6,8 @@ export function npmInvocation(args, platform = process.platform, execPath = proc
     const npmCli = path.win32.join(path.win32.dirname(execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
     return { command: execPath, args: [npmCli, ...args] };
   }
-  return { command: 'npm', args };
+  const npmCli = path.join(path.dirname(execPath), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  return { command: execPath, args: [npmCli, ...args] };
 }
 
 export function runNpmSync(args, options, runtime = {}) {

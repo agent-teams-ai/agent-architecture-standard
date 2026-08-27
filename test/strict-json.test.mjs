@@ -46,8 +46,7 @@ test('BOM and invalid UTF-8 are rejected', async () => {
   assert.throws(() => parseStrictJson(Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), fixture])), (error) => error.code === 'aas.json.invalid-utf8');
   assert.throws(() => parseStrictJson(Buffer.from([0x7b, 0x22, 0x78, 0x22, 0x3a, 0xff, 0x7d])), (error) => error.code === 'aas.json.invalid-utf8');
 });
-test('raw-byte roots, surrogates, trailing roots, and integer boundaries are exact', async () => {
-  assert.throws(() => parseStrictJson('{}'), (error) => error.code === 'aas.json.raw-bytes-required');
+test('surrogates, trailing roots, and integer boundaries are exact', async () => {
   await reject('lone-surrogate.json', 'aas.json.invalid-syntax');
   await reject('trailing-root.json', 'aas.json.invalid-syntax');
   await reject('unsafe-integer.json', 'aas.json.invalid-number');
@@ -55,8 +54,15 @@ test('raw-byte roots, surrogates, trailing roots, and integer boundaries are exa
   assert.equal(parsed.minimum, Number.MIN_SAFE_INTEGER);
   assert.equal(parsed.maximum, Number.MAX_SAFE_INTEGER);
 });
+test('decimal spelling is validated before binary64 rounding', () => {
+  for (const token of ['9007199254740991.1', '1.0000000000000001', '9007199254740990.9', '9007199254740991e1', '1e-100000001']) {
+    assert.throws(() => parseStrictJson(Buffer.from(token)), (error) => error.code === 'aas.json.invalid-number', token);
+  }
+  assert.equal(parseStrictJson(Buffer.from('10000000000000000e-1')), 1000000000000000);
+  assert.equal(parseStrictJson(Buffer.from('10.0000000000000000')), 10);
+});
 test('packaged strict-JSON case records drive declared outcomes', async () => {
-  const corpus = JSON.parse(await readFile(new URL('../vectors/json/corpus.json', import.meta.url), 'utf8'));
+  const corpus = parseStrictJson(await readFile(new URL('../vectors/json/corpus.json', import.meta.url)));
   const seen = new Set();
   for (const item of corpus.cases) {
     assert(!seen.has(item.caseId), `duplicate case ID: ${item.caseId}`); seen.add(item.caseId);
@@ -65,6 +71,7 @@ test('packaged strict-JSON case records drive declared outcomes', async () => {
     assert.equal(typeof item.rationale, 'string');
     let bytes = await readFile(new URL(item.input.reference, vectorRoot));
     if (item.input.prefixHex) bytes = Buffer.concat([Buffer.from(item.input.prefixHex, 'hex'), bytes]);
+    if (item.input.form === 'decoded-text') bytes = bytes.toString('utf8');
     if (item.expected.diagnostic === 'none') assert.doesNotThrow(() => parseStrictJson(bytes, item.limits), item.caseId);
     else assert.throws(() => parseStrictJson(bytes, item.limits), (error) => error.code === item.expected.diagnostic, item.caseId);
   }

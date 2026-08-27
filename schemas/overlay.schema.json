@@ -4,9 +4,33 @@
   "title": "AAS overlay declaration and validation receipt",
   "x-aas-status": "private-provisional-unpublished",
   "$defs": {
-    "operation": { "type": "object", "additionalProperties": false, "required": ["op", "path"], "properties": { "op": { "enum": ["add", "replace", "delete"] }, "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "contentAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "expectedAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } } },
-    "overlay": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "baseSnapshotAasIdentity", "operations"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "baseSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "operations": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/operation" } } } },
-    "receipt": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "resultAasIdentity", "bindingAasIdentity", "integrationSnapshotAasIdentity", "integrationRevisionAasIdentity"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "resultAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "integrationSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "integrationRevisionAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } } }
+    "operation": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false, "required": ["op", "path", "contentAasIdentity"],
+          "properties": { "op": { "enum": ["add", "replace"] }, "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "contentAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "expectedAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } }
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["op", "path"],
+          "properties": { "op": { "const": "delete" }, "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "expectedAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } }
+        }
+      ]
+    },
+    "overlay": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "baseSnapshotAasIdentity", "limits", "operations"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "baseSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "limits": { "$ref": "common.schema.json#/$defs/budgets" }, "operations": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/operation" } } } },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["aasIdentity", "resultAasIdentity", "bindingAasIdentity", "integrationSnapshotAasIdentity", "integrationRevisionAasIdentity", "integrationWorktreeState", "exceptionValidityRevisionAasIdentity", "qualificationContext"],
+      "properties": {
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "resultAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "integrationSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "integrationRevisionAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "integrationWorktreeState": { "type": "object", "additionalProperties": false, "required": ["status", "treeAasIdentity"], "properties": { "status": { "enum": ["clean", "dirty"] }, "treeAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } } },
+        "exceptionValidityRevisionAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "qualificationContext": { "type": "object", "additionalProperties": false, "required": ["claimAasIdentities", "qualificationSidecarAasIdentities"], "properties": { "claimAasIdentities": { "type": "array", "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } }, "qualificationSidecarAasIdentities": { "type": "array", "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } } } }
+      }
+    }
   },
   "oneOf": [{ "$ref": "#/$defs/overlay" }, { "$ref": "#/$defs/receipt" }]
 }

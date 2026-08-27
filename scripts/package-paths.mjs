@@ -15,6 +15,7 @@ export function assertPortablePackageInventory(paths, label = 'package inventory
       throw new Error(`unstable ${label} path: ${relative}`);
     }
     const segments = relative.split('/');
+    try { assertBoundedPortablePath(relative); } catch { throw new Error(`bounded ${label} path exceeded: ${relative}`); }
     if (relative !== relative.normalize('NFC') || relative.includes('\\') || relative.startsWith('/') || segments.some((part) => part === '' || part === '.' || part === '..' || part.endsWith('.') || part.endsWith(' ') || reserved.test(part.split('.')[0].toLowerCase()))) {
       throw new Error(`non-portable ${label} path: ${relative}`);
     }
@@ -26,3 +27,4 @@ export function assertPortablePackageInventory(paths, label = 'package inventory
     seenCollision.set(key, relative);
   }
 }
+import { assertBoundedPortablePath } from '../lib/portable-path.mjs';

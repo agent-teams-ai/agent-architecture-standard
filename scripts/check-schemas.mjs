@@ -25,12 +25,14 @@ ajv.addKeyword({ keyword: 'x-aas-status', schemaType: 'string', valid: true });
 for (const schema of schemas) ajv.addSchema(schema);
 for (const schema of schemas) ajv.getSchema(schema.$id);
 const registryValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/registry.schema.json');
+const registryVectorPaths = new Set();
 for (const relative of (await walk('registries')).filter((item) => item.endsWith('.json'))) {
   const data = await readJson(relative);
   if (!registryValidator(data)) throw new Error(`${relative}: ${ajv.errorsText(registryValidator.errors)}`);
   const entryIds = data.entries.map((entry) => entry.id);
   if (new Set(entryIds).size !== entryIds.length) throw new Error(`${relative}: duplicate registry identifier`);
   if (data.status !== 'provisional' || data.entries.some((entry) => entry.status !== 'provisional')) throw new Error(`${relative}: every Phase 1 identifier must be provisional`);
+  for (const entry of data.entries) for (const vector of entry.vectors) registryVectorPaths.add(vector);
   if (data.registry === 'envelope-versions') {
     const ranks = data.entries.map((entry) => entry.orderingRank);
     if (ranks.some((rank) => !Number.isSafeInteger(rank)) || new Set(ranks).size !== ranks.length) throw new Error(`${relative}: envelope ordering ranks must be unique safe integers`);
@@ -40,6 +42,8 @@ const manifestValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/
 const manifest = await readJson('artifacts.json');
 if (!manifestValidator(manifest)) throw new Error(`artifacts.json: ${ajv.errorsText(manifestValidator.errors)}`);
 assertPortablePackageInventory(manifest.artifacts.map((entry) => entry.path), 'manifest');
+const manifestPaths = new Set(manifest.artifacts.map((entry) => entry.path));
+for (const vector of registryVectorPaths) if (!manifestPaths.has(vector)) throw new Error(`registry vector is not manifest-owned: ${vector}`);
 for (const entry of manifest.artifacts) {
   const bytes = await readFile(path.join(root, entry.path));
   if (bytes.byteLength !== entry.byteLength) throw new Error(`byte length drift: ${entry.path}`);

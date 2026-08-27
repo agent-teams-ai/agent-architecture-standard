@@ -15,7 +15,7 @@ export type request = {
   "kind": "request";
   "envelopeVersion": import("./common.js").envelopeVersion;
   "aasIdentity": import("./common.js").aasIdentity;
-  "standardVersion": import("./common.js").version;
+  "standardVersion": import("./common.js").canonicalSemVer;
   "operation": import("./common.js").identifier;
   "targets": Array<target>;
   "snapshotAasIdentity": import("./common.js").aasIdentity;
@@ -23,6 +23,7 @@ export type request = {
   "bindingAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "accountingProfileAasIdentity": import("./common.js").aasIdentity;
   "budgets": import("./common.js").budgets;
   "extensions": import("./common.js").extensionMap;
   "criticalExtensions": import("./common.js").extensionMap;
@@ -79,10 +80,25 @@ export type remediationAction = {
 
 export type decisionTrace = {
   "bindingAasIdentity": import("./common.js").aasIdentity;
+  "selectedBindingId": import("./common.js").identifier;
+  "candidateBindings": Array<{
+  "id": import("./common.js").identifier;
+  "aasIdentity": import("./common.js").aasIdentity;
+}>;
   "normalizedFacts": Array<import("./common.js").jsonValue>;
   "evaluatedBranch": import("./common.js").identifier;
   "exceptionDisposition": import("./common.js").identifier;
   "remediationPreconditions": Array<import("./common.js").identifier>;
+};
+
+export type paginationCursor = {
+  "kind": "pagination-cursor";
+  "aasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "orderingKey": import("./common.js").identifier;
+  "nextPosition": import("./common.js").nonnegativeInteger;
 };
 
 export type diagnostic = {
@@ -121,6 +137,14 @@ export type realizedCounters = {
   "totalWork": import("./common.js").nonnegativeInteger;
 };
 
+export type extensionDisposition = {
+  "extensionId": import("./common.js").identifier;
+  "location": "request" | "target";
+  "disposition": "understood" | "preserved" | "ignored";
+  "requestBound": true;
+  "affectsCoreSemantics": boolean;
+};
+
 export type resolution = {
   "targetId": import("./common.js").identifier;
   "resolution": "decided" | "needs-input" | "indeterminate" | "unsupported" | "stale";
@@ -141,6 +165,7 @@ export type result = {
   "omissions": Array<omission>;
   "realizedCounters": realizedCounters;
   "diagnostics": Array<diagnostic>;
+  "extensionDispositions": Array<extensionDisposition>;
   "extensions": import("./common.js").extensionMap;
 };
 
@@ -150,4 +175,4 @@ export type problem = {
   "code": import("./common.js").identifier;
 };
 
-export type AASRequestResultResolutionProblemAndDiagnosticEnvelopes = (request) | (result) | (problem) | (diagnosticHeader) | (diagnostic);
+export type AASRequestResultResolutionProblemAndDiagnosticEnvelopes = (request) | (result) | (problem) | (diagnosticHeader) | (diagnostic) | (paginationCursor);

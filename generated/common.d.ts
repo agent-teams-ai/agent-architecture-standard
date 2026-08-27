@@ -12,9 +12,13 @@ export type contentDigest = ConstrainedString;
 
 export type identifier = ConstrainedString;
 
-export type version = ConstrainedString;
+export type definitionVersion = ConstrainedString;
 
-export type envelopeVersion = ConstrainedString;
+export type version = definitionVersion;
+
+export type canonicalSemVer = ConstrainedString;
+
+export type envelopeVersion = "0.1";
 
 export type portablePath = ConstrainedString;
 

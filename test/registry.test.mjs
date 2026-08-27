@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { DiagnosticCode } from '../lib/diagnostics.mjs';
 import { OfflineSchemaRegistry } from '../lib/schema-registry.mjs';
 import { assertAcyclicSchemaGraph } from '../lib/schema-graph.mjs';
+import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const schema = (name, refs = []) => ({ $id: `https://schemas.aas.invalid/private/v0/${name}.schema.json`, $defs: Object.fromEntries(refs.map((ref, index) => [`r${index}`, { $ref: `${ref}.schema.json` }])) });
 test('offline registry rejects duplicate and unknown IDs with stable codes', () => {
@@ -18,6 +19,17 @@ test('exact catalog rejects ID aliases and case variants', () => {
   registry.add({ $id: exact });
   assert.throws(() => new OfflineSchemaRegistry([exact]).add({ $id: 'https://schemas.aas.invalid/private/v0/ONE.schema.json' }), (error) => error.code === 'aas.schema.alias-id');
   assert.throws(() => assertAcyclicSchemaGraph([{ $id: exact, $ref: './one.schema.json' }]), (error) => error.code === 'aas.schema.alias-id');
+  for (const alias of [
+    'HTTPS://schemas.aas.invalid/private/v0/one.schema.json',
+    'https://schemas.aas.invalid:443/private/v0/one.schema.json',
+    'https://user@schemas.aas.invalid/private/v0/one.schema.json',
+    'https://schemas.aas.invalid/private/v0/One.schema.json'
+  ]) assert.throws(() => assertAcyclicSchemaGraph([{ $id: alias }]), (error) => error.code === 'aas.schema.alias-id', alias);
+});
+
+test('catalog ingestion enforces schema-count and nesting-depth limits', () => {
+  assert.throws(() => assertAcyclicSchemaGraph([schema('a'), schema('b')], { maxSchemas: 1, maxDepth: 8 }), (error) => error.code === 'aas.json.input-too-large');
+  assert.throws(() => assertAcyclicSchemaGraph([{ ...schema('a'), deep: { one: { two: true } } }], { maxSchemas: 1, maxDepth: 1 }), (error) => error.code === 'aas.json.depth-exceeded');
 });
 test('closed catalog rejects embedded aliases and non-static reference keywords', () => {
   const id = 'https://schemas.aas.invalid/private/v0/one.schema.json';
@@ -40,11 +52,11 @@ test('offline reference graph rejects cycles, unknowns, and network references',
   }
 });
 test('runtime diagnostic projection exactly matches the normative registry', async () => {
-  const registry = JSON.parse(await readFile(new URL('../registries/diagnostics.json', import.meta.url), 'utf8'));
+  const registry = parseStrictJson(await readFile(new URL('../registries/diagnostics.json', import.meta.url)));
   assert.deepEqual(Object.values(DiagnosticCode).sort(), registry.entries.map((entry) => entry.id).sort());
 });
 test('packaged catalog case records drive all declared adversarial dispositions', async () => {
-  const corpus = JSON.parse(await readFile(new URL('../vectors/schema/catalog-corpus.json', import.meta.url), 'utf8'));
+  const corpus = parseStrictJson(await readFile(new URL('../vectors/schema/catalog-corpus.json', import.meta.url)));
   const seen = new Set();
   for (const item of corpus.cases) {
     assert(!seen.has(item.caseId), `duplicate case ID: ${item.caseId}`); seen.add(item.caseId);
@@ -52,6 +64,6 @@ test('packaged catalog case records drive all declared adversarial dispositions'
     assert.equal(typeof item.requirement, 'string');
     assert.equal(typeof item.rationale, 'string');
     assert(Number.isSafeInteger(item.limits.maxSchemas) && Number.isSafeInteger(item.limits.maxDepth));
-    assert.throws(() => assertAcyclicSchemaGraph(item.input.schemas), (error) => error.code === item.expected.diagnostic, item.caseId);
+    assert.throws(() => assertAcyclicSchemaGraph(item.input.schemas, item.limits), (error) => error.code === item.expected.diagnostic, item.caseId);
   }
 });

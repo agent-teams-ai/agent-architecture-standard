@@ -22,10 +22,21 @@
     },
     "evidence": {
       "type": "object", "additionalProperties": false,
-      "required": ["id", "artifact", "integrityStatus", "producerAssurance", "semanticStatus"],
+      "required": ["id", "artifact", "location", "producerAasIdentity", "derivation", "sensitivity", "inputContentDigest", "applicableRuleOrProfile", "integrityStatus", "producerAssurance", "semanticStatus"],
       "properties": {
         "id": { "$ref": "common.schema.json#/$defs/identifier" },
         "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "location": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind", "offset", "length"], "properties": { "kind": { "const": "byte-range" }, "offset": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }, "length": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "pointer"], "properties": { "kind": { "const": "structured-pointer" }, "pointer": { "type": "string", "minLength": 1, "maxLength": 4096, "pattern": "^(?:/([^~/]|~[01])*)+$" } } }
+          ]
+        },
+        "producerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "derivation": { "type": "object", "additionalProperties": false, "required": ["method", "inputs"], "properties": { "method": { "$ref": "common.schema.json#/$defs/profileRef" }, "inputs": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/contentDigest" } } } },
+        "sensitivity": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "inputContentDigest": { "$ref": "common.schema.json#/$defs/contentDigest" },
+        "applicableRuleOrProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
         "integrityStatus": { "enum": ["unresolved", "digest-matched", "snapshot-bound"] },
         "producerAssurance": { "enum": ["self-asserted", "policy-allowlisted", "externally-attested"] },
         "semanticStatus": { "enum": ["unchecked", "schema-valid", "conformance-checked"] }

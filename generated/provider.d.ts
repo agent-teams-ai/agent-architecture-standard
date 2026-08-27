@@ -7,7 +7,7 @@ export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonV
 export type AASProviderDescription = {
   "schemaVersion": "0.1";
   "status": "private-provisional-unpublished";
-  "standardVersions": Array<import("./common.js").version>;
+  "standardVersions": Array<import("./common.js").canonicalSemVer>;
   "envelopeVersions": Array<import("./common.js").envelopeVersion>;
   "operations": Array<import("./common.js").profileRef>;
   "profiles": Array<import("./common.js").profileRef>;

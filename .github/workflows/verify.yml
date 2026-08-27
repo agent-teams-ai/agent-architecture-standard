@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+env:
+  AAS_EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+  AAS_PR_BASE: ${{ github.event.pull_request.base.sha || '' }}
+  AAS_PR_HEAD: ${{ github.event.pull_request.head.sha || '' }}
+
 jobs:
   reproducibility:
     name: ${{ matrix.os }} reproducibility
@@ -19,6 +24,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - run: node scripts/ci-head-evidence.mjs
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: exact-head-evidence-${{ matrix.os }}
+          path: exact-head-evidence.json
       - uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v4
         with:
           version: 11.24.0
@@ -39,6 +51,9 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - run: node scripts/ci-head-evidence.mjs
       - uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v4
         with:
           version: 11.24.0

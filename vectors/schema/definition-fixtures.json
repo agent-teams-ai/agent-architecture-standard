@@ -1,0 +1,1284 @@
+{
+  "common-root-positive": {},
+  "common-root-closed-negative": {
+    "unexpected": true
+  },
+  "artifact-positive": {
+    "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "byteLength": 1,
+    "mediaType": "application/json"
+  },
+  "artifact-closed-negative": {
+    "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "byteLength": 1,
+    "mediaType": "application/json",
+    "unexpected": true
+  },
+  "coverage-positive": {
+    "stage": "evaluation",
+    "denominator": 1,
+    "included": 1,
+    "policyExcluded": 0,
+    "unreadable": 0,
+    "unsupported": 0,
+    "unstable": 0,
+    "unknown": 0,
+    "budgetExhausted": 0
+  },
+  "coverage-required-negative": {
+    "stage": "evaluation",
+    "included": 1,
+    "policyExcluded": 0,
+    "unreadable": 0,
+    "unsupported": 0,
+    "unstable": 0,
+    "unknown": 0,
+    "budgetExhausted": 0
+  },
+  "evidence-positive": {
+    "id": "evidence-1",
+    "artifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "location": {
+      "kind": "byte-range",
+      "offset": 0,
+      "length": 1
+    },
+    "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "derivation": {
+      "method": {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "inputs": [
+        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ]
+    },
+    "sensitivity": "internal",
+    "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "applicableRuleOrProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "integrityStatus": "digest-matched",
+    "producerAssurance": "self-asserted",
+    "semanticStatus": "schema-valid"
+  },
+  "evidence-required-negative": {
+    "id": "evidence-1",
+    "artifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "derivation": {
+      "method": {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "inputs": [
+        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ]
+    },
+    "sensitivity": "internal",
+    "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "applicableRuleOrProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "integrityStatus": "digest-matched",
+    "producerAssurance": "self-asserted",
+    "semanticStatus": "schema-valid"
+  },
+  "snapshot-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "repositoryId": "repo-1",
+    "captureProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "pathProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "entries": [
+      {
+        "path": "src/a.ts",
+        "artifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        }
+      }
+    ],
+    "coverage": [
+      {
+        "stage": "evaluation",
+        "denominator": 1,
+        "included": 1,
+        "policyExcluded": 0,
+        "unreadable": 0,
+        "unsupported": 0,
+        "unstable": 0,
+        "unknown": 0,
+        "budgetExhausted": 0
+      }
+    ]
+  },
+  "receipt-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "resultAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "bindingAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "integrationSnapshotAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "integrationRevisionAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "integrationWorktreeState": {
+      "status": "clean",
+      "treeAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    "exceptionValidityRevisionAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "qualificationContext": {
+      "claimAasIdentities": [
+        "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777"
+      ],
+      "qualificationSidecarAasIdentities": [
+        "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888"
+      ]
+    }
+  },
+  "operation-positive": {
+    "op": "delete",
+    "path": "src/old.ts"
+  },
+  "operation-conditional-negative": {
+    "op": "add",
+    "path": "src/new.ts"
+  },
+  "receipt-required-negative": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "resultAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "bindingAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "integrationSnapshotAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "integrationRevisionAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "exception-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "ruleId": "rule-1",
+    "scope": "src",
+    "owner": "owner",
+    "reasonCode": "reason-1",
+    "creationPolicyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "validForRevision": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "effective-policy-positive": {
+    "schemaVersion": "0.1",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "consumer": "consumer-1",
+    "scope": "src",
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "rules": [
+      {
+        "id": "rule-1",
+        "parameters": {}
+      }
+    ],
+    "exceptions": [],
+    "provenance": [
+      {
+        "sourceArtifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        },
+        "semanticRole": "authoritative-source",
+        "sourceOwner": "owner",
+        "supports": [
+          "rule-1"
+        ]
+      },
+      {
+        "sourceArtifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        },
+        "semanticRole": "commissioning-decision",
+        "sourceOwner": "owner",
+        "supports": [
+          "rule-1"
+        ]
+      }
+    ]
+  },
+  "binding-required-positive": {
+    "schemaVersion": "0.1",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "id": "binding-1",
+    "consumer": "consumer-1",
+    "repository": "repo-1",
+    "scope": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+    "rolloutScope": "all",
+    "mode": "required",
+    "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "budgets": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "exceptions": [],
+    "promotionRecordAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "owner": "owner"
+  },
+  "binding-required-missing-promotion": {
+    "schemaVersion": "0.1",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "id": "binding-1",
+    "consumer": "consumer-1",
+    "repository": "repo-1",
+    "scope": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+    "rolloutScope": "all",
+    "mode": "required",
+    "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "budgets": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "exceptions": [],
+    "owner": "owner"
+  },
+  "repository-revision-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "repositoryId": "repo-1",
+    "revisionSystemProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "nativeRevision": "abc",
+    "treeAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "profile-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "kind": "accounting",
+    "id": "accounting@1",
+    "definitionVersion": "1",
+    "schemas": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "dependencies": [],
+    "limits": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "semanticsArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "definitionVectorSuites": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "analyzer-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "implementationArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "configuration": [
+      {
+        "name": "setting-1",
+        "value": true
+      }
+    ],
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ]
+  },
+  "promotion-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "ruleId": "rule-1",
+    "consumer": "consumer-1",
+    "policy": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "analyzerAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "exposureInterval": {
+      "start": "2026-01-01",
+      "end": "2026-01-02"
+    },
+    "rolloutScope": "all",
+    "previousMode": "advisory",
+    "nextMode": "required",
+    "evidence": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "denominators": [
+      {
+        "name": "evaluations",
+        "count": 1
+      }
+    ],
+    "escapes": 0,
+    "falseBlocks": 0,
+    "confidenceIntervals": [
+      {
+        "metric": "success",
+        "lowerBasisPoints": 9000,
+        "upperBasisPoints": 10000,
+        "confidenceBasisPoints": 9500
+      }
+    ],
+    "incidents": 0,
+    "thresholds": [
+      {
+        "metric": "success",
+        "operator": "greater-than-or-equal",
+        "value": 9000
+      }
+    ],
+    "owner": "owner",
+    "rollbackAction": "rollback",
+    "responseSla": "one hour"
+  },
+  "analysis-key-positive": {
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "operationProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "evaluatorProfiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "inputAasIdentities": [
+      "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    ],
+    "budgets": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "accountingProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "semanticExtensions": {
+      "com.example.semantic": true
+    }
+  },
+  "request-positive": {
+    "kind": "request",
+    "envelopeVersion": "0.1",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "standardVersion": "0.1.0-rc.1",
+    "operation": "validate-overlay@1",
+    "targets": [
+      {
+        "id": "target-1",
+        "input": {
+          "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "limits": {
+            "maxInputBytes": 100,
+            "maxDepth": 8,
+            "maxPathSegments": 8,
+            "maxPathBytes": 128,
+            "maxEntries": 10,
+            "maxLogicalBytes": 1000,
+            "maxReadBytes": 1000,
+            "maxPerEntryBytes": 100,
+            "maxOverlayOperations": 10,
+            "maxTargets": 10,
+            "maxEvidenceReferences": 10,
+            "maxExtensionBytes": 100,
+            "maxDiagnostics": 10,
+            "maxOutputBytes": 1000,
+            "maxConcurrency": 2,
+            "maxTotalWork": 1000
+          },
+          "operations": [
+            {
+              "op": "add",
+              "path": "src/a.ts",
+              "contentAasIdentity": "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ]
+        },
+        "extensions": {},
+        "criticalExtensions": {}
+      }
+    ],
+    "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "accountingProfileAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "budgets": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "extensions": {
+      "com.example.semantic": true
+    },
+    "criticalExtensions": {}
+  },
+  "request-unregistered-version": {
+    "kind": "request",
+    "envelopeVersion": "9.9",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "standardVersion": "0.1.0-rc.1",
+    "operation": "validate-overlay@1",
+    "targets": [
+      {
+        "id": "target-1",
+        "input": {
+          "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "limits": {
+            "maxInputBytes": 100,
+            "maxDepth": 8,
+            "maxPathSegments": 8,
+            "maxPathBytes": 128,
+            "maxEntries": 10,
+            "maxLogicalBytes": 1000,
+            "maxReadBytes": 1000,
+            "maxPerEntryBytes": 100,
+            "maxOverlayOperations": 10,
+            "maxTargets": 10,
+            "maxEvidenceReferences": 10,
+            "maxExtensionBytes": 100,
+            "maxDiagnostics": 10,
+            "maxOutputBytes": 1000,
+            "maxConcurrency": 2,
+            "maxTotalWork": 1000
+          },
+          "operations": [
+            {
+              "op": "add",
+              "path": "src/a.ts",
+              "contentAasIdentity": "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ]
+        },
+        "extensions": {},
+        "criticalExtensions": {}
+      }
+    ],
+    "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "accountingProfileAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "budgets": {
+      "maxInputBytes": 100,
+      "maxDepth": 8,
+      "maxPathSegments": 8,
+      "maxPathBytes": 128,
+      "maxEntries": 10,
+      "maxLogicalBytes": 1000,
+      "maxReadBytes": 1000,
+      "maxPerEntryBytes": 100,
+      "maxOverlayOperations": 10,
+      "maxTargets": 10,
+      "maxEvidenceReferences": 10,
+      "maxExtensionBytes": 100,
+      "maxDiagnostics": 10,
+      "maxOutputBytes": 1000,
+      "maxConcurrency": 2,
+      "maxTotalWork": 1000
+    },
+    "extensions": {},
+    "criticalExtensions": {}
+  },
+  "diagnostic-header-positive": {
+    "version": "0.1",
+    "code": "aas.example.ok",
+    "targetId": "target-1",
+    "resolution": "decided",
+    "verdict": "pass",
+    "mode": "advisory",
+    "rolloutDisposition": "included",
+    "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "profileAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "analyzerAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "overlayAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "requestAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "resultAasIdentity": "aas:v0:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "freshness": "fresh",
+    "coverageSummary": {
+      "denominator": 1,
+      "included": 1,
+      "policyExcluded": 0,
+      "unreadable": 0,
+      "unsupported": 0,
+      "unstable": 0,
+      "unknown": 0,
+      "budgetExhausted": 0
+    },
+    "severityCounts": {
+      "info": 1,
+      "warning": 0,
+      "error": 0,
+      "critical": 0
+    },
+    "highestSeverity": "info",
+    "omissionCount": 0,
+    "omissionReasons": [],
+    "nextAction": "none"
+  },
+  "diagnostic-positive": {
+    "code": "aas.example.ok",
+    "severity": "info",
+    "targetId": "target-1",
+    "ruleOrProfile": {
+      "id": "profile@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "evidenceIds": [
+      "evidence-1"
+    ],
+    "terminalReason": "complete",
+    "decisionTrace": {
+      "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "selectedBindingId": "binding-1",
+      "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111" }],
+      "normalizedFacts": [
+        true
+      ],
+      "evaluatedBranch": "branch-1",
+      "exceptionDisposition": "none",
+      "remediationPreconditions": []
+    },
+    "remediationActions": []
+  },
+  "problem-positive": {
+    "kind": "problem",
+    "envelopeVersion": "0.1",
+    "code": "aas.problem.no-common-envelope-version"
+  },
+  "result-extension-semantic-effect": {
+    "kind": "result",
+    "envelopeVersion": "0.1",
+    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "requestAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "analysisKeyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "resolutions": [
+      {
+        "targetId": "target-1",
+        "resolution": "decided",
+        "verdict": "pass",
+        "diagnostic": {
+          "version": "0.1",
+          "code": "aas.example.ok",
+          "targetId": "target-1",
+          "resolution": "decided",
+          "verdict": "pass",
+          "mode": "advisory",
+          "rolloutDisposition": "included",
+          "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "profileAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "analyzerAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+          "overlayAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "requestAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+          "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "resultAasIdentity": "aas:v0:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+          "freshness": "fresh",
+          "coverageSummary": {
+            "denominator": 1,
+            "included": 1,
+            "policyExcluded": 0,
+            "unreadable": 0,
+            "unsupported": 0,
+            "unstable": 0,
+            "unknown": 0,
+            "budgetExhausted": 0
+          },
+          "severityCounts": {
+            "info": 1,
+            "warning": 0,
+            "error": 0,
+            "critical": 0
+          },
+          "highestSeverity": "info",
+          "omissionCount": 0,
+          "omissionReasons": [],
+          "nextAction": "none"
+        }
+      }
+    ],
+    "coverage": [
+      {
+        "stage": "evaluation",
+        "denominator": 1,
+        "included": 1,
+        "policyExcluded": 0,
+        "unreadable": 0,
+        "unsupported": 0,
+        "unstable": 0,
+        "unknown": 0,
+        "budgetExhausted": 0
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-1",
+        "artifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        },
+        "location": {
+          "kind": "byte-range",
+          "offset": 0,
+          "length": 1
+        },
+        "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "derivation": {
+          "method": {
+            "id": "profile@1",
+            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          "inputs": [
+            "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ]
+        },
+        "sensitivity": "internal",
+        "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "applicableRuleOrProfile": {
+          "id": "profile@1",
+          "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "integrityStatus": "digest-matched",
+        "producerAssurance": "self-asserted",
+        "semanticStatus": "schema-valid"
+      }
+    ],
+    "omissions": [],
+    "realizedCounters": {
+      "inputBytes": 1,
+      "depth": 1,
+      "pathSegments": 1,
+      "pathBytes": 1,
+      "entries": 1,
+      "logicalBytes": 1,
+      "readBytes": 1,
+      "peakEntryBytes": 1,
+      "overlayOperations": 1,
+      "targets": 1,
+      "evidenceReferences": 1,
+      "extensionBytes": 1,
+      "diagnostics": 1,
+      "outputBytes": 1,
+      "peakConcurrency": 1,
+      "totalWork": 1
+    },
+    "diagnostics": [],
+    "extensionDispositions": [
+      {
+        "extensionId": "com.example.unknown",
+        "location": "request",
+        "disposition": "preserved",
+        "requestBound": true,
+        "affectsCoreSemantics": true
+      }
+    ],
+    "extensions": {}
+  },
+  "claim-positive": {
+    "schemaVersion": "0.1",
+    "status": "provisional",
+    "visibility": "private",
+    "qualification": "unqualified",
+    "claimant": "claimant",
+    "providerArtifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "standard": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "canonicalizationProfile": {
+      "version": "0",
+      "id": "canonical@0",
+      "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "envelope": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "schemaBundle": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "registryEdition": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "vectorSuite": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "conformanceSuite": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "profiles": [
+      {
+        "kind": "operation",
+        "id": "validate-overlay@1",
+        "aasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    ],
+    "supportedPlatforms": [
+      {
+        "os": "linux",
+        "architecture": "x64",
+        "runtime": "node",
+        "toolchain": [
+          "typescript"
+        ]
+      }
+    ],
+    "unsupportedAreas": [],
+    "conformanceManifest": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "reportArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "testDisposition": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "omitted": 0
+    },
+    "omissions": [],
+    "replayArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "oracles": [
+      {
+        "artifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        },
+        "independentlyAuthored": true,
+        "independentlyReviewed": true,
+        "dependencies": [],
+        "lineageAudit": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        }
+      }
+    ],
+    "issuedAt": "2026-01-01",
+    "expiresAt": "2026-02-01",
+    "withdrawalReferences": [],
+    "rollbackReferences": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "limitations": []
+  },
+  "report-positive": {
+    "schemaVersion": "0.1",
+    "repository": "repo-1",
+    "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "runnerArtifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "providerArtifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "profiles": [
+      {
+        "id": "profile@1",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "fixtures": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "platform": {
+      "os": "linux",
+      "architecture": "x64",
+      "runtime": "node",
+      "toolchain": [
+        "typescript"
+      ]
+    },
+    "inputs": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "results": [
+      {
+        "caseId": "case-1",
+        "outcome": "pass",
+        "durationMilliseconds": 1
+      }
+    ],
+    "coverage": [
+      {
+        "stage": "evaluation",
+        "denominator": 1,
+        "included": 1,
+        "policyExcluded": 0,
+        "unreadable": 0,
+        "unsupported": 0,
+        "unstable": 0,
+        "unknown": 0,
+        "budgetExhausted": 0
+      }
+    ],
+    "omissions": [],
+    "durationMilliseconds": 1,
+    "replaySeeds": [
+      "seed-1"
+    ],
+    "attemptId": "attempt-1"
+  },
+  "qualification-sidecar-positive": {
+    "schemaVersion": "0.1",
+    "subject": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "status": "provisional",
+    "authority": "authority",
+    "evidence": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "approvalEvidence": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "issuedAt": "2026-01-01",
+    "expiresAt": "2026-02-01",
+    "withdrawalReferences": []
+  },
+  "claim-bare-standard-version": {
+    "schemaVersion": "0.1",
+    "status": "provisional",
+    "visibility": "private",
+    "qualification": "unqualified",
+    "claimant": "claimant",
+    "providerArtifact": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "standard": {
+      "version": "1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "canonicalizationProfile": {
+      "version": "0",
+      "id": "canonical@0",
+      "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "envelope": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "schemaBundle": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "registryEdition": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "vectorSuite": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "conformanceSuite": {
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    },
+    "profiles": [
+      {
+        "kind": "operation",
+        "id": "validate-overlay@1",
+        "aasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    ],
+    "supportedPlatforms": [
+      {
+        "os": "linux",
+        "architecture": "x64",
+        "runtime": "node",
+        "toolchain": [
+          "typescript"
+        ]
+      }
+    ],
+    "unsupportedAreas": [],
+    "conformanceManifest": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "reportArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "testDisposition": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "omitted": 0
+    },
+    "omissions": [],
+    "replayArtifacts": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "oracles": [
+      {
+        "artifact": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        },
+        "independentlyAuthored": true,
+        "independentlyReviewed": true,
+        "dependencies": [],
+        "lineageAudit": {
+          "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "byteLength": 1,
+          "mediaType": "application/json"
+        }
+      }
+    ],
+    "issuedAt": "2026-01-01",
+    "expiresAt": "2026-02-01",
+    "withdrawalReferences": [],
+    "rollbackReferences": [
+      {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    ],
+    "limitations": []
+  },
+  "registry-positive": {
+    "registry": "profiles",
+    "edition": "1",
+    "previousEdition": null,
+    "status": "provisional",
+    "entries": [],
+    "changes": [
+      "initial"
+    ]
+  },
+  "registry-closed-negative": {
+    "registry": "profiles",
+    "edition": "1",
+    "previousEdition": null,
+    "status": "provisional",
+    "entries": [],
+    "changes": [
+      "initial"
+    ],
+    "unexpected": true
+  },
+  "binding-scope-positive": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+  "binding-scope-negative": "src",
+  "pagination-cursor-positive": {
+    "kind": "pagination-cursor",
+    "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "resultAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "requestAasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "profileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "orderingKey": "severity-path-code",
+    "nextPosition": 10
+  },
+  "pagination-cursor-negative": {
+    "kind": "pagination-cursor",
+    "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "resultAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "profileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "orderingKey": "severity-path-code",
+    "nextPosition": 10
+  },
+  "artifact-manifest-bare-version": {
+    "manifestVersion": "1",
+    "standardVersion": "1.2",
+    "status": "provisional-unpublished",
+    "schemaDialect": "https://json-schema.org/draft/2020-12/schema",
+    "identityPolicy": {
+      "contentDigest": "raw-sha256-over-exact-content-bytes",
+      "aasIdentity": "domain-framed-identity-deferred-to-phase-2"
+    },
+    "artifacts": [
+      {
+        "path": "spec/core.md",
+        "class": "normative-prose",
+        "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aasIdentityStatus": "not-computed-phase-1",
+        "byteLength": 1,
+        "mediaType": "text/markdown"
+      }
+    ]
+  }
+}

@@ -21,6 +21,22 @@ export type coverage = {
 export type evidence = {
   "id": import("./common.js").identifier;
   "artifact": import("./common.js").artifactRef;
+  "location": ({
+  "kind": "byte-range";
+  "offset": import("./common.js").nonnegativeInteger;
+  "length": JsonInteger;
+}) | ({
+  "kind": "structured-pointer";
+  "pointer": ConstrainedString;
+});
+  "producerAasIdentity": import("./common.js").aasIdentity;
+  "derivation": {
+  "method": import("./common.js").profileRef;
+  "inputs": Array<import("./common.js").contentDigest>;
+};
+  "sensitivity": "public" | "internal" | "confidential" | "restricted";
+  "inputContentDigest": import("./common.js").contentDigest;
+  "applicableRuleOrProfile": import("./common.js").profileRef;
   "integrityStatus": "unresolved" | "digest-matched" | "snapshot-bound";
   "producerAssurance": "self-asserted" | "policy-allowlisted" | "externally-attested";
   "semanticStatus": "unchecked" | "schema-valid" | "conformance-checked";

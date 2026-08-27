@@ -16,7 +16,7 @@ export type profile = {
   "aasIdentity": import("./common.js").aasIdentity;
   "kind": "canonicalization" | "operation" | "vocabulary" | "evaluator" | "security" | "path" | "diagnostic" | "accounting";
   "id": import("./common.js").identifier;
-  "definitionVersion": import("./common.js").version;
+  "definitionVersion": import("./common.js").definitionVersion;
   "schemas": Array<import("./common.js").artifactRef>;
   "dependencies": Array<import("./common.js").profileRef>;
   "limits": import("./common.js").budgets;

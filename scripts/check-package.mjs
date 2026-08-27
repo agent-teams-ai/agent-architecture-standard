@@ -1,6 +1,7 @@
-import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { access, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { sha256 } from '../lib/digests.mjs';
 import { root, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
@@ -57,14 +58,62 @@ try {
     './version-matrix': './version-matrix.json',
     './schemas/*': './schemas/*.json',
     './registries/*': './registries/*.json',
-    './generated/*': './generated/*'
+    './generated/*': { types: './generated/*.d.ts' }
   };
   if (JSON.stringify(installedPackage.exports) !== JSON.stringify(expectedExports)) throw new Error('package export surface is not the closed expected projection');
   for (const target of ['./artifacts.json', './version-matrix.json']) {
     if (!installedInventory.includes(target.slice(2))) throw new Error(`export target is absent: ${target}`);
   }
+  const wildcardTargets = [];
   for (const [prefix, suffix] of [['schemas/', '.json'], ['registries/', '.json'], ['generated/', '']]) {
     const exported = installedInventory.filter((item) => item.startsWith(prefix) && (!suffix || item.endsWith(suffix)));
     if (exported.length === 0) throw new Error(`wildcard export has no installed targets: ${prefix}`);
+    wildcardTargets.push(...exported);
   }
+  const markdownLink = /\[[^\]]+\]\(([^)]+)\)/g;
+  for (const entry of manifest.artifacts.filter((item) => item.mediaType === 'text/markdown')) {
+    const source = await readFile(path.join(installedRoot, entry.path), 'utf8');
+    for (const match of source.matchAll(markdownLink)) {
+      const rawTarget = match[1].split('#', 1)[0];
+      if (!rawTarget || /^[a-z][a-z0-9+.-]*:/i.test(rawTarget)) continue;
+      const target = path.resolve(path.dirname(path.join(installedRoot, entry.path)), decodeURIComponent(rawTarget));
+      if (!target.startsWith(`${installedRoot}${path.sep}`)) throw new Error(`installed markdown link escapes package: ${entry.path} -> ${rawTarget}`);
+      await access(target);
+      await stat(target);
+    }
+  }
+
+  const consumerRoot = path.join(temporary, 'consumer');
+  await import('node:fs/promises').then(({ mkdir }) => mkdir(consumerRoot, { recursive: true }));
+  const jsonTargets = wildcardTargets.filter((item) => item.endsWith('.json'));
+  await writeFile(path.join(consumerRoot, 'consumer.mjs'), [
+    "import artifacts from 'agent-architecture-standard/artifacts' with { type: 'json' };",
+    "import matrix from 'agent-architecture-standard/version-matrix' with { type: 'json' };",
+    ...jsonTargets.map((item, index) => `import json${index} from 'agent-architecture-standard/${item.slice(0, -5)}' with { type: 'json' };`),
+    `const wildcardJson = [${jsonTargets.map((_, index) => `json${index}`).join(',')}];`,
+    "if (!artifacts.artifacts.length || !matrix.cases.length || wildcardJson.some((value) => !value || typeof value !== 'object')) throw new Error('installed exports unusable');"
+  ].join('\n') + '\n');
+  const declarationTargets = wildcardTargets.filter((item) => item.endsWith('.d.ts'));
+  const declarationImports = [];
+  for (const [index, item] of declarationTargets.entries()) {
+    const source = await readFile(path.join(installedRoot, item), 'utf8');
+    const exported = [...source.matchAll(/^export type ([A-Za-z_$][A-Za-z0-9_$]*)/gm)].map((match) => match[1]);
+    if (exported.length === 0) throw new Error(`installed declaration has no consumable exports: ${item}`);
+    declarationImports.push(`import type { ${exported[0]} as T${index} } from 'agent-architecture-standard/${item.slice(0, -5)}';`, `declare const t${index}: T${index};`);
+  }
+  await writeFile(path.join(consumerRoot, 'consumer.ts'), [...declarationImports, `void [${declarationTargets.map((_, index) => `t${index}`).join(',')}];`].join('\n') + '\n');
+  await writeFile(path.join(consumerRoot, 'tsconfig.json'), JSON.stringify({ compilerOptions: { strict: true, noEmit: true, module: 'nodenext', moduleResolution: 'nodenext', target: 'es2022' }, files: ['consumer.ts'] }, null, 2));
+  const consumerEnvironment = { ...process.env, NODE_PATH: path.join(temporary, 'node_modules') };
+  const runProcess = (command, args) => {
+    const outcome = spawnSync(command, args, { cwd: consumerRoot, env: consumerEnvironment, encoding: 'utf8' });
+    if (outcome.error || outcome.status !== 0) throw new Error([
+      `installed consumer failed: ${command} ${args.join(' ')}`,
+      `error: ${outcome.error?.message ?? ''}`,
+      `stderr: ${outcome.stderr ?? ''}`,
+      `stdout: ${outcome.stdout ?? ''}`,
+      `status: ${outcome.status ?? ''}`
+    ].join('\n'));
+  };
+  runProcess(process.execPath, ['consumer.mjs']);
+  runProcess(process.execPath, [path.join(root, 'node_modules', 'typescript', 'bin', 'tsc'), '-p', 'tsconfig.json']);
 } finally { await rm(temporary, { recursive: true, force: true }); }

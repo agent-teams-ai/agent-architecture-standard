@@ -5,7 +5,7 @@ export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
 export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
 
 export type versionedArtifact = {
-  "version": import("./common.js").version;
+  "version": import("./common.js").canonicalSemVer;
   "artifact": import("./common.js").artifactRef;
 };
 
@@ -16,7 +16,7 @@ export type claimedProfile = {
 };
 
 export type versionedProfile = {
-  "version": import("./common.js").version;
+  "version": import("./common.js").definitionVersion;
   "id": import("./common.js").identifier;
   "aasIdentity": import("./common.js").aasIdentity;
 };
@@ -109,7 +109,7 @@ export type qualificationSidecar = {
 
 export type releaseMember = {
   "name": import("./common.js").identifier;
-  "version": import("./common.js").version;
+  "version": import("./common.js").canonicalSemVer;
   "artifact": import("./common.js").artifactRef;
   "provenance": import("./common.js").artifactRef;
   "sbom": import("./common.js").artifactRef;
@@ -118,7 +118,7 @@ export type releaseMember = {
 export type releaseDependency = {
   "from": import("./common.js").identifier;
   "to": import("./common.js").identifier;
-  "version": import("./common.js").version;
+  "version": import("./common.js").canonicalSemVer;
   "artifactAasIdentity": import("./common.js").aasIdentity;
 };
 
@@ -140,13 +140,18 @@ export type approvalSidecars = {
 
 export type releaseManifest = {
   "schemaVersion": "0.1";
+  "aasIdentity": import("./common.js").aasIdentity;
   "cohort": import("./common.js").identifier;
   "maturity": "experimental";
   "members": Array<releaseMember>;
   "dependencies": Array<releaseDependency>;
   "schemas": Array<import("./common.js").aasIdentity>;
+  "registries": Array<import("./common.js").aasIdentity>;
+  "vectors": Array<import("./common.js").aasIdentity>;
   "profiles": Array<import("./common.js").aasIdentity>;
   "claims": Array<import("./common.js").aasIdentity>;
+  "traceabilityMatrices": Array<import("./common.js").aasIdentity>;
+  "governanceRoleIds": Array<import("./common.js").identifier>;
   "sourceCommit": ConstrainedString;
   "releaseCommit": ConstrainedString;
   "qualificationSidecars": Array<import("./common.js").aasIdentity>;
@@ -155,7 +160,7 @@ export type releaseManifest = {
   "completionStatus": "incomplete" | "complete";
   "approvalSidecars": approvalSidecars;
   "limitations": Array<ConstrainedString>;
-  "supportedVersions": Array<import("./common.js").version>;
+  "supportedVersions": Array<import("./common.js").canonicalSemVer>;
   "withdrawalInstructions": Array<ConstrainedString>;
 };
 

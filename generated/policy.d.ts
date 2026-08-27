@@ -37,19 +37,32 @@ export type effectivePolicy = {
   "provenance": Array<provenanceEntry>;
 };
 
+export type bindingScope = ({
+  "kind": "subject";
+  "subjectId": import("./common.js").identifier;
+}) | ({
+  "kind": "root";
+  "root": import("./common.js").portablePath;
+}) | ({
+  "kind": "rule";
+  "root": import("./common.js").portablePath;
+  "ruleId": import("./common.js").identifier;
+});
+
 export type binding = {
   "schemaVersion": "0.1";
   "aasIdentity": import("./common.js").aasIdentity;
   "id": import("./common.js").identifier;
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
-  "scope": import("./common.js").portablePath;
+  "scope": bindingScope;
   "rolloutScope": ConstrainedString;
   "mode": "shadow" | "advisory" | "required";
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
+  "promotionRecordAasIdentity"?: import("./common.js").aasIdentity;
   "owner": ConstrainedString;
 };
 

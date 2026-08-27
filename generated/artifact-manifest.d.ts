@@ -8,7 +8,7 @@ export type manifestPath = ConstrainedString;
 
 export type AASNormativeArtifactManifest = {
   "manifestVersion": "1";
-  "standardVersion": import("./common.js").version;
+  "standardVersion": import("./common.js").canonicalSemVer;
   "status": "provisional-unpublished";
   "schemaDialect": "https://json-schema.org/draft/2020-12/schema";
   "identityPolicy": {

@@ -63,6 +63,8 @@ const candidates = [
   ...(await walk('registries')).filter((item) => item.endsWith('.json')),
   ...(await walk('registries')).filter((item) => item.endsWith('.md')),
   ...(await walk('spec')).filter((item) => item.endsWith('.md')),
+  'decisions/phase-0-d0-d11-v2.md',
+  'templates/normative-traceability.md',
   ...(await walk('vectors')),
   'version-matrix.json',
   ...schemaPaths.map((item) => `generated/${path.basename(item, '.schema.json')}.d.ts`)

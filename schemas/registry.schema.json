@@ -33,5 +33,32 @@
       }
     },
     "changes": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "registry": { "const": "envelope-versions" } }, "required": ["registry"] },
+      "then": {
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["orderingRank"],
+              "properties": {
+                "id": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
+                "kind": { "const": "envelope-version" },
+                "orderingRank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+                "replacement": { "$ref": "common.schema.json#/$defs/envelopeVersion" }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "entries": { "type": "array", "items": { "type": "object", "properties": { "id": { "$ref": "common.schema.json#/$defs/identifier" }, "replacement": { "$ref": "common.schema.json#/$defs/identifier" } } } }
+        }
+      }
+    }
+  ]
 }

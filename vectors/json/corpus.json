@@ -2,6 +2,14 @@
   "schemaVersion": "0.1",
   "status": "private-provisional-unqualified",
   "cases": [
+    {
+      "caseId": "raw-bytes-required",
+      "requirement": "identity.md#2-strict-i-json-input-profile",
+      "input": { "reference": "vectors/json/negative/raw-bytes-required.json", "form": "decoded-text" },
+      "limits": { "maxBytes": 1048576, "maxDepth": 64 },
+      "expected": { "diagnostic": "aas.json.raw-bytes-required", "version": "0.1" },
+      "rationale": "The language-neutral case declares a decoded-text API input; strict parsing requires the packaged raw bytes instead."
+    },
     { "caseId": "null-prototype", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/positive/null-prototype.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "none", "version": "0.1" }, "rationale": "Decoded objects are constructed with null prototypes." },
     { "caseId": "prototype-keys-inert", "requirement": "security-and-conformance.md#5-inert-data-and-denied-capabilities", "input": { "reference": "vectors/json/positive/prototype-keys.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "none", "version": "0.1" }, "rationale": "Ordinary JSON member names remain safe because construction uses null-prototype objects." },
     { "caseId": "integer-spellings", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/positive/integer-spellings.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "none", "version": "0.1" }, "rationale": "Valid JSON decimal and exponent spellings are accepted when their decoded value is a safe integer." },
@@ -14,6 +22,9 @@
     { "caseId": "input-too-large", "requirement": "security-and-conformance.md#6-resource-limits-and-privacy", "input": { "reference": "vectors/json/negative/input-too-large.json" }, "limits": { "maxBytes": 11, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.input-too-large", "version": "0.1" }, "rationale": "Encoded bytes are bounded before decoding or allocation." },
     { "caseId": "bom", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/bom.json", "prefixHex": "efbbbf" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-utf8", "version": "0.1" }, "rationale": "A UTF-8 BOM is not accepted as invisible input state." },
     { "caseId": "lone-surrogate", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/lone-surrogate.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-syntax", "version": "0.1" }, "rationale": "Lone surrogate code units are not I-JSON strings." },
-    { "caseId": "trailing-root", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/trailing-root.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-syntax", "version": "0.1" }, "rationale": "Exactly one JSON root value is required." }
+    { "caseId": "trailing-root", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/trailing-root.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-syntax", "version": "0.1" }, "rationale": "Exactly one JSON root value is required." },
+    { "caseId": "rounded-safe-maximum", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/rounded-safe-maximum.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-number", "version": "0.1" }, "rationale": "The mathematical decimal is fractional even if binary64 conversion would round it to MAX_SAFE_INTEGER." },
+    { "caseId": "rounded-one", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/negative/rounded-one.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "aas.json.invalid-number", "version": "0.1" }, "rationale": "A fractional decimal cannot enter the profile by rounding to one." },
+    { "caseId": "exact-scaled-integer", "requirement": "identity.md#2-strict-i-json-input-profile", "input": { "reference": "vectors/json/positive/exact-scaled-integer.json" }, "limits": { "maxBytes": 1048576, "maxDepth": 64 }, "expected": { "diagnostic": "none", "version": "0.1" }, "rationale": "A decimal-exponent spelling is accepted when its exact mathematical value is an in-range integer." }
   ]
 }

@@ -22,6 +22,8 @@
     { "id": "same-version-pinned", "reader": ["0.1"], "writer": ["0.1"], "pin": "0.1", "selected": "0.1", "outcome": "selected" },
     { "id": "unknown-reader-version", "reader": ["9.9"], "writer": ["0.1"], "pin": null, "selected": null, "outcome": "problem" },
     { "id": "unknown-writer-version", "reader": ["0.1"], "writer": ["9.9"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "mutual-unregistered-version", "reader": ["9.9"], "writer": ["9.9"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "mutual-unregistered-version-pinned", "reader": ["9.9"], "writer": ["9.9"], "pin": "9.9", "selected": null, "outcome": "problem" },
     { "id": "non-mutual-pin", "reader": ["0.1"], "writer": ["0.1"], "pin": "9.9", "selected": null, "outcome": "problem" },
     { "id": "no-overlap", "reader": ["0.1"], "writer": [], "pin": null, "selected": null, "outcome": "problem" }
   ],

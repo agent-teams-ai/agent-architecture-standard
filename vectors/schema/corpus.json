@@ -2,14 +2,1131 @@
   "schemaId": "https://schemas.aas.invalid/private/v0/corpus-index",
   "schemaVersion": "0.1",
   "status": "private-provisional-unqualified",
+  "coverage": {
+    "publicRoots": [
+      "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json",
+      "https://schemas.aas.invalid/private/v0/artifacts.schema.json",
+      "https://schemas.aas.invalid/private/v0/common.schema.json",
+      "https://schemas.aas.invalid/private/v0/conformance.schema.json",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json",
+      "https://schemas.aas.invalid/private/v0/overlay.schema.json",
+      "https://schemas.aas.invalid/private/v0/policy.schema.json",
+      "https://schemas.aas.invalid/private/v0/provider.schema.json",
+      "https://schemas.aas.invalid/private/v0/registry.schema.json"
+    ],
+    "materialDefinitions": [
+      "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/artifact",
+      "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/coverage",
+      "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/evidence",
+      "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot",
+      "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim",
+      "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/report",
+      "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/qualificationSidecar",
+      "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/releaseManifest",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/request",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/result",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/problem",
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/paginationCursor",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/repositoryRevision",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/profile",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analyzer",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/promotionRecord",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analysisKey",
+      "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/operation",
+      "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay",
+      "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/receipt",
+      "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/exception",
+      "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy",
+      "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding",
+      "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/bindingScope"
+    ]
+  },
   "cases": [
-    { "caseId": "provider-positive", "requirement": "core.md#3-artifact-authority-and-conflicts", "input": { "reference": "vectors/schema/positive/provider.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A closed provider description using the only schema-backed envelope version is accepted." },
-    { "caseId": "overlay-positive", "requirement": "core.md#3-artifact-authority-and-conflicts", "input": { "reference": "vectors/schema/positive/overlay.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A closed overlay with portable paths is accepted." },
-    { "caseId": "result-positive", "requirement": "policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "input": { "reference": "vectors/schema/positive/result.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The result binds its analysis key, complete accounting, evidence, omissions, and non-truncatable diagnostic projection." },
-    { "caseId": "provider-unknown-field", "requirement": "core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/negative/provider-unknown-field.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Closed core provider objects reject unknown fields." },
-    { "caseId": "provider-leading-zero-version", "requirement": "security-and-conformance.md#13-release-channel-sequence", "input": { "reference": "vectors/schema/negative/provider-leading-zero-version.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Canonical versions reject leading-zero components such as 01.02.03." },
-    { "caseId": "overlay-unknown-field", "requirement": "core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/negative/overlay-unknown-field.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Closed overlay objects reject unknown fields." },
-    { "caseId": "windows-drive-path", "requirement": "security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/negative/windows-drive-path.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Drive paths are not portable root-relative POSIX paths." },
-    { "caseId": "windows-backslash-path", "requirement": "security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/negative/windows-backslash-path.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Backslash-separated paths are rejected rather than normalized." }
+    {
+      "caseId": "artifact-manifest-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "artifacts.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "The generated manifest is a valid closed public root."
+    },
+    {
+      "caseId": "artifact-manifest-bare-version",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/artifact-manifest-bare-version"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Bare 1.2 cannot enter a release identity."
+    },
+    {
+      "caseId": "common-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/common-root-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/common.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "common-root-closed",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/common-root-closed-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/common.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "artifact-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/artifact-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/artifact",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "coverage-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/coverage-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/coverage",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "evidence-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/evidence-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/evidence",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "snapshot-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/snapshot-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "artifact-closed",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/artifact-closed-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/artifact",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "coverage-required",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/coverage-required-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/coverage",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "evidence-required",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/evidence-required-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/evidence",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "provider-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/positive/provider.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "provider-unknown-field",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/negative/provider-unknown-field.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "provider-leading-zero",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/negative/provider-leading-zero-version.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/provider.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "overlay-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/positive/overlay.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "overlay-unknown-field",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/negative/overlay-unknown-field.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "overlay-windows-drive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/negative/windows-drive-path.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "receipt-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/receipt-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/receipt",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "receipt-required",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/receipt-required-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/receipt",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "exception-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/exception-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/exception",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "effectivePolicy-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/effective-policy-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "binding-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/binding-required-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "binding-promotion-conditional",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/binding-required-missing-promotion"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "repositoryRevision-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/repository-revision-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/repositoryRevision",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "profile-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/profile-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/profile",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "analyzer-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/analyzer-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analyzer",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "promotionRecord-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/promotion-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/promotionRecord",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "analysisKey-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/analysis-key-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analysisKey",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "identity-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/profile-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "request-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/request-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/request",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "diagnosticHeader-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/diagnostic-header-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "diagnostic-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/diagnostic-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "problem-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/problem-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/problem",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "envelope-root-result-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/positive/result.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "request-unregistered-envelope-version",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/request-unregistered-version"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/request",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "result-extension-disposition-conditional",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/result-extension-semantic-effect"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/result",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "claim-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/claim-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "report-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/report-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/report",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "qualificationSidecar-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/qualification-sidecar-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/qualificationSidecar",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "conformance-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/claim-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "claim-bare-standard-version",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/claim-bare-standard-version"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "release-manifest-rc",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/positive/release-manifest-rc.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/releaseManifest",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "release-manifest-numeric",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/positive/release-manifest-numeric.json"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/releaseManifest",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "release-manifest-bare-member-version",
+      "requirement": "security-and-conformance.md#13-release-channel-sequence",
+      "input": {
+        "reference": "vectors/schema/positive/release-manifest-rc.json",
+        "mutation": { "pointer": "/members/0/version", "value": "1.2" }
+      },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/releaseManifest",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "A bare two-component version cannot enter the release-manifest identity."
+    },
+    {
+      "caseId": "registry-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/registry-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/registry.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "registry-closed",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/registry-closed-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/registry.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "artifacts-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/artifact-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "artifacts-root-negative",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/artifact-closed-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "overlay-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/receipt-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "policy-root-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/exception-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "policy-root-negative",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/binding-required-missing-promotion"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "identity-root-negative",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/common-root-closed-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "envelope-root-negative",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/request-unregistered-version"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "conformance-root-negative",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/claim-bare-standard-version"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "operation-positive",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/operation-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/operation",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "operation-conditional",
+      "requirement": "schemas/readme.md#schema-catalog",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/operation-conditional-negative"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/operation",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Public root or conditional definition contract is exercised."
+    },
+    {
+      "caseId": "pagination-cursor-positive",
+      "requirement": "policy-and-enforcement.md#10-stable-agent-diagnostic-contract",
+      "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/pagination-cursor-positive" },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/paginationCursor", "valid": true, "diagnostic": "none", "version": "0.1" },
+      "rationale": "A closed stateless cursor binds result, request, profile, ordering, and next position."
+    },
+    {
+      "caseId": "pagination-cursor-requiredness",
+      "requirement": "policy-and-enforcement.md#10-stable-agent-diagnostic-contract",
+      "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/pagination-cursor-negative" },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/paginationCursor", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" },
+      "rationale": "A cursor without its request binding is incomplete."
+    },
+    {
+      "caseId": "binding-scope-positive",
+      "requirement": "policy-and-enforcement.md#5-scope-precedence-and-overlap",
+      "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/binding-scope-positive" },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/bindingScope", "valid": true, "diagnostic": "none", "version": "0.1" },
+      "rationale": "Rule-specific scope is explicitly discriminated."
+    },
+    {
+      "caseId": "binding-scope-discriminator-required",
+      "requirement": "policy-and-enforcement.md#5-scope-precedence-and-overlap",
+      "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/binding-scope-negative" },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/bindingScope", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" },
+      "rationale": "An undifferentiated path string cannot select scope precedence."
+    }
   ]
 }

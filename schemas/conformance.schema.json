@@ -8,7 +8,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["version", "artifact"],
       "properties": {
-        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "version": { "$ref": "common.schema.json#/$defs/canonicalSemVer" },
         "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" }
       }
     },
@@ -25,7 +25,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["version", "id", "aasIdentity"],
       "properties": {
-        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "version": { "$ref": "common.schema.json#/$defs/definitionVersion" },
         "id": { "$ref": "common.schema.json#/$defs/identifier" },
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
       }
@@ -134,7 +134,7 @@
       "required": ["name", "version", "artifact", "provenance", "sbom"],
       "properties": {
         "name": { "$ref": "common.schema.json#/$defs/identifier" },
-        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "version": { "$ref": "common.schema.json#/$defs/canonicalSemVer" },
         "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
         "provenance": { "$ref": "common.schema.json#/$defs/artifactRef" },
         "sbom": { "$ref": "common.schema.json#/$defs/artifactRef" }
@@ -146,7 +146,7 @@
       "properties": {
         "from": { "$ref": "common.schema.json#/$defs/identifier" },
         "to": { "$ref": "common.schema.json#/$defs/identifier" },
-        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "version": { "$ref": "common.schema.json#/$defs/canonicalSemVer" },
         "artifactAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
       }
     },
@@ -174,16 +174,21 @@
     },
     "releaseManifest": {
       "type": "object", "additionalProperties": false,
-      "required": ["schemaVersion", "cohort", "maturity", "members", "dependencies", "schemas", "profiles", "claims", "sourceCommit", "releaseCommit", "qualificationSidecars", "releaseEvidence", "publicationOrder", "completionStatus", "approvalSidecars", "limitations", "supportedVersions", "withdrawalInstructions"],
+      "required": ["schemaVersion", "aasIdentity", "cohort", "maturity", "members", "dependencies", "schemas", "registries", "vectors", "profiles", "claims", "traceabilityMatrices", "governanceRoleIds", "sourceCommit", "releaseCommit", "qualificationSidecars", "releaseEvidence", "publicationOrder", "completionStatus", "approvalSidecars", "limitations", "supportedVersions", "withdrawalInstructions"],
       "properties": {
         "schemaVersion": { "const": "0.1" },
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "cohort": { "$ref": "common.schema.json#/$defs/identifier" },
         "maturity": { "const": "experimental" },
         "members": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "#/$defs/releaseMember" } },
         "dependencies": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/releaseDependency" } },
         "schemas": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "registries": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "vectors": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
         "profiles": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
         "claims": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "traceabilityMatrices": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "governanceRoleIds": { "type": "array", "minItems": 3, "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
         "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
         "releaseCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
         "qualificationSidecars": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
@@ -192,7 +197,7 @@
         "completionStatus": { "enum": ["incomplete", "complete"] },
         "approvalSidecars": { "$ref": "#/$defs/approvalSidecars" },
         "limitations": { "type": "array", "maxItems": 1024, "items": { "type": "string", "maxLength": 1024 } },
-        "supportedVersions": { "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/version" } },
+        "supportedVersions": { "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/canonicalSemVer" } },
         "withdrawalInstructions": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } }
       }
     }

@@ -13,9 +13,11 @@
     "artifacts.json",
     "version-matrix.json",
     "generated/",
+    "decisions/phase-0-d0-d11-v2.md",
     "registries/",
     "schemas/",
     "spec/",
+    "templates/normative-traceability.md",
     "vectors/"
   ],
   "exports": {
@@ -23,7 +25,9 @@
     "./version-matrix": "./version-matrix.json",
     "./schemas/*": "./schemas/*.json",
     "./registries/*": "./registries/*.json",
-    "./generated/*": "./generated/*"
+    "./generated/*": {
+      "types": "./generated/*.d.ts"
+    }
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "0.1",
+  "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "cohort": "aas-rc-cohort",
+  "maturity": "experimental",
+  "members": [
+    {
+      "name": "aas-core",
+      "version": "0.1.0-rc.1",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      },
+      "provenance": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      },
+      "sbom": {
+        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    }
+  ],
+  "dependencies": [],
+  "schemas": [
+    "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  ],
+  "registries": [
+    "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  ],
+  "vectors": [
+    "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  ],
+  "profiles": [
+    "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  ],
+  "claims": [
+    "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555"
+  ],
+  "traceabilityMatrices": [
+    "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+  ],
+  "governanceRoleIds": [
+    "normative-maintainer",
+    "conformance-qualifier",
+    "release-approver"
+  ],
+  "sourceCommit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "releaseCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "qualificationSidecars": [
+    "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777"
+  ],
+  "releaseEvidence": {
+    "registryInstallation": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "packageInventory": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "upgrade": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "downgrade": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "publicApi": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "rollback": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "consumerCanary": {
+      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    }
+  },
+  "publicationOrder": [
+    "aas-core"
+  ],
+  "completionStatus": "complete",
+  "approvalSidecars": {
+    "normative": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "conformance": "aas:v0:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "release": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "limitations": [],
+  "supportedVersions": [
+    "0.1.0-rc.1"
+  ],
+  "withdrawalInstructions": [
+    "install an earlier exact cohort"
+  ]
+}
