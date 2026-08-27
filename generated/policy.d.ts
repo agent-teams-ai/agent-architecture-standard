@@ -4,6 +4,13 @@ export type ConstrainedString = string & { readonly __aasConstrainedString: uniq
 export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
 export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
 
+export type provenanceEntry = {
+  "sourceArtifact": import("./common.js").artifactRef;
+  "semanticRole": "authoritative-source" | "commissioning-decision" | "generator";
+  "sourceOwner": ConstrainedString;
+  "supports": Array<ConstrainedString>;
+};
+
 export type exception = {
   "aasIdentity": import("./common.js").aasIdentity;
   "ruleId": import("./common.js").identifier;
@@ -27,7 +34,7 @@ export type effectivePolicy = {
 };
 }>;
   "exceptions": Array<exception>;
-  "provenance": Array<import("./common.js").artifactRef>;
+  "provenance": Array<provenanceEntry>;
 };
 
 export type binding = {

@@ -5,13 +5,17 @@ export function packageCollisionKey(relative) {
 }
 
 export function assertPortablePackageInventory(paths, label = 'package inventory') {
+  const conventionalRootFiles = new Set(['README.md', 'LICENSE']);
+  const reserved = /^(?:con|prn|aux|nul|clock\$|conin\$|conout\$|com[1-9]|lpt[1-9])$/u;
   const seenExact = new Set();
   const seenCollision = new Map();
   for (const relative of paths) {
-    if (typeof relative !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/u.test(relative)) {
+    const conventionalRoot = conventionalRootFiles.has(relative);
+    if (typeof relative !== 'string' || (!conventionalRoot && !/^[a-z0-9][a-z0-9._/-]*$/u.test(relative))) {
       throw new Error(`unstable ${label} path: ${relative}`);
     }
-    if (relative !== relative.normalize('NFC') || relative.includes('\\') || relative.startsWith('/') || relative.split('/').some((part) => part === '' || part === '.' || part === '..')) {
+    const segments = relative.split('/');
+    if (relative !== relative.normalize('NFC') || relative.includes('\\') || relative.startsWith('/') || segments.some((part) => part === '' || part === '.' || part === '..' || part.endsWith('.') || part.endsWith(' ') || reserved.test(part.split('.')[0].toLowerCase()))) {
       throw new Error(`non-portable ${label} path: ${relative}`);
     }
     if (seenExact.has(relative)) throw new Error(`duplicate ${label} path: ${relative}`);

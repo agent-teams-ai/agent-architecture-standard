@@ -8,7 +8,9 @@ and reviewer reproduce them.
 
 ## CANON-UTF16-001: BMP/supplementary ordering inversion
 
-- Authority: `../spec/identity.md` §§2–3.
+- Requirement: `../spec/identity.md` §§2–3; applicable version `0.1`.
+- Limits: 1,048,576 encoded input bytes and nesting depth 64.
+- Expected diagnostic: `none` for the expected bytes.
 - Input member sequence: U+E000 with integer `1`, then U+1F600 with integer `2`.
 - Expected canonical UTF-8 text: `{"😀":2,"":1}`
 - Expected canonical byte length: `18`.
@@ -22,7 +24,9 @@ and reviewer reproduce them.
 
 ## IDENTITY-RAW-FRAMED-001: `contentDigest` is not `aasIdentity`
 
-- Authority: `../spec/identity.md` §4.
+- Requirement: `../spec/identity.md` §4; applicable version `0.1`.
+- Limits: 1,048,576 encoded input bytes and nesting depth 64.
+- Expected diagnostic: `none` for the expected identities.
 - Exact content bytes: UTF-8 `hello`, hexadecimal `68656c6c6f`.
 - Expected raw `contentDigest`:
   `sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824`.
@@ -39,18 +43,25 @@ and reviewer reproduce them.
 
 ## RESULT-SELF-001: exact self-identity projection
 
-- Authority: `../spec/identity.md` §5, “Result self-identity projection”.
+- Requirement: `../spec/identity.md` §5, “Result self-identity projection”.
+- Applicable schema/envelope version: `0.1`.
+- Input reference: `schema/positive/result.json`; the referenced bytes and every
+  required result, accounting, coverage, evidence, omission, and diagnostic
+  field are part of this case.
+- Limits: 1,048,576 encoded input bytes and nesting depth 64.
 - Domain: `aas.result.v0`.
 - Canonicalization profile:
   `agent-architecture-canonical-json-rfc8785@0`.
-- Identity projection, exact UTF-8 text:
-  `{"diagnostics":[{"code":"aas.example.ok"}],"requestAasIdentity":"aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000","resolutions":[]}`
-- Projection byte length: `162`.
-- Expected framed-preimage byte length: `244`.
+- Identity projection: remove only the top-level `aasIdentity` and the embedded
+  diagnostic header's `resultAasIdentity`, then canonicalize all remaining
+  referenced input fields.
+- Expected canonical projection byte length: `2131`.
+- Expected canonical projection raw SHA-256:
+  `sha256:ce1ca70a7985f23b1263c79fb1f23c0841c99390fec676fbe2c38efffbf7d3ae`.
+- Expected framed-preimage byte length: `2213`.
 - Expected result `aasIdentity`:
-  `aas:v0:sha256:e50506ea0eb3725da6a89ad11289345d1f301fb370d5707a51b76ea2a43d4f4a`.
-- Populated wire result, exact canonical UTF-8 text:
-  `{"aasIdentity":"aas:v0:sha256:e50506ea0eb3725da6a89ad11289345d1f301fb370d5707a51b76ea2a43d4f4a","diagnostics":[{"code":"aas.example.ok","resultAasIdentity":"aas:v0:sha256:e50506ea0eb3725da6a89ad11289345d1f301fb370d5707a51b76ea2a43d4f4a"}],"requestAasIdentity":"aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000","resolutions":[]}`
+  `aas:v0:sha256:5a3ea268fab84004e3f523f7b00d3dc01c5802d491a35fb7a47ce584e5a416aa`.
+- Expected diagnostic: `none`.
 - Verification: omit the top-level `aasIdentity` and the diagnostic
   `resultAasIdentity`, canonicalize, frame, and hash; the expected value is
   recovered. Hashing either populated self field is invalid.
@@ -59,7 +70,10 @@ and reviewer reproduce them.
 
 ## EXCEPTION-REVISION-001: expiry and receipt freshness
 
-- Authority: `../spec/policy-and-enforcement.md` §§7 and 9.
+- Requirement: `../spec/policy-and-enforcement.md` §§7 and 9; applicable
+  version `0.1`.
+- Limits: one exception, one receipt, and one integration revision comparison.
+- Expected diagnostic: the registered stale reason for `R2`; none for `R1`.
 - Given exception `E` binds `validForRevision = R1`, result `X` was evaluated at
   `R1`, and receipt `Q` binds `X`, `E`, and `R1`, required enforcement at exactly
   `R1` MAY accept `Q` if every other identity comparison succeeds.
@@ -70,7 +84,10 @@ and reviewer reproduce them.
 
 ## HARDLINK-001: in-root hard link
 
-- Authority: `../spec/security-and-conformance.md` §4.
+- Requirement: `../spec/security-and-conformance.md` §4; applicable portable-
+  bounded profile version `0`.
+- Limits: two path entries and one attempted file read.
+- Expected diagnostic/resolution: link-count unsupported / `unsupported`.
 - Given two in-root names for one relevant regular file and observed link count
   `2` before reading, the affected capture resolution is `unsupported`, the bytes
   are discarded, and relevant coverage is incomplete.
@@ -79,7 +96,10 @@ and reviewer reproduce them.
 
 ## HARDLINK-OUTSIDE-ALIAS-001: outside hard-link alias
 
-- Authority: `../spec/security-and-conformance.md` §4.
+- Requirement: `../spec/security-and-conformance.md` §4; applicable portable-
+  bounded profile version `0`.
+- Limits: one in-root entry, one outside alias, and one attempted file read.
+- Expected diagnostic/resolution: link-count unsupported / `unsupported`.
 - Given one in-root name hard-linked to an outside name and observed link count
   `2`, the affected capture resolution is `unsupported` even though traversal
   never observes the outside pathname.
@@ -90,7 +110,10 @@ and reviewer reproduce them.
 
 ## HARDLINK-RACE-001: link count changes during capture
 
-- Authority: `../spec/security-and-conformance.md` §4.
+- Requirement: `../spec/security-and-conformance.md` §4; applicable portable-
+  bounded profile version `0`.
+- Limits: one entry and one bounded before/after read observation.
+- Expected diagnostic/resolution: link-count changed / `unstable`.
 - Given a relevant regular file whose trustworthy initial link count is exactly
   `1`, and whose trustworthy final link count is `2`, the affected capture
   disposition is `unstable`, not `unsupported`; captured bytes are discarded

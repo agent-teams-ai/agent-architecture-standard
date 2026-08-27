@@ -29,8 +29,20 @@ export type jsonValue = (ConstrainedString | boolean | null) | (JsonInteger) | (
 export type budgets = {
   "maxInputBytes": JsonInteger;
   "maxDepth": JsonInteger;
+  "maxPathSegments": JsonInteger;
+  "maxPathBytes": JsonInteger;
+  "maxEntries": JsonInteger;
+  "maxLogicalBytes": JsonInteger;
+  "maxReadBytes": JsonInteger;
+  "maxPerEntryBytes": JsonInteger;
+  "maxOverlayOperations": JsonInteger;
   "maxTargets": JsonInteger;
+  "maxEvidenceReferences": JsonInteger;
+  "maxExtensionBytes": JsonInteger;
+  "maxDiagnostics": JsonInteger;
   "maxOutputBytes": JsonInteger;
+  "maxConcurrency": JsonInteger;
+  "maxTotalWork": JsonInteger;
 };
 
 export type profileRef = {
@@ -45,6 +57,4 @@ export type artifactRef = {
   "mediaType": ConstrainedString;
 };
 
-export type AASProvisionalCommonTypes = {
-
-};
+export type AASProvisionalCommonTypes = Record<PropertyKey, never>;

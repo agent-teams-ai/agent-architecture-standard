@@ -8,7 +8,7 @@
     "aasIdentity": { "type": "string", "pattern": "^aas:v0:sha256:[0-9a-f]{64}$" },
     "contentDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
     "identifier": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "^(?:[a-z][a-z0-9-]*(?:@[0-9]+)?|[a-z][a-z0-9.-]*:[^\\s]+|[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+\\.[a-z0-9][a-z0-9._-]*)$" },
-    "version": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[0-9]+(?:\\.[0-9]+){0,2}(?:-rc\\.[1-9][0-9]*)?$" },
+    "version": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^(?:0|[1-9][0-9]*)(?:\\.(?:0|[1-9][0-9]*)){0,2}(?:-rc\\.[1-9][0-9]*)?$" },
     "envelopeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$", "maxLength": 32 },
     "portablePath": { "type": "string", "minLength": 1, "maxLength": 4096, "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^/]+(?:/[^/]+)*$" },
     "extensionMap": {
@@ -28,12 +28,24 @@
     "budgets": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["maxInputBytes", "maxDepth", "maxTargets", "maxOutputBytes"],
+      "required": ["maxInputBytes", "maxDepth", "maxPathSegments", "maxPathBytes", "maxEntries", "maxLogicalBytes", "maxReadBytes", "maxPerEntryBytes", "maxOverlayOperations", "maxTargets", "maxEvidenceReferences", "maxExtensionBytes", "maxDiagnostics", "maxOutputBytes", "maxConcurrency", "maxTotalWork"],
       "properties": {
         "maxInputBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
         "maxDepth": { "type": "integer", "minimum": 1, "maximum": 256 },
+        "maxPathSegments": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "maxPathBytes": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "maxEntries": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "maxLogicalBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxReadBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxPerEntryBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxOverlayOperations": { "type": "integer", "minimum": 1, "maximum": 100000 },
         "maxTargets": { "type": "integer", "minimum": 1, "maximum": 100000 },
-        "maxOutputBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+        "maxEvidenceReferences": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "maxExtensionBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxDiagnostics": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "maxOutputBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxConcurrency": { "type": "integer", "minimum": 1, "maximum": 100000 },
+        "maxTotalWork": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
       }
     },
     "profileRef": {

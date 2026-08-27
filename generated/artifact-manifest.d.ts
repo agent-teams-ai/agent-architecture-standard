@@ -4,6 +4,8 @@ export type ConstrainedString = string & { readonly __aasConstrainedString: uniq
 export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
 export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
 
+export type manifestPath = ConstrainedString;
+
 export type AASNormativeArtifactManifest = {
   "manifestVersion": "1";
   "standardVersion": import("./common.js").version;
@@ -14,7 +16,7 @@ export type AASNormativeArtifactManifest = {
   "aasIdentity": "domain-framed-identity-deferred-to-phase-2";
 };
   "artifacts": Array<{
-  "path": import("./common.js").portablePath;
+  "path": manifestPath;
   "class": "schema" | "registry" | "vector" | "normative-prose" | "generated-declaration" | "version-matrix";
   "schemaId"?: ConstrainedString;
   "contentDigest": import("./common.js").contentDigest;

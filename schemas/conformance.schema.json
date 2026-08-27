@@ -4,10 +4,203 @@
   "title": "AAS conformance claim, report, release manifest, and qualification sidecar",
   "x-aas-status": "private-provisional-unpublished",
   "$defs": {
-    "claim": { "type": "object", "additionalProperties": false, "required": ["schemaVersion", "status", "visibility", "qualification", "claimant", "providerArtifact", "standardVersion", "profiles", "suiteArtifact", "reportArtifacts", "limitations"], "properties": { "schemaVersion": { "const": "0.1" }, "status": { "const": "provisional" }, "visibility": { "const": "private" }, "qualification": { "const": "unqualified" }, "claimant": { "type": "string", "minLength": 1, "maxLength": 255 }, "providerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" }, "standardVersion": { "$ref": "common.schema.json#/$defs/version" }, "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } }, "suiteArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" }, "reportArtifacts": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } }, "limitations": { "type": "array", "maxItems": 1024, "items": { "type": "string", "maxLength": 1024 } } } },
-    "report": { "type": "object", "additionalProperties": false, "required": ["schemaVersion", "sourceRevision", "runnerArtifact", "providerArtifact", "fixtureDigests", "platform", "results", "omissions"], "properties": { "schemaVersion": { "const": "0.1" }, "sourceRevision": { "type": "string", "minLength": 1, "maxLength": 128 }, "runnerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" }, "providerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" }, "fixtureDigests": { "type": "array", "maxItems": 100000, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/contentDigest" } }, "platform": { "type": "string", "minLength": 1, "maxLength": 255 }, "results": { "type": "array", "maxItems": 100000, "items": { "type": "object", "additionalProperties": false, "required": ["caseId", "outcome"], "properties": { "caseId": { "$ref": "common.schema.json#/$defs/identifier" }, "outcome": { "enum": ["pass", "fail"] } } } }, "omissions": { "type": "array", "maxItems": 100000, "items": { "type": "string", "maxLength": 1024 } } } },
-    "qualificationSidecar": { "type": "object", "additionalProperties": false, "required": ["schemaVersion", "subject", "status", "evidence"], "properties": { "schemaVersion": { "const": "0.1" }, "subject": { "$ref": "common.schema.json#/$defs/artifactRef" }, "status": { "enum": ["provisional", "qualified", "suspended", "withdrawn", "expired"] }, "evidence": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } } } },
-    "releaseManifest": { "type": "object", "additionalProperties": false, "required": ["schemaVersion", "cohort", "maturity", "members", "dependencies", "qualificationSidecars", "completionStatus", "limitations"], "properties": { "schemaVersion": { "const": "0.1" }, "cohort": { "$ref": "common.schema.json#/$defs/identifier" }, "maturity": { "const": "experimental" }, "members": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "type": "object", "additionalProperties": false, "required": ["name", "version", "artifact"], "properties": { "name": { "$ref": "common.schema.json#/$defs/identifier" }, "version": { "$ref": "common.schema.json#/$defs/version" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } } } }, "dependencies": { "type": "array", "maxItems": 4096, "items": { "type": "object", "additionalProperties": false, "required": ["from", "to"], "properties": { "from": { "$ref": "common.schema.json#/$defs/identifier" }, "to": { "$ref": "common.schema.json#/$defs/identifier" } } } }, "qualificationSidecars": { "type": "array", "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } }, "completionStatus": { "enum": ["incomplete", "complete"] }, "limitations": { "type": "array", "maxItems": 1024, "items": { "type": "string", "maxLength": 1024 } } } }
+    "versionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": {
+        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" }
+      }
+    },
+    "claimedProfile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "aasIdentity"],
+      "properties": {
+        "kind": { "enum": ["operation", "evaluator", "vocabulary", "security", "diagnostic"] },
+        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
+      }
+    },
+    "versionedProfile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "id", "aasIdentity"],
+      "properties": {
+        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
+      }
+    },
+    "platform": {
+      "type": "object", "additionalProperties": false,
+      "required": ["os", "architecture", "runtime", "toolchain"],
+      "properties": {
+        "os": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "architecture": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "runtime": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "toolchain": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "type": "string", "minLength": 1, "maxLength": 255 } }
+      }
+    },
+    "oracle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact", "independentlyAuthored", "independentlyReviewed", "dependencies", "lineageAudit"],
+      "properties": {
+        "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "independentlyAuthored": { "type": "boolean" },
+        "independentlyReviewed": { "type": "boolean" },
+        "dependencies": { "type": "array", "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "lineageAudit": { "$ref": "common.schema.json#/$defs/artifactRef" }
+      }
+    },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "status", "visibility", "qualification", "claimant", "providerArtifact", "standard", "canonicalizationProfile", "envelope", "schemaBundle", "registryEdition", "vectorSuite", "conformanceSuite", "profiles", "supportedPlatforms", "unsupportedAreas", "conformanceManifest", "reportArtifacts", "testDisposition", "omissions", "replayArtifacts", "oracles", "issuedAt", "expiresAt", "withdrawalReferences", "rollbackReferences", "limitations"],
+      "properties": {
+        "schemaVersion": { "const": "0.1" },
+        "status": { "const": "provisional" },
+        "visibility": { "const": "private" },
+        "qualification": { "const": "unqualified" },
+        "claimant": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "providerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "standard": { "$ref": "#/$defs/versionedArtifact" },
+        "canonicalizationProfile": { "$ref": "#/$defs/versionedProfile" },
+        "envelope": { "$ref": "#/$defs/versionedArtifact" },
+        "schemaBundle": { "$ref": "#/$defs/versionedArtifact" },
+        "registryEdition": { "$ref": "#/$defs/versionedArtifact" },
+        "vectorSuite": { "$ref": "#/$defs/versionedArtifact" },
+        "conformanceSuite": { "$ref": "#/$defs/versionedArtifact" },
+        "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/claimedProfile" } },
+        "supportedPlatforms": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/platform" } },
+        "unsupportedAreas": { "type": "array", "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } },
+        "conformanceManifest": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "reportArtifacts": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "testDisposition": { "type": "object", "additionalProperties": false, "required": ["total", "passed", "failed", "omitted"], "properties": { "total": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }, "passed": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }, "failed": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }, "omitted": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" } } },
+        "omissions": { "type": "array", "maxItems": 100000, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
+        "replayArtifacts": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "oracles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/oracle" } },
+        "issuedAt": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "expiresAt": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "withdrawalReferences": { "type": "array", "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "rollbackReferences": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "limitations": { "type": "array", "maxItems": 1024, "items": { "type": "string", "maxLength": 1024 } }
+      }
+    },
+    "reportResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["caseId", "outcome", "durationMilliseconds"],
+      "properties": {
+        "caseId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "outcome": { "enum": ["pass", "fail", "omitted"] },
+        "durationMilliseconds": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
+      }
+    },
+    "report": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "repository", "sourceRevision", "runnerArtifact", "providerArtifact", "profiles", "fixtures", "platform", "inputs", "results", "coverage", "omissions", "durationMilliseconds", "replaySeeds", "attemptId"],
+      "properties": {
+        "schemaVersion": { "const": "0.1" },
+        "repository": { "$ref": "common.schema.json#/$defs/identifier" },
+        "sourceRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "runnerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "providerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } },
+        "fixtures": { "type": "array", "maxItems": 100000, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "platform": { "$ref": "#/$defs/platform" },
+        "inputs": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "results": { "type": "array", "maxItems": 100000, "items": { "$ref": "#/$defs/reportResult" } },
+        "coverage": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "$ref": "artifacts.schema.json#/$defs/coverage" } },
+        "omissions": { "type": "array", "maxItems": 100000, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
+        "durationMilliseconds": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "replaySeeds": { "type": "array", "minItems": 1, "maxItems": 100000, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 255 } },
+        "attemptId": { "$ref": "common.schema.json#/$defs/identifier" }
+      }
+    },
+    "qualificationSidecar": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "subject", "status", "authority", "evidence", "approvalEvidence", "issuedAt", "expiresAt", "withdrawalReferences"],
+      "properties": {
+        "schemaVersion": { "const": "0.1" },
+        "subject": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "status": { "enum": ["provisional", "qualified", "suspended", "withdrawn", "expired"] },
+        "authority": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "evidence": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "approvalEvidence": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
+        "issuedAt": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "expiresAt": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "withdrawalReferences": { "type": "array", "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+      }
+    },
+    "releaseMember": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "version", "artifact", "provenance", "sbom"],
+      "properties": {
+        "name": { "$ref": "common.schema.json#/$defs/identifier" },
+        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "provenance": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "sbom": { "$ref": "common.schema.json#/$defs/artifactRef" }
+      }
+    },
+    "releaseDependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["from", "to", "version", "artifactAasIdentity"],
+      "properties": {
+        "from": { "$ref": "common.schema.json#/$defs/identifier" },
+        "to": { "$ref": "common.schema.json#/$defs/identifier" },
+        "version": { "$ref": "common.schema.json#/$defs/version" },
+        "artifactAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
+      }
+    },
+    "releaseEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["registryInstallation", "packageInventory", "upgrade", "downgrade", "publicApi", "rollback", "consumerCanary"],
+      "properties": {
+        "registryInstallation": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "packageInventory": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "upgrade": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "downgrade": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "publicApi": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "rollback": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "consumerCanary": { "$ref": "common.schema.json#/$defs/artifactRef" }
+      }
+    },
+    "approvalSidecars": {
+      "type": "object", "additionalProperties": false,
+      "required": ["normative", "conformance", "release"],
+      "properties": {
+        "normative": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "conformance": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "release": { "$ref": "common.schema.json#/$defs/aasIdentity" }
+      }
+    },
+    "releaseManifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "cohort", "maturity", "members", "dependencies", "schemas", "profiles", "claims", "sourceCommit", "releaseCommit", "qualificationSidecars", "releaseEvidence", "publicationOrder", "completionStatus", "approvalSidecars", "limitations", "supportedVersions", "withdrawalInstructions"],
+      "properties": {
+        "schemaVersion": { "const": "0.1" },
+        "cohort": { "$ref": "common.schema.json#/$defs/identifier" },
+        "maturity": { "const": "experimental" },
+        "members": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "#/$defs/releaseMember" } },
+        "dependencies": { "type": "array", "maxItems": 4096, "items": { "$ref": "#/$defs/releaseDependency" } },
+        "schemas": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "profiles": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "claims": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "releaseCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "qualificationSidecars": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
+        "releaseEvidence": { "$ref": "#/$defs/releaseEvidence" },
+        "publicationOrder": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
+        "completionStatus": { "enum": ["incomplete", "complete"] },
+        "approvalSidecars": { "$ref": "#/$defs/approvalSidecars" },
+        "limitations": { "type": "array", "maxItems": 1024, "items": { "type": "string", "maxLength": 1024 } },
+        "supportedVersions": { "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/version" } },
+        "withdrawalInstructions": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } }
+      }
+    }
   },
-  "oneOf": [{ "$ref": "#/$defs/claim" }, { "$ref": "#/$defs/report" }, { "$ref": "#/$defs/qualificationSidecar" }, { "$ref": "#/$defs/releaseManifest" }]
+  "oneOf": [
+    { "$ref": "#/$defs/claim" },
+    { "$ref": "#/$defs/report" },
+    { "$ref": "#/$defs/qualificationSidecar" },
+    { "$ref": "#/$defs/releaseManifest" }
+  ]
 }

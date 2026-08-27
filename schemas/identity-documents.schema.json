@@ -55,7 +55,7 @@
     "promotionRecord": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["aasIdentity", "ruleId", "consumer", "policy", "profiles", "analyzerAasIdentity", "rolloutScope", "previousMode", "nextMode", "evidence", "denominator", "escapes", "falseBlocks", "incidents", "owner", "rollbackAction", "responseSla"],
+      "required": ["aasIdentity", "ruleId", "consumer", "policy", "profiles", "analyzerAasIdentity", "exposureInterval", "rolloutScope", "previousMode", "nextMode", "evidence", "denominators", "escapes", "falseBlocks", "confidenceIntervals", "incidents", "thresholds", "owner", "rollbackAction", "responseSla"],
       "properties": {
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "ruleId": { "$ref": "common.schema.json#/$defs/identifier" },
@@ -63,17 +63,49 @@
         "policy": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } },
         "analyzerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "exposureInterval": { "$ref": "#/$defs/exposureInterval" },
         "rolloutScope": { "type": "string", "minLength": 1, "maxLength": 1024 },
         "previousMode": { "enum": ["shadow", "advisory"] },
         "nextMode": { "enum": ["advisory", "required"] },
         "evidence": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } },
-        "denominator": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "denominators": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/namedCount" } },
         "escapes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
         "falseBlocks": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "confidenceIntervals": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/confidenceInterval" } },
         "incidents": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "thresholds": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/threshold" } },
         "owner": { "type": "string", "minLength": 1, "maxLength": 255 },
         "rollbackAction": { "$ref": "common.schema.json#/$defs/identifier" },
         "responseSla": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "exposureInterval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": { "start": { "type": "string", "minLength": 1, "maxLength": 128 }, "end": { "type": "string", "minLength": 1, "maxLength": 128 } }
+    },
+    "namedCount": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "count"],
+      "properties": { "name": { "$ref": "common.schema.json#/$defs/identifier" }, "count": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" } }
+    },
+    "confidenceInterval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["metric", "lowerBasisPoints", "upperBasisPoints", "confidenceBasisPoints"],
+      "properties": {
+        "metric": { "$ref": "common.schema.json#/$defs/identifier" },
+        "lowerBasisPoints": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "upperBasisPoints": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "confidenceBasisPoints": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      }
+    },
+    "threshold": {
+      "type": "object", "additionalProperties": false,
+      "required": ["metric", "operator", "value"],
+      "properties": {
+        "metric": { "$ref": "common.schema.json#/$defs/identifier" },
+        "operator": { "enum": ["less-than", "less-than-or-equal", "equal", "greater-than-or-equal", "greater-than"] },
+        "value": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
       }
     },
     "analysisKey": {

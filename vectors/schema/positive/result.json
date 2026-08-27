@@ -1,8 +1,9 @@
 {
   "kind": "result",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "aasIdentity": "aas:v0:sha256:5a3ea268fab84004e3f523f7b00d3dc01c5802d491a35fb7a47ce584e5a416aa",
   "requestAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
   "resolutions": [
     {
       "targetId": "target-1",
@@ -15,18 +16,30 @@
         "resolution": "decided",
         "verdict": "pass",
         "mode": "advisory",
+        "rolloutDisposition": "included",
         "bindingAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
         "snapshotAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
         "policyAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
         "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
         "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+        "overlayAasIdentity": "aas:v0:sha256:9999999999999999999999999999999999999999999999999999999999999999",
         "requestAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
-        "resultAasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+        "resultAasIdentity": "aas:v0:sha256:5a3ea268fab84004e3f523f7b00d3dc01c5802d491a35fb7a47ce584e5a416aa",
         "freshness": "fresh",
+        "coverageSummary": { "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 },
+        "severityCounts": { "info": 0, "warning": 0, "error": 0, "critical": 0 },
+        "highestSeverity": "none",
         "omissionCount": 0,
+        "omissionReasons": [],
         "nextAction": "none"
       }
     }
   ],
+  "coverage": [{ "stage": "evaluation", "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 }],
+  "evidence": [],
+  "omissions": [],
+  "realizedCounters": { "inputBytes": 1, "depth": 1, "pathSegments": 1, "pathBytes": 1, "entries": 1, "logicalBytes": 1, "readBytes": 1, "peakEntryBytes": 1, "overlayOperations": 1, "targets": 1, "evidenceReferences": 0, "extensionBytes": 0, "diagnostics": 0, "outputBytes": 1, "peakConcurrency": 1, "totalWork": 1 },
+  "diagnostics": [],
   "extensions": {}
 }

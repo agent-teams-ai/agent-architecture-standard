@@ -3,6 +3,14 @@
   "$id": "https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json",
   "title": "AAS normative artifact manifest",
   "x-aas-status": "private-provisional-unpublished",
+  "$defs": {
+    "manifestPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!.*(?:^|/)(?:con|prn|aux|nul|clock\\$|conin\\$|conout\\$|com[1-9]|lpt[1-9])(?:\\.|/|$))(?!.*[. ](?:/|$))[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*$"
+    }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": ["manifestVersion", "standardVersion", "status", "schemaDialect", "identityPolicy", "artifacts"],
@@ -26,7 +34,7 @@
         "type": "object", "additionalProperties": false,
         "required": ["path", "class", "contentDigest", "aasIdentityStatus", "byteLength", "mediaType"],
         "properties": {
-          "path": { "$ref": "common.schema.json#/$defs/portablePath" },
+          "path": { "$ref": "#/$defs/manifestPath" },
           "class": { "enum": ["schema", "registry", "vector", "normative-prose", "generated-declaration", "version-matrix"] },
           "schemaId": { "type": "string", "format": "uri" },
           "contentDigest": { "$ref": "common.schema.json#/$defs/contentDigest" },

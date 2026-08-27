@@ -4,29 +4,197 @@
   "title": "AAS request, result, resolution, problem, and diagnostic envelopes",
   "x-aas-status": "private-provisional-unpublished",
   "$defs": {
-    "target": { "type": "object", "additionalProperties": false, "required": ["id", "input", "extensions", "criticalExtensions"], "properties": { "id": { "$ref": "common.schema.json#/$defs/identifier" }, "input": { "$ref": "overlay.schema.json#/$defs/overlay" }, "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" }, "criticalExtensions": { "$ref": "common.schema.json#/$defs/extensionMap" } } },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "input", "extensions", "criticalExtensions"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "input": { "$ref": "overlay.schema.json#/$defs/overlay" },
+        "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" },
+        "criticalExtensions": { "$ref": "common.schema.json#/$defs/extensionMap" }
+      }
+    },
     "request": {
       "type": "object", "additionalProperties": false,
       "required": ["kind", "envelopeVersion", "aasIdentity", "standardVersion", "operation", "targets", "snapshotAasIdentity", "policyAasIdentity", "bindingAasIdentity", "profileAasIdentity", "analyzerAasIdentity", "budgets", "extensions", "criticalExtensions"],
       "properties": {
-        "kind": { "const": "request" }, "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" }, "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "standardVersion": { "$ref": "common.schema.json#/$defs/version" },
-        "operation": { "$ref": "common.schema.json#/$defs/identifier" }, "targets": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/target" } },
-        "snapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "profileAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "analyzerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
-        "budgets": { "$ref": "common.schema.json#/$defs/budgets" }, "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" }, "criticalExtensions": { "$ref": "common.schema.json#/$defs/extensionMap" }
+        "kind": { "const": "request" },
+        "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "standardVersion": { "$ref": "common.schema.json#/$defs/version" },
+        "operation": { "$ref": "common.schema.json#/$defs/identifier" },
+        "targets": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/target" } },
+        "snapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "profileAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "analyzerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "budgets": { "$ref": "common.schema.json#/$defs/budgets" },
+        "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" },
+        "criticalExtensions": { "$ref": "common.schema.json#/$defs/extensionMap" }
+      }
+    },
+    "coverageSummary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["denominator", "included", "policyExcluded", "unreadable", "unsupported", "unstable", "unknown", "budgetExhausted"],
+      "properties": {
+        "denominator": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "included": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "policyExcluded": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "unreadable": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "unsupported": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "unstable": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "unknown": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "budgetExhausted": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
+      }
+    },
+    "severityCounts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["info", "warning", "error", "critical"],
+      "properties": {
+        "info": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "warning": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "error": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "critical": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
       }
     },
     "diagnosticHeader": {
       "type": "object", "additionalProperties": false,
-      "required": ["version", "code", "targetId", "resolution", "mode", "bindingAasIdentity", "snapshotAasIdentity", "policyAasIdentity", "profileAasIdentity", "analyzerAasIdentity", "requestAasIdentity", "resultAasIdentity", "freshness", "omissionCount", "nextAction"],
+      "required": ["version", "code", "targetId", "resolution", "mode", "rolloutDisposition", "bindingAasIdentity", "snapshotAasIdentity", "policyAasIdentity", "profileAasIdentity", "analyzerAasIdentity", "overlayAasIdentity", "requestAasIdentity", "analysisKeyAasIdentity", "resultAasIdentity", "freshness", "coverageSummary", "severityCounts", "highestSeverity", "omissionCount", "omissionReasons", "nextAction"],
       "properties": {
-        "version": { "const": "0.1" }, "code": { "$ref": "common.schema.json#/$defs/identifier" }, "targetId": { "$ref": "common.schema.json#/$defs/identifier" }, "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] }, "verdict": { "enum": ["pass", "fail", "not-applicable"] }, "mode": { "enum": ["shadow", "advisory", "required"] },
-        "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "snapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "profileAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "analyzerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "requestAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "resultAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
-        "freshness": { "enum": ["fresh", "stale"] }, "omissionCount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "nextAction": { "$ref": "common.schema.json#/$defs/identifier" }
+        "version": { "const": "0.1" },
+        "code": { "$ref": "common.schema.json#/$defs/identifier" },
+        "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] },
+        "verdict": { "enum": ["pass", "fail", "not-applicable"] },
+        "mode": { "enum": ["shadow", "advisory", "required"] },
+        "rolloutDisposition": { "$ref": "common.schema.json#/$defs/identifier" },
+        "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "snapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "profileAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "analyzerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "overlayAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "requestAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "analysisKeyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "resultAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "freshness": { "enum": ["fresh", "stale"] },
+        "coverageSummary": { "$ref": "#/$defs/coverageSummary" },
+        "severityCounts": { "$ref": "#/$defs/severityCounts" },
+        "highestSeverity": { "enum": ["none", "info", "warning", "error", "critical"] },
+        "omissionCount": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "omissionReasons": { "type": "array", "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
+        "nextAction": { "$ref": "common.schema.json#/$defs/identifier" }
       }
     },
-    "resolution": { "type": "object", "additionalProperties": false, "required": ["targetId", "resolution", "diagnostic"], "properties": { "targetId": { "$ref": "common.schema.json#/$defs/identifier" }, "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] }, "verdict": { "enum": ["pass", "fail", "not-applicable"] }, "reason": { "$ref": "common.schema.json#/$defs/identifier" }, "diagnostic": { "$ref": "#/$defs/diagnosticHeader" } } },
-    "result": { "type": "object", "additionalProperties": false, "required": ["kind", "envelopeVersion", "aasIdentity", "requestAasIdentity", "resolutions", "extensions"], "properties": { "kind": { "const": "result" }, "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" }, "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "requestAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "resolutions": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/resolution" } }, "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" } } },
-    "problem": { "type": "object", "additionalProperties": false, "required": ["kind", "envelopeVersion", "code"], "properties": { "kind": { "const": "problem" }, "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" }, "code": { "$ref": "common.schema.json#/$defs/identifier" } } }
+    "remediationAction": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "preconditions"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "preconditions": { "type": "array", "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/identifier" } }
+      }
+    },
+    "decisionTrace": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingAasIdentity", "normalizedFacts", "evaluatedBranch", "exceptionDisposition", "remediationPreconditions"],
+      "properties": {
+        "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "normalizedFacts": { "type": "array", "maxItems": 10000, "items": { "$ref": "common.schema.json#/$defs/jsonValue" } },
+        "evaluatedBranch": { "$ref": "common.schema.json#/$defs/identifier" },
+        "exceptionDisposition": { "$ref": "common.schema.json#/$defs/identifier" },
+        "remediationPreconditions": { "type": "array", "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/identifier" } }
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["code", "severity", "targetId", "ruleOrProfile", "evidenceIds", "terminalReason", "decisionTrace", "remediationActions"],
+      "properties": {
+        "code": { "$ref": "common.schema.json#/$defs/identifier" },
+        "severity": { "enum": ["info", "warning", "error", "critical"] },
+        "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "ruleOrProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
+        "evidenceIds": { "type": "array", "maxItems": 100000, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
+        "terminalReason": { "$ref": "common.schema.json#/$defs/identifier" },
+        "decisionTrace": { "$ref": "#/$defs/decisionTrace" },
+        "remediationActions": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/remediationAction" } }
+      }
+    },
+    "omission": {
+      "type": "object", "additionalProperties": false,
+      "required": ["targetId", "reason", "count"],
+      "properties": {
+        "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "reason": { "$ref": "common.schema.json#/$defs/identifier" },
+        "count": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
+      }
+    },
+    "realizedCounters": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inputBytes", "depth", "pathSegments", "pathBytes", "entries", "logicalBytes", "readBytes", "peakEntryBytes", "overlayOperations", "targets", "evidenceReferences", "extensionBytes", "diagnostics", "outputBytes", "peakConcurrency", "totalWork"],
+      "properties": {
+        "inputBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "depth": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "pathSegments": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "pathBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "entries": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "logicalBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "readBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "peakEntryBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "overlayOperations": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "targets": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "evidenceReferences": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "extensionBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "diagnostics": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "outputBytes": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "peakConcurrency": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
+        "totalWork": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }
+      }
+    },
+    "resolution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["targetId", "resolution", "diagnostic"],
+      "properties": {
+        "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] },
+        "verdict": { "enum": ["pass", "fail", "not-applicable"] },
+        "reason": { "$ref": "common.schema.json#/$defs/identifier" },
+        "diagnostic": { "$ref": "#/$defs/diagnosticHeader" }
+      }
+    },
+    "result": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "envelopeVersion", "aasIdentity", "requestAasIdentity", "analysisKeyAasIdentity", "resolutions", "coverage", "evidence", "omissions", "realizedCounters", "diagnostics", "extensions"],
+      "properties": {
+        "kind": { "const": "result" },
+        "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "requestAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "analysisKeyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "resolutions": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/resolution" } },
+        "coverage": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "$ref": "artifacts.schema.json#/$defs/coverage" } },
+        "evidence": { "type": "array", "maxItems": 1000000, "items": { "$ref": "artifacts.schema.json#/$defs/evidence" } },
+        "omissions": { "type": "array", "maxItems": 100000, "items": { "$ref": "#/$defs/omission" } },
+        "realizedCounters": { "$ref": "#/$defs/realizedCounters" },
+        "diagnostics": { "type": "array", "maxItems": 1000000, "items": { "$ref": "#/$defs/diagnostic" } },
+        "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" }
+      }
+    },
+    "problem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "envelopeVersion", "code"],
+      "properties": {
+        "kind": { "const": "problem" },
+        "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
+        "code": { "$ref": "common.schema.json#/$defs/identifier" }
+      }
+    }
   },
-  "oneOf": [{ "$ref": "#/$defs/request" }, { "$ref": "#/$defs/result" }, { "$ref": "#/$defs/problem" }, { "$ref": "#/$defs/diagnosticHeader" }]
+  "oneOf": [
+    { "$ref": "#/$defs/request" },
+    { "$ref": "#/$defs/result" },
+    { "$ref": "#/$defs/problem" },
+    { "$ref": "#/$defs/diagnosticHeader" },
+    { "$ref": "#/$defs/diagnostic" }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1",
   "status": "private-provisional-unpublished",
-  "standardVersions": ["0.1.0-rc.1"],
+  "standardVersions": ["01.02.03"],
   "envelopeVersions": ["0.1"],
   "operations": [{ "id": "validate-overlay@1", "aasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777" }],
   "profiles": [],

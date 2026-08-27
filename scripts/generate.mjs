@@ -36,6 +36,9 @@ function typeFor(schema, document) {
   if (schema.type === 'null') return 'null';
   if (schema.type === 'array') return `Array<${typeFor(schema.items ?? true, document)}>`;
   if (schema.type === 'object' || schema.properties || schema.additionalProperties) {
+    if ((schema.additionalProperties === false || schema.additionalProperties === undefined) && Object.keys(schema.properties ?? {}).length === 0 && schema.maxProperties === 0) {
+      return 'Record<PropertyKey, never>';
+    }
     const required = new Set(schema.required ?? []);
     const fields = Object.entries(schema.properties ?? {}).map(([key, value]) => `  ${JSON.stringify(key)}${required.has(key) ? '' : '?'}: ${typeFor(value, document)};`);
     if (schema.additionalProperties && schema.additionalProperties !== false) fields.push(`  [key: string]: ${schema.additionalProperties === true ? 'JsonValue' : typeFor(schema.additionalProperties, document)};`);
@@ -74,7 +77,7 @@ for (const relative of unique) {
     path: slash(relative),
     class: relative.startsWith('schemas/') && relative.endsWith('.json') ? 'schema'
       : relative.startsWith('registries/') && relative.endsWith('.json') ? 'registry'
-      : relative.startsWith('vectors/') && relative !== 'vectors/README.md' ? 'vector'
+      : relative.startsWith('vectors/') && relative !== 'vectors/readme.md' ? 'vector'
       : relative.startsWith('generated/') ? 'generated-declaration'
       : relative === 'version-matrix.json' ? 'version-matrix' : 'normative-prose',
     contentDigest: sha256(bytes),

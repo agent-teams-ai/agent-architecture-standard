@@ -14,10 +14,15 @@ const corpus = JSON.parse(await readFile(path.join(root, 'vectors/schema/corpus.
 test('positive and negative schema corpus has exact expected dispositions', async () => {
   const seen = new Set();
   for (const item of corpus.cases) {
-    assert(!seen.has(item.id), `duplicate case ID: ${item.id}`); seen.add(item.id);
-    const instance = JSON.parse(await readFile(path.join(root, item.path), 'utf8'));
-    const validate = ajv.getSchema(item.schema);
-    assert(validate, `unknown schema ID in corpus: ${item.schema}`);
-    assert.equal(validate(instance), item.valid, `${item.id}: ${ajv.errorsText(validate.errors)}`);
+    assert(!seen.has(item.caseId), `duplicate case ID: ${item.caseId}`); seen.add(item.caseId);
+    assert.equal(typeof item.requirement, 'string');
+    assert.equal(typeof item.rationale, 'string');
+    assert.equal(item.expected.version, corpus.schemaVersion);
+    assert(Number.isSafeInteger(item.limits.maxInputBytes) && Number.isSafeInteger(item.limits.maxDepth));
+    const instance = JSON.parse(await readFile(path.join(root, item.input.reference), 'utf8'));
+    const validate = ajv.getSchema(item.expected.schema);
+    assert(validate, `unknown schema ID in corpus: ${item.expected.schema}`);
+    assert.equal(validate(instance), item.expected.valid, `${item.caseId}: ${ajv.errorsText(validate.errors)}`);
+    assert.equal(item.expected.diagnostic, item.expected.valid ? 'none' : 'schema-validation-failed');
   }
 });

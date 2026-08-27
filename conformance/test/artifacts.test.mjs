@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '../..');
 const manifest = JSON.parse(await readFile(path.join(root, 'artifacts.json'), 'utf8'));
-test('independent skeleton consumes only normative artifacts and vectors', async () => {
+test('workspace-data skeleton verifies checked-in normative artifacts and vectors', async () => {
   assert(manifest.artifacts.some((entry) => entry.class === 'schema'));
   assert(manifest.artifacts.some((entry) => entry.class === 'vector'));
   for (const entry of manifest.artifacts.filter((item) => item.class !== 'generated-declaration')) {

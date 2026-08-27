@@ -43,17 +43,43 @@ export type promotionRecord = {
   "policy": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "exposureInterval": exposureInterval;
   "rolloutScope": ConstrainedString;
   "previousMode": "shadow" | "advisory";
   "nextMode": "advisory" | "required";
   "evidence": Array<import("./common.js").artifactRef>;
-  "denominator": import("./common.js").nonnegativeInteger;
+  "denominators": Array<namedCount>;
   "escapes": import("./common.js").nonnegativeInteger;
   "falseBlocks": import("./common.js").nonnegativeInteger;
+  "confidenceIntervals": Array<confidenceInterval>;
   "incidents": import("./common.js").nonnegativeInteger;
+  "thresholds": Array<threshold>;
   "owner": ConstrainedString;
   "rollbackAction": import("./common.js").identifier;
   "responseSla": ConstrainedString;
+};
+
+export type exposureInterval = {
+  "start": ConstrainedString;
+  "end": ConstrainedString;
+};
+
+export type namedCount = {
+  "name": import("./common.js").identifier;
+  "count": import("./common.js").nonnegativeInteger;
+};
+
+export type confidenceInterval = {
+  "metric": import("./common.js").identifier;
+  "lowerBasisPoints": JsonInteger;
+  "upperBasisPoints": JsonInteger;
+  "confidenceBasisPoints": JsonInteger;
+};
+
+export type threshold = {
+  "metric": import("./common.js").identifier;
+  "operator": "less-than" | "less-than-or-equal" | "equal" | "greater-than-or-equal" | "greater-than";
+  "value": import("./common.js").nonnegativeInteger;
 };
 
 export type analysisKey = {

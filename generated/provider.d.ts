@@ -8,7 +8,7 @@ export type AASProviderDescription = {
   "schemaVersion": "0.1";
   "status": "private-provisional-unpublished";
   "standardVersions": Array<import("./common.js").version>;
-  "envelopeVersions": Array<import("./common.js").version>;
+  "envelopeVersions": Array<import("./common.js").envelopeVersion>;
   "operations": Array<import("./common.js").profileRef>;
   "profiles": Array<import("./common.js").profileRef>;
   "limits": import("./common.js").budgets;

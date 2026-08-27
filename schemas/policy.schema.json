@@ -4,6 +4,16 @@
   "title": "AAS effective policy, binding, and exception",
   "x-aas-status": "private-provisional-unpublished",
   "$defs": {
+    "provenanceEntry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceArtifact", "semanticRole", "sourceOwner", "supports"],
+      "properties": {
+        "sourceArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "semanticRole": { "enum": ["authoritative-source", "commissioning-decision", "generator"] },
+        "sourceOwner": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "supports": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 512 } }
+      }
+    },
     "exception": {
       "type": "object", "additionalProperties": false,
       "required": ["aasIdentity", "ruleId", "scope", "owner", "reasonCode", "creationPolicyAasIdentity", "validForRevision"],
@@ -28,7 +38,14 @@
         "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } },
         "rules": { "type": "array", "maxItems": 10000, "items": { "type": "object", "additionalProperties": false, "required": ["id", "parameters"], "properties": { "id": { "$ref": "common.schema.json#/$defs/identifier" }, "parameters": { "type": "object", "maxProperties": 64, "additionalProperties": true } } } },
         "exceptions": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/exception" } },
-        "provenance": { "type": "array", "minItems": 1, "maxItems": 1024, "items": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+        "provenance": {
+          "type": "array", "minItems": 2, "maxItems": 1024,
+          "items": { "$ref": "#/$defs/provenanceEntry" },
+          "allOf": [
+            { "contains": { "type": "object", "required": ["semanticRole"], "properties": { "semanticRole": { "const": "authoritative-source" } } }, "minContains": 1 },
+            { "contains": { "type": "object", "required": ["semanticRole"], "properties": { "semanticRole": { "const": "commissioning-decision" } } }, "minContains": 1 }
+          ]
+        }
       }
     },
     "binding": {

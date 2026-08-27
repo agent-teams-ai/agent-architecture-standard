@@ -4,6 +4,7 @@ import path from 'node:path';
 import { root, walk, readJson } from './files.mjs';
 import { assertAcyclicSchemaGraph } from '../lib/schema-graph.mjs';
 import { OfflineSchemaRegistry } from '../lib/schema-registry.mjs';
+import { assertPortablePackageInventory } from './package-paths.mjs';
 
 const schemaPaths = (await walk('schemas')).filter((item) => item.endsWith('.schema.json'));
 const schemas = await Promise.all(schemaPaths.map(readJson));
@@ -38,6 +39,7 @@ for (const relative of (await walk('registries')).filter((item) => item.endsWith
 const manifestValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json');
 const manifest = await readJson('artifacts.json');
 if (!manifestValidator(manifest)) throw new Error(`artifacts.json: ${ajv.errorsText(manifestValidator.errors)}`);
+assertPortablePackageInventory(manifest.artifacts.map((entry) => entry.path), 'manifest');
 for (const entry of manifest.artifacts) {
   const bytes = await readFile(path.join(root, entry.path));
   if (bytes.byteLength !== entry.byteLength) throw new Error(`byte length drift: ${entry.path}`);

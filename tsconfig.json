@@ -7,5 +7,5 @@
     "target": "ES2024",
     "skipLibCheck": true
   },
-  "include": ["generated/**/*.d.ts"]
+  "include": ["generated/**/*.d.ts", "test/**/*.ts"]
 }

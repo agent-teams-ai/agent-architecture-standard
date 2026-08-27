@@ -19,12 +19,11 @@
   },
   "cases": [
     { "id": "same-version", "reader": ["0.1"], "writer": ["0.1"], "pin": null, "selected": "0.1", "outcome": "selected" },
-    { "id": "new-reader-old-writer", "reader": ["0.1", "0.2"], "writer": ["0.1"], "pin": null, "selected": "0.1", "outcome": "selected" },
-    { "id": "old-reader-new-writer", "reader": ["0.1"], "writer": ["0.1", "0.2"], "pin": null, "selected": "0.1", "outcome": "selected" },
-    { "id": "highest-mutual", "reader": ["0.1", "0.2"], "writer": ["0.1", "0.2"], "pin": null, "selected": "0.2", "outcome": "selected" },
-    { "id": "mutual-pin", "reader": ["0.1", "0.2"], "writer": ["0.1", "0.2"], "pin": "0.1", "selected": "0.1", "outcome": "selected" },
-    { "id": "non-mutual-pin", "reader": ["0.1"], "writer": ["0.1", "0.2"], "pin": "0.2", "selected": null, "outcome": "problem" },
-    { "id": "no-overlap", "reader": ["0.1"], "writer": ["0.2"], "pin": null, "selected": null, "outcome": "problem" }
+    { "id": "same-version-pinned", "reader": ["0.1"], "writer": ["0.1"], "pin": "0.1", "selected": "0.1", "outcome": "selected" },
+    { "id": "unknown-reader-version", "reader": ["9.9"], "writer": ["0.1"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "unknown-writer-version", "reader": ["0.1"], "writer": ["9.9"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "non-mutual-pin", "reader": ["0.1"], "writer": ["0.1"], "pin": "9.9", "selected": null, "outcome": "problem" },
+    { "id": "no-overlap", "reader": ["0.1"], "writer": [], "pin": null, "selected": null, "outcome": "problem" }
   ],
   "identityRules": {
     "constructorsPresent": false,

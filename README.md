@@ -43,10 +43,10 @@ remain provisional.
 
 ## Artifact indexes
 
-- [schemas/README.md](schemas/README.md) indexes future wire-shape schemas.
-- [registries/README.md](registries/README.md) defines registry files and their
+- [schemas/readme.md](schemas/readme.md) indexes the checked-in provisional wire-shape schemas.
+- [registries/readme.md](registries/readme.md) defines registry files and their
   lifecycle.
-- [vectors/README.md](vectors/README.md) indexes future exact observable
+- [vectors/readme.md](vectors/readme.md) indexes the checked-in provisional exact observable
   examples.
 - [templates/normative-traceability.md](templates/normative-traceability.md)
   defines the mandatory traceability record.
