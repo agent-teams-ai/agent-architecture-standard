@@ -58,7 +58,7 @@ for (const definition of ['diagnosticHeader', 'resolution']) {
 const registryValues = schemaByName.get('registry-values.schema.json').$defs;
 if (JSON.stringify(registryValues.actionId.enum) !== JSON.stringify(actionRegistry.entries.map(({ id }) => id))) throw new Error('generated action wire values drift from actions registry');
 if (JSON.stringify(registryValues.problemCode.enum) !== JSON.stringify(problemRegistry.entries.map(({ id }) => id))) throw new Error('generated problem wire values drift from problems registry');
-for (const [role, definition] of [['canonicalization', 'canonicalizationProfile'], ['snapshot-capture', 'snapshotCaptureProfile'], ['portable-path', 'portablePathProfile']]) {
+for (const [role, definition] of [['canonicalization', 'canonicalizationProfile'], ['snapshot-capture', 'snapshotCaptureProfile'], ['portable-path', 'portablePathProfile'], ['accounting', 'accountingProfile']]) {
   const generatedProfiles = registryValues[definition].oneOf.map((branch) => ({ id: branch.properties.id.const, version: branch.properties.version.const }));
   const ownedProfiles = profileRegistry.entries.filter((entry) => entry.role === role).map(({ id }) => ({ id, version: id.slice(id.lastIndexOf('@') + 1) }));
   if (JSON.stringify(generatedProfiles) !== JSON.stringify(ownedProfiles)) throw new Error(`generated ${role} profile values drift from profiles registry`);

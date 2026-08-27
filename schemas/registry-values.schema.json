@@ -104,6 +104,30 @@
           }
         }
       ]
+    },
+    "accountingProfile": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "id",
+            "aasIdentity"
+          ],
+          "properties": {
+            "version": {
+              "const": "1"
+            },
+            "id": {
+              "const": "agent-architecture-resource-accounting-v0@1"
+            },
+            "aasIdentity": {
+              "$ref": "common.schema.json#/$defs/aasIdentity"
+            }
+          }
+        }
+      ]
     }
   },
   "type": "object",

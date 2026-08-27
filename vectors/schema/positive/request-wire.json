@@ -1,0 +1,76 @@
+{
+  "kind": "request",
+  "envelopeVersion": "0.1",
+  "aasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
+  "standardVersion": "0.1.0-rc.1",
+  "operation": "validate-overlay@1",
+  "targets": [
+    {
+      "id": "target-1",
+      "input": {
+        "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "pathProfile": {
+          "version": "1",
+          "id": "agent-architecture-portable-path-unicode17@1",
+          "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "limits": {
+          "maxInputBytes": 100,
+          "maxDepth": 8,
+          "maxPathSegments": 8,
+          "maxPathBytes": 128,
+          "maxEntries": 10,
+          "maxLogicalBytes": 1000,
+          "maxReadBytes": 1000,
+          "maxPerEntryBytes": 100,
+          "maxOverlayOperations": 10,
+          "maxTargets": 10,
+          "maxEvidenceReferences": 10,
+          "maxExtensionBytes": 100,
+          "maxDiagnostics": 10,
+          "maxOutputBytes": 1000,
+          "maxConcurrency": 2,
+          "maxTotalWork": 1000
+        },
+        "operations": [
+          {
+            "op": "add",
+            "path": "src/a.ts",
+            "contentAasIdentity": "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+          }
+        ]
+      },
+      "extensions": {},
+      "criticalExtensions": {}
+    }
+  ],
+  "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+  "accountingProfileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "budgets": {
+    "maxInputBytes": 4096,
+    "maxDepth": 8,
+    "maxPathSegments": 8,
+    "maxPathBytes": 128,
+    "maxEntries": 10,
+    "maxLogicalBytes": 1000,
+    "maxReadBytes": 1000,
+    "maxPerEntryBytes": 100,
+    "maxOverlayOperations": 10,
+    "maxTargets": 10,
+    "maxEvidenceReferences": 10,
+    "maxExtensionBytes": 1024,
+    "maxDiagnostics": 10,
+    "maxOutputBytes": 4096,
+    "maxConcurrency": 2,
+    "maxTotalWork": 1000
+  },
+  "extensions": {
+    "com.example.semantic": true
+  },
+  "criticalExtensions": {}
+}

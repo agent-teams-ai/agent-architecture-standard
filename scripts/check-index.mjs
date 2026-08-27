@@ -105,6 +105,13 @@ const assertFragment = (owner, reference) => {
   const target = candidates.find((item) => headings.has(item));
   if (!target || !headings.get(target).has(decodeURIComponent(fragment))) throw new Error(`unresolved requirement fragment: ${owner} -> ${reference}`);
 };
+const assertStructuredRequirement = (owner, reference) => {
+  const [targetPart, fragment] = reference.split('#', 2);
+  if (!targetPart || path.posix.isAbsolute(targetPart) || targetPart.includes('\\') || targetPart.split('/').includes('..')) throw new Error(`structured requirement is not package-root-relative: ${owner} -> ${reference}`);
+  const target = path.posix.normalize(targetPart);
+  if (target !== targetPart || !headings.has(target)) throw new Error(`structured requirement does not resolve under the sole package-root base: ${owner} -> ${reference}`);
+  if (fragment && !fragment.startsWith('/') && !headings.get(target).has(decodeURIComponent(fragment))) throw new Error(`unresolved structured requirement fragment: ${owner} -> ${reference}`);
+};
 for (const relative of markdownPaths) {
   const source = await readFile(path.join(root, relative), 'utf8');
   for (const match of source.matchAll(/\[[^\]]*\]\(([^)]+)\)/gu)) if (!/^(?:https?:|mailto:)/u.test(match[1])) assertFragment(relative, match[1]);
@@ -113,7 +120,7 @@ for (const relative of (await walk('vectors')).filter((item) => item.endsWith('.
   let document; try { document = await readJson(relative); } catch { continue; }
   const visit = (value) => {
     if (!value || typeof value !== 'object') return;
-    if (typeof value.requirement === 'string') assertFragment(relative, value.requirement);
+    if (typeof value.requirement === 'string') assertStructuredRequirement(relative, value.requirement);
     for (const child of Object.values(value)) visit(child);
   };
   visit(document);

@@ -1,8 +1,8 @@
 {
   "kind": "result",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:97e35544ab771ecf6e5614e01bf41ef04b9fee80a6f950adcec04846816ada49",
-  "requestAasIdentity": "aas:v0:sha256:490c9b3a500b5f16d633aad70c5184221ed8eeda8ff56ed98968ef0620530cfe",
+  "aasIdentity": "aas:v0:sha256:c651b0a4656686d089f54a81dcb403c1f9b0ead8e11a1aaf470a550b06db0007",
+  "requestAasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
   "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
   "resolutions": [
     {
@@ -10,8 +10,28 @@
       "resolution": "decided",
       "verdict": "pass",
       "coverage": [
-        { "stage": "evaluation", "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 },
-        { "stage": "overlay-reevaluation", "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 }
+        {
+          "stage": "evaluation",
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        },
+        {
+          "stage": "overlay-reevaluation",
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        }
       ],
       "diagnostic": {
         "version": "0.1",
@@ -27,12 +47,26 @@
         "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
         "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
         "overlayAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "requestAasIdentity": "aas:v0:sha256:490c9b3a500b5f16d633aad70c5184221ed8eeda8ff56ed98968ef0620530cfe",
+        "requestAasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
         "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
-        "resultAasIdentity": "aas:v0:sha256:97e35544ab771ecf6e5614e01bf41ef04b9fee80a6f950adcec04846816ada49",
+        "resultAasIdentity": "aas:v0:sha256:c651b0a4656686d089f54a81dcb403c1f9b0ead8e11a1aaf470a550b06db0007",
         "freshness": "fresh",
-        "coverageSummary": { "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 },
-        "severityCounts": { "info": 0, "warning": 0, "error": 0, "critical": 0 },
+        "coverageSummary": {
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        },
+        "severityCounts": {
+          "info": 0,
+          "warning": 0,
+          "error": 0,
+          "critical": 0
+        },
         "highestSeverity": "none",
         "omissionCount": 0,
         "omissionReasons": [],
@@ -41,15 +75,58 @@
     }
   ],
   "coverage": [
-    { "stage": "evaluation", "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 },
-    { "stage": "overlay-reevaluation", "denominator": 1, "included": 1, "policyExcluded": 0, "unreadable": 0, "unsupported": 0, "unstable": 0, "unknown": 0, "budgetExhausted": 0 }
+    {
+      "stage": "evaluation",
+      "denominator": 1,
+      "included": 1,
+      "policyExcluded": 0,
+      "unreadable": 0,
+      "unsupported": 0,
+      "unstable": 0,
+      "unknown": 0,
+      "budgetExhausted": 0
+    },
+    {
+      "stage": "overlay-reevaluation",
+      "denominator": 1,
+      "included": 1,
+      "policyExcluded": 0,
+      "unreadable": 0,
+      "unsupported": 0,
+      "unstable": 0,
+      "unknown": 0,
+      "budgetExhausted": 0
+    }
   ],
   "evidence": [],
   "omissions": [],
-  "realizedCounters": { "inputBytes": 2084, "depth": 1, "pathSegments": 1, "pathBytes": 1, "entries": 1, "logicalBytes": 1, "readBytes": 1, "peakEntryBytes": 1, "overlayOperations": 1, "targets": 1, "evidenceReferences": 0, "extensionBytes": 150, "diagnostics": 0, "outputBytes": 2771, "peakConcurrency": 1, "totalWork": 1 },
+  "realizedCounters": {
+    "inputBytes": 2770,
+    "depth": 1,
+    "pathSegments": 1,
+    "pathBytes": 1,
+    "entries": 1,
+    "logicalBytes": 1,
+    "readBytes": 1,
+    "peakEntryBytes": 1,
+    "overlayOperations": 1,
+    "targets": 1,
+    "evidenceReferences": 0,
+    "extensionBytes": 150,
+    "diagnostics": 0,
+    "outputBytes": 2970,
+    "peakConcurrency": 1,
+    "totalWork": 1
+  },
   "diagnostics": [],
   "extensionDispositions": [
-    { "extensionId": "com.example.semantic", "location": "request", "disposition": "understood", "requestBound": true, "affectsCoreSemantics": true }
+    {
+      "extensionId": "com.example.semantic",
+      "location": "request",
+      "disposition": "understood",
+      "requestBound": true,
+      "affectsCoreSemantics": true
+    }
   ],
   "extensions": {}
 }

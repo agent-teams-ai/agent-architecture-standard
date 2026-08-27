@@ -178,7 +178,8 @@ produces `indeterminate` with budget evidence.
 ## 7. Governed exceptions
 
 An exception is semantically complete only if it conveys exactly one rule, a
-bounded subject/path scope, owner, reason code, an already-finalized earlier
+bounded subject/path scope, the exact registered portable-path profile reference
+used to validate that scope, owner, reason code, an already-finalized earlier
 creation-policy `aasIdentity`, and one exact immutable `validForRevision`. Its
 JSON Schema is the sole authority for field names and requiredness.
 `validForRevision` is the domain-framed repository-revision `aasIdentity` defined
@@ -187,6 +188,12 @@ for every other revision, including any descendant or content-equivalent revisio
 Absolute timestamps, durations, mutable issue states, branch names, and
 latest-revision selectors MUST NOT be expiry conditions in v0. A perpetual
 exception is invalid.
+
+Every exception embedded in an effective policy MUST use the exact same path
+profile ID, version, and `aasIdentity` as that policy. Semantic path collections
+in a policy or binding MAY repeat an identical accepted spelling (including the
+same scope used by different rules), but MUST reject two distinct spellings
+whose Unicode 17 NFC/full-default-case-fold collision keys are equal.
 
 The creation policy MUST have been finalized before the exception bytes were
 created and MUST NOT include that exception or any artifact that transitively
@@ -334,6 +341,12 @@ closed remediation actions. Its JSON Schema is the sole authority for field name
 and requiredness. A semantically complete decision trace conveys the effective
 binding, normalized facts, evaluated branch, exception disposition, and
 remediation preconditions; its JSON Schema owns field names and requiredness.
+Each detailed diagnostic target MUST resolve to exactly one resolution header.
+Its trace `bindingAasIdentity` MUST equal that header's binding identity.
+Candidate binding IDs MUST be unique, and `selectedBindingId` MUST select
+exactly one candidate whose `aasIdentity` equals both the trace and header
+binding identity. A trace cannot invent a second binding interpretation for the
+same target.
 
 Remediation actions MUST come from trusted static profile data and a closed
 action registry. Repository or provider prose MUST NOT supply commands. Values

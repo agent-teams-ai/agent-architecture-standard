@@ -192,6 +192,46 @@ prose MUST NOT become remediation commands or instructions.
 
 ## 6. Resource limits and privacy
 
+### Stable v0 resource-accounting profile
+
+The sole normative owner of deterministic byte accounting is the provisional
+`agent-architecture-resource-accounting-v0@1` profile registered with the
+`accounting` role. Bindings MUST carry the exact closed profile reference (ID,
+definition version `1`, and profile `aasIdentity`), and requests and analysis
+keys MUST bind that same profile identity. Implementations MUST NOT substitute
+an unregistered profile or locally redefine these units.
+
+The v0 byte counters have exactly these units:
+
+- `inputBytes` is the byte length of the exact strict-JSON request
+  representation received before decoding, including all permitted whitespace.
+  It is not the canonical request identity-projection length. The ingestion
+  boundary MUST pass this raw length into request and joint request/result
+  validation. Validation MUST fail closed when it is unavailable, not a safe
+  nonnegative integer, or inconsistent with the realized counter, and MUST
+  reject it before evaluation when it exceeds `maxInputBytes`.
+- `outputBytes` is the canonical JSON UTF-8 byte length of the complete final
+  result envelope, including top-level and copied self-identity fields and the
+  final `outputBytes` integer itself. Starting with any safe nonnegative seed,
+  an implementation MUST repeatedly canonicalize the complete envelope with
+  the candidate counter, replace the candidate with that byte length, and stop
+  only when two consecutive candidates are equal. It MUST bound this process
+  to 32 iterations and fail closed on non-convergence or an unsafe integer. It
+  MUST NOT zero or omit the counter for this calculation.
+- `extensionBytes` is the canonical JSON UTF-8 byte length of exactly
+  `{ "request": { "extensions": request.extensions,
+  "criticalExtensions": request.criticalExtensions }, "targets": [...] }`,
+  where `targets` preserves request target order and each member contains
+  exactly `id`, `extensions`, and `criticalExtensions` from that target in
+  those named fields. Canonical JSON supplies object-member ordering; target
+  order remains identity-bearing. No envelope fields outside this scoped
+  projection are charged to `extensionBytes`.
+
+All other counters retain the literal semantic units named by their budget
+fields and schemas. Any future change to one of these projections or units
+requires a new accounting profile ID and `aasIdentity`; it MUST NOT revise
+`@1` in place.
+
 The profile MUST define deterministic ceilings and accounting units for encoded
 input bytes, nesting, path segments and bytes, entries, logical bytes, read
 bytes, per-entry bytes, overlay operations, requested targets, evidence
@@ -382,8 +422,14 @@ additional prerelease identifiers are forbidden. The RC MUST use a non-`latest`
 dist-tag. It is followed by a separately built and qualified numeric 0.x
 release whose exact SemVer is `0.Y.Z`, with canonical nonnegative `Y` and `Z`
 and no prerelease or build metadata. The numeric release MUST be a separately
-immutable artifact cohort; it MUST NOT reuse RC bytes, be a dist-tag promotion,
-or otherwise substitute relabeling for qualification.
+immutable artifact cohort; it MUST NOT reuse release-owned RC outputs, be a
+dist-tag promotion, or otherwise substitute relabeling for qualification.
+Paired RC and numeric manifests MAY share exact immutable prerequisite
+identities in their `schemas`, `registries`, `vectors`, and `profiles`
+collections. Those prerequisites are not rebuilt merely because a consuming
+release cohort changes. Identity or byte reuse remains forbidden for member
+artifacts, provenance, SBOMs, claims, qualification or approval sidecars,
+traceability matrices, release evidence, and the manifests themselves.
 
 An RC MUST remain explicitly experimental, MUST NOT use `latest`, and MUST have
 its own release manifest and provisional or qualified claim status. External RC

@@ -39,7 +39,8 @@ const registryValuesSchema = {
     diagnosticCode: { enum: diagnosticCodes },
     canonicalizationProfile: profileSchemaForRole('canonicalization'),
     snapshotCaptureProfile: profileSchemaForRole('snapshot-capture'),
-    portablePathProfile: profileSchemaForRole('portable-path')
+    portablePathProfile: profileSchemaForRole('portable-path'),
+    accountingProfile: profileSchemaForRole('accounting')
   },
   type: 'object', additionalProperties: false, maxProperties: 0
 };

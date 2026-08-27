@@ -4,8 +4,12 @@ import { assertPortablePackageInventory } from '../scripts/package-paths.mjs';
 import { assertPortablePath, assertPortablePathCollection, portablePathCollisionKey } from '../lib/portable-path.mjs';
 import { runNpmSync, runPnpmVersionSync } from '../scripts/run-npm.mjs';
 import { assertIdentityDocumentPathInvariants } from '../lib/document-validation.mjs';
+import { assertCleanGitStatus, assertPnpmVersion, parsePinnedPnpmVersion, resolveEvidencePath } from '../scripts/evidence-helpers.mjs';
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { chmod, cp, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
 test('npm runs its JavaScript CLI directly on Windows without a command shell', () => {
   let invocation;
@@ -63,6 +67,8 @@ test('pnpm version runs its Windows command shim through cmd.exe', () => {
   const version = runPnpmVersionSync({ encoding: 'utf8' }, {
     platform: 'win32',
     comSpec: String.raw`C:\Windows\System32\cmd.exe`,
+    pnpmHome: String.raw`C:\hostedtoolcache\pnpm`,
+    workspaceRoot: String.raw`D:\a\repo\repo`,
     spawnSync(command, args, options) {
       invocation = { command, args, options };
       return { status: 0, signal: null, stdout: '11.24.0\r\n', stderr: '' };
@@ -71,7 +77,7 @@ test('pnpm version runs its Windows command shim through cmd.exe', () => {
   assert.equal(version, '11.24.0');
   assert.deepEqual(invocation, {
     command: String.raw`C:\Windows\System32\cmd.exe`,
-    args: ['/d', '/s', '/c', 'pnpm.cmd --version'],
+    args: ['/d', '/s', '/c', String.raw`"C:\hostedtoolcache\pnpm\pnpm.cmd" --version`],
     options: { encoding: 'utf8' }
   });
 });
@@ -80,12 +86,79 @@ test('pnpm version runs directly on POSIX and requires version output', () => {
   let invocation;
   assert.throws(() => runPnpmVersionSync({}, {
     platform: 'linux',
+    pnpmHome: '/opt/pnpm', workspaceRoot: '/workspace/repo',
     spawnSync(command, args) {
       invocation = { command, args };
       return { status: 0, signal: null, stdout: '', stderr: '' };
     }
   }), /produced no version/);
-  assert.deepEqual(invocation, { command: 'pnpm', args: ['--version'] });
+  assert.deepEqual(invocation, { command: '/opt/pnpm/pnpm', args: ['--version'] });
+});
+
+test('pnpm version rejects launcher errors and nonzero exits', () => {
+  const runtime = { platform: 'linux', pnpmHome: '/opt/pnpm', workspaceRoot: '/workspace/repo' };
+  assert.throws(() => runPnpmVersionSync({}, { ...runtime, spawnSync: () => ({ status: 7, signal: null, stdout: '', stderr: 'bad pin' }) }), /exited with status 7/);
+  const cause = Object.assign(new Error('spawn EACCES'), { code: 'EACCES' });
+  assert.throws(() => runPnpmVersionSync({}, { ...runtime, spawnSync: () => ({ status: null, signal: null, stdout: '', stderr: '', error: cause }) }), (error) => error.cause === cause && /failed to start/.test(error.message));
+});
+
+test('pnpm launcher cannot resolve from a malicious workspace or relative tool home', () => {
+  assert.throws(() => runPnpmVersionSync({}, { platform: 'linux', pnpmHome: '.', workspaceRoot: '/workspace/repo' }), /absolute trusted/);
+  assert.throws(() => runPnpmVersionSync({}, { platform: 'linux', pnpmHome: '/workspace/repo/tools', workspaceRoot: '/workspace/repo' }), /outside the workspace/);
+});
+
+test('evidence toolchain pin and output path are fail-closed', () => {
+  assert.equal(parsePinnedPnpmVersion('pnpm@11.24.0'), '11.24.0');
+  for (const value of ['', 'pnpm@latest', 'npm@11.24.0', 'pnpm@11.24']) assert.throws(() => parsePinnedPnpmVersion(value), /exact pnpm/);
+  assert.equal(assertPnpmVersion('11.24.0', '11.24.0'), '11.24.0');
+  for (const actual of ['', '11.23.0']) assert.throws(() => assertPnpmVersion(actual, '11.24.0'), /version mismatch/);
+  assert.throws(() => resolveEvidencePath('evidence.json', '/workspace/repo'), /absolute path/);
+  assert.throws(() => resolveEvidencePath('/workspace/repo/evidence.json', '/workspace/repo'), /outside the workspace/);
+  assert.equal(resolveEvidencePath('/runner/temp/evidence.json', '/workspace/repo'), '/runner/temp/evidence.json');
+  assert.doesNotThrow(() => assertCleanGitStatus('', 'clean commit materialization'));
+  assert.throws(() => assertCleanGitStatus(' M package.json\n', 'root tracked workspace'), /root tracked workspace is dirty/);
+});
+
+test('evidence is packed from a clean detached commit and rejects tracked root dirtiness', { skip: process.platform === 'win32' ? 'POSIX fixture launcher' : false }, async (context) => {
+  const temporary = await mkdtemp(path.join(tmpdir(), 'aas-evidence-test-'));
+  context.after(async () => { await import('node:fs/promises').then(({ rm }) => rm(temporary, { recursive: true, force: true })); });
+  const repository = path.join(temporary, 'repository');
+  const scripts = path.join(repository, 'scripts');
+  const pnpmHome = path.join(temporary, 'trusted-pnpm');
+  await mkdir(path.join(repository, '.github', 'workflows'), { recursive: true });
+  await mkdir(scripts, { recursive: true });
+  await mkdir(pnpmHome);
+  for (const name of ['ci-head-evidence.mjs', 'evidence-helpers.mjs', 'run-npm.mjs']) {
+    await cp(new URL(`../scripts/${name}`, import.meta.url), path.join(scripts, name));
+  }
+  await writeFile(path.join(repository, 'package.json'), `${JSON.stringify({ name: 'evidence-fixture', version: '1.0.0', packageManager: 'pnpm@11.24.0', files: ['payload.txt'] }, null, 2)}\n`);
+  await writeFile(path.join(repository, 'pnpm-lock.yaml'), 'lockfileVersion: 9.0\n');
+  await writeFile(path.join(repository, 'artifacts.json'), '{}\n');
+  await writeFile(path.join(repository, '.github', 'workflows', 'verify.yml'), 'name: fixture\n');
+  await writeFile(path.join(repository, 'payload.txt'), 'committed payload\n');
+  const launcher = path.join(pnpmHome, 'pnpm');
+  await writeFile(launcher, '#!/bin/sh\nprintf "11.24.0\\n"\n');
+  await chmod(launcher, 0o755);
+  const git = (args) => spawnSync('git', args, { cwd: repository, encoding: 'utf8' });
+  assert.equal(git(['init', '--quiet']).status, 0);
+  assert.equal(git(['add', '.']).status, 0);
+  assert.equal(git(['-c', 'user.name=AAS Test', '-c', 'user.email=aas@example.invalid', 'commit', '--quiet', '-m', 'fixture']).status, 0);
+  const head = git(['rev-parse', 'HEAD']).stdout.trim();
+  const evidencePath = path.join(temporary, 'evidence.json');
+  const runEvidence = () => spawnSync(process.execPath, [path.join(scripts, 'ci-head-evidence.mjs')], {
+    cwd: repository,
+    encoding: 'utf8',
+    env: { ...process.env, AAS_EXPECTED_HEAD: head, AAS_EVIDENCE_PATH: evidencePath, PNPM_HOME: pnpmHome }
+  });
+  const clean = runEvidence();
+  assert.equal(clean.status, 0, clean.stderr || clean.stdout);
+  const evidence = JSON.parse(await readFile(evidencePath, 'utf8'));
+  assert.equal(evidence.checkedOutHead, head);
+  assert.match(evidence.digests.reproducibleNpmTarball, /^[0-9a-f]{64}$/u);
+  await writeFile(path.join(repository, 'payload.txt'), 'dirty payload\n');
+  const dirty = runEvidence();
+  assert.notEqual(dirty.status, 0);
+  assert.match(dirty.stderr, /root tracked workspace is dirty/);
 });
 
 test('package inventory rejects Windows case-fold collisions', () => {
@@ -135,11 +208,27 @@ test('post-schema document validation closes every identity-bearing path collect
 });
 
 test('semantic path references may repeat across different rules', () => {
+  const pathProfile = { version: '1', id: 'agent-architecture-portable-path-unicode17@1', aasIdentity: 'aas:v0:sha256:' + 'c'.repeat(64) };
   const policy = {
-    scope: 'src', rules: [{ id: 'rule-1' }, { id: 'rule-2' }], provenance: [],
-    exceptions: [{ ruleId: 'rule-1', scope: 'src/shared' }, { ruleId: 'rule-2', scope: 'src/shared' }]
+    scope: 'src', pathProfile, rules: [{ id: 'rule-1' }, { id: 'rule-2' }], provenance: [],
+    exceptions: [{ ruleId: 'rule-1', scope: 'src/shared', pathProfile }, { ruleId: 'rule-2', scope: 'src/shared', pathProfile }]
   };
   assert.doesNotThrow(() => assertIdentityDocumentPathInvariants(policy));
+});
+
+test('governed exception path profiles, standalone bounds, and semantic collision closure fail closed', () => {
+  const pathProfile = { version: '1', id: 'agent-architecture-portable-path-unicode17@1', aasIdentity: 'aas:v0:sha256:' + 'c'.repeat(64) };
+  const baseException = { ruleId: 'rule-1', scope: 'src/path', pathProfile, validForRevision: 'aas:v0:sha256:' + 'a'.repeat(64) };
+  for (const scope of ['src/cafe\u0301', `src/${'é'.repeat(128)}`]) {
+    assert.throws(() => assertIdentityDocumentPathInvariants({ ...baseException, scope }), /portable path/);
+  }
+  const substituted = { ...pathProfile, aasIdentity: 'aas:v0:sha256:' + 'd'.repeat(64) };
+  const policy = { scope: 'src', pathProfile, rules: [], provenance: [], exceptions: [{ ...baseException, pathProfile: substituted }] };
+  assert.throws(() => assertIdentityDocumentPathInvariants(policy), /path profile differs/);
+  const collidingPolicy = { ...policy, exceptions: [{ ...baseException, scope: 'src/child' }, { ...baseException, ruleId: 'rule-2', scope: 'SRC/CHILD' }] };
+  assert.throws(() => assertIdentityDocumentPathInvariants(collidingPolicy), /colliding/);
+  const binding = { scope: { repositoryRoot: 'src', path: 'SRC' }, rolloutScope: 'all', pathProfile };
+  assert.throws(() => assertIdentityDocumentPathInvariants(binding), /colliding/);
 });
 
 test('vendored Unicode 17 C+F case-fold data has pinned provenance and derived bytes', async () => {

@@ -21,6 +21,14 @@ test('numeric cohort cannot relabel RC artifacts, claims, sidecars, or evidence'
   assert.throws(() => assertReleaseCohortsNonReuse(rc, numeric), /reused/);
 });
 
+test('paired cohorts may share exact immutable schema, registry, vector, and profile prerequisites', async () => {
+  const rc = await load('release-manifest-rc.json');
+  const numeric = await load('release-manifest-numeric.json');
+  for (const field of ['schemas', 'registries', 'vectors', 'profiles']) numeric[field] = structuredClone(rc[field]);
+  resign(numeric);
+  assert.doesNotThrow(() => assertReleaseCohortsNonReuse(rc, numeric));
+});
+
 test('release closure fails for mixed cohorts, duplicate members, bad pins, cycles, and order', async () => {
   const original = await load('release-manifest-rc.json');
   const mutations = [
@@ -60,6 +68,12 @@ test('cohort comparison independently rejects identity, byte, traceability, and 
     ['duplicate cohort', (value) => { value.cohort = rc.cohort; }, /duplicate cohort identity/],
     ['artifact identity only', (value) => { value.members[0].artifact.aasIdentity = rc.members[0].artifact.aasIdentity; }, /identity reused/],
     ['artifact digest only', (value) => { value.members[0].artifact.contentDigest = rc.members[0].artifact.contentDigest; }, /bytes reused/],
+    ['provenance identity', (value) => { value.members[0].provenance.aasIdentity = rc.members[0].provenance.aasIdentity; }, /identity reused/],
+    ['SBOM bytes', (value) => { value.members[0].sbom.contentDigest = rc.members[0].sbom.contentDigest; }, /bytes reused/],
+    ['claim identity', (value) => { value.claims[0] = rc.claims[0]; }, /identity reused/],
+    ['qualification sidecar identity', (value) => { value.qualificationSidecars[0] = rc.qualificationSidecars[0]; }, /identity reused/],
+    ['approval sidecar identity', (value) => { value.approvalSidecars.release = rc.approvalSidecars.release; }, /identity reused/],
+    ['release evidence identity', (value) => { value.releaseEvidence.packageInventory.aasIdentity = rc.releaseEvidence.packageInventory.aasIdentity; }, /identity reused/],
     ['traceability identity', (value) => { value.traceabilityMatrices[0] = rc.traceabilityMatrices[0]; }, /identity reused/]
   ];
   for (const [name, mutate, invariant] of cases) {

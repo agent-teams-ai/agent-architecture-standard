@@ -88,7 +88,7 @@ export type analysisKey = {
   "evaluatorProfiles": Array<import("./common.js").profileRef>;
   "inputAasIdentities": Array<import("./common.js").aasIdentity>;
   "budgets": import("./common.js").budgets;
-  "accountingProfile": import("./common.js").profileRef;
+  "accountingProfile": import("./registry-values.js").accountingProfile;
   "semanticExtensions": import("./common.js").extensionMap;
 };
 

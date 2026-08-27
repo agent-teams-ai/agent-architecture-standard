@@ -46,9 +46,17 @@ Minimum future suites are:
 - conformance claim lifecycle and release manifests.
 
 Every normative `MUST` in a claim requires at least one positive and one negative
-vector. A vector record MUST contain a stable case ID, requirement IDs, exact
+vector. A vector record MUST contain a stable case ID, requirement citations, exact
 inputs, expected validity or problem, exact canonical bytes where relevant,
 expected identities/results, applicable versions, and rationale.
+
+Every structured `requirement` citation is interpreted exactly once from the
+package root and therefore starts with `spec/` or another package-root artifact
+such as `schemas/readme.md`. Owner-relative paths and an implicit `spec/` base
+are forbidden. Markdown links continue to resolve relative to their containing
+document. Current structured citations identify authoritative specification
+sections, not atomic `MUST` IDs; they provide section-level provenance and MUST
+NOT be represented as atomic requirement traceability.
 
 Vector generation MUST NOT import the reference implementation as its identity
 oracle. At least one exact-byte suite MUST be independently authored and

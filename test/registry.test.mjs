@@ -115,22 +115,35 @@ test('registry corpus cases explicitly bind owned IDs to admission polarity', as
   }
 });
 test('adjacent registry editions retain meaning and order while evolving lifecycle', () => {
-  const previous = { registry: 'actions', edition: '1', previousEdition: null, status: 'provisional', changes: ['initial'], entries: [
-    { id: 'old', kind: 'action', status: 'active', semanticAuthority: 'authority#old', introducedEdition: '1', orderingRank: 1, vectors: ['v'] }
+  const previous = { registry: 'profiles', edition: '1', previousEdition: null, status: 'provisional', changes: ['initial'], entries: [
+    { id: 'old', kind: 'profile', role: 'decision', status: 'active', semanticAuthority: 'authority#old', semanticsAasIdentity: 'aas:v0:sha256:' + 'a'.repeat(64), introducedEdition: '1', orderingRank: 1, vectors: ['v'] }
   ] };
-  const current = { registry: 'actions', edition: '2', previousEdition: '1', status: 'provisional', changes: ['deprecate'], entries: [
+  const current = { registry: 'profiles', edition: '2', previousEdition: '1', status: 'provisional', changes: ['deprecate'], entries: [
     { ...previous.entries[0], status: 'deprecated', replacement: 'new' },
-    { id: 'new', kind: 'action', status: 'active', semanticAuthority: 'authority#new', introducedEdition: '2', orderingRank: 2, vectors: ['v'] }
+    { id: 'new', kind: 'profile', role: 'decision', status: 'active', semanticAuthority: 'authority#new', introducedEdition: '2', orderingRank: 2, vectors: ['v'] }
   ] };
   assert.doesNotThrow(() => assertRegistryEvolution(previous, current));
   for (const [name, mutate, expected] of [
     ['link', (value) => { value.previousEdition = null; }, /previousEdition/],
     ['authority', (value) => { value.entries[0].semanticAuthority = 'reassigned'; }, /semanticAuthority/],
+    ['role', (value) => { value.entries[0].role = 'other'; }, /role/],
+    ['semantics identity', (value) => { value.entries[0].semanticsAasIdentity = 'aas:v0:sha256:' + 'b'.repeat(64); }, /semanticsAasIdentity/],
     ['kind', (value) => { value.entries[0].kind = 'problem'; }, /kind/],
     ['introduction', (value) => { value.entries[0].introducedEdition = '2'; }, /introducedEdition/],
     ['order', (value) => { value.entries[0].orderingRank = 9; }, /orderingRank/],
     ['removal', (value) => { value.entries.shift(); }, /existing id removed/]
   ]) { const value = structuredClone(current); mutate(value); assert.throws(() => assertRegistryEvolution(previous, value), expected, name); }
+  const withoutSemantics = structuredClone(previous); delete withoutSemantics.entries[0].semanticsAasIdentity; withoutSemantics.entries[0].status = 'provisional';
+  const established = structuredClone(current); established.entries[0].status = 'provisional'; delete established.entries[0].replacement;
+  assert.doesNotThrow(() => assertRegistryEvolution(withoutSemantics, established));
+  const lateIdentity = structuredClone(previous); delete lateIdentity.entries[0].semanticsAasIdentity;
+  assert.throws(() => assertRegistryEvolution(lateIdentity, current), /outside the provisional admission lifecycle/);
+  for (const [from, to] of [['reserved', 'active'], ['active', 'provisional'], ['deprecated', 'active'], ['withdrawn', 'deprecated'], ['withdrawn', 'active']]) {
+    const before = structuredClone(previous); before.entries[0].status = from;
+    const after = structuredClone(current); after.entries[0].status = to;
+    if (to !== 'deprecated') delete after.entries[0].replacement;
+    assert.throws(() => assertRegistryEvolution(before, after), /forbidden lifecycle transition/, `${from} -> ${to}`);
+  }
 });
 test('packaged catalog case records drive all declared adversarial dispositions', async () => {
   const corpus = parseStrictJson(await readFile(new URL('../vectors/schema/catalog-corpus.json', import.meta.url)));

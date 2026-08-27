@@ -28,4 +28,10 @@ export type portablePathProfile = ({
   "aasIdentity": import("./common.js").aasIdentity;
 });
 
+export type accountingProfile = ({
+  "version": "1";
+  "id": "agent-architecture-resource-accounting-v0@1";
+  "aasIdentity": import("./common.js").aasIdentity;
+});
+
 export type GeneratedAASClosedRegistryWireValues = Record<PropertyKey, never>;

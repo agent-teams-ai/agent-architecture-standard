@@ -16,11 +16,12 @@
     },
     "exception": {
       "type": "object", "additionalProperties": false,
-      "required": ["aasIdentity", "ruleId", "scope", "owner", "reasonCode", "creationPolicyAasIdentity", "validForRevision"],
+      "required": ["aasIdentity", "ruleId", "scope", "pathProfile", "owner", "reasonCode", "creationPolicyAasIdentity", "validForRevision"],
       "properties": {
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "ruleId": { "$ref": "common.schema.json#/$defs/identifier" },
         "scope": { "$ref": "common.schema.json#/$defs/portablePath" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
         "owner": { "type": "string", "minLength": 1, "maxLength": 255 },
         "reasonCode": { "$ref": "common.schema.json#/$defs/identifier" },
         "creationPolicyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
@@ -75,7 +76,7 @@
         "mode": { "enum": ["shadow", "advisory", "required"] },
         "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } },
-        "accountingProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
+        "accountingProfile": { "$ref": "registry-values.schema.json#/$defs/accountingProfile" },
         "budgets": { "$ref": "common.schema.json#/$defs/budgets" },
         "exceptions": { "type": "array", "maxItems": 10000, "items": { "$ref": "common.schema.json#/$defs/aasIdentity" } },
         "promotionRecordAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },

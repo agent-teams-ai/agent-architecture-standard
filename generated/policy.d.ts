@@ -15,6 +15,7 @@ export type exception = {
   "aasIdentity": import("./common.js").aasIdentity;
   "ruleId": import("./common.js").identifier;
   "scope": import("./common.js").portablePath;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "owner": ConstrainedString;
   "reasonCode": import("./common.js").identifier;
   "creationPolicyAasIdentity": import("./common.js").aasIdentity;
@@ -57,7 +58,7 @@ export type binding = ({
   "mode": ("shadow" | "advisory" | "required") & ("advisory");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
-  "accountingProfile": import("./common.js").profileRef;
+  "accountingProfile": import("./registry-values.js").accountingProfile;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
   "promotionRecordAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -74,7 +75,7 @@ export type binding = ({
   "mode": ("shadow" | "advisory" | "required") & ("required");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
-  "accountingProfile": import("./common.js").profileRef;
+  "accountingProfile": import("./registry-values.js").accountingProfile;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
   "promotionRecordAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -91,7 +92,7 @@ export type binding = ({
   "mode": ("shadow" | "advisory" | "required") & ("shadow");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
-  "accountingProfile": import("./common.js").profileRef;
+  "accountingProfile": import("./registry-values.js").accountingProfile;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
   "owner": ConstrainedString;

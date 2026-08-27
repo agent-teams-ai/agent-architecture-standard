@@ -27,9 +27,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: node scripts/ci-head-evidence.mjs --checkout
+        env:
+          AAS_EVIDENCE_PATH: ${{ runner.temp }}/exact-head-evidence.json
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
-          version: 11.24.0
           run_install: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -41,10 +42,12 @@ jobs:
       - run: pnpm check:package
       - run: pnpm check:conformance
       - run: node scripts/ci-head-evidence.mjs
+        env:
+          AAS_EVIDENCE_PATH: ${{ runner.temp }}/exact-head-evidence.json
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exact-head-post-gate-evidence-${{ matrix.os }}
-          path: exact-head-evidence.json
+          path: ${{ runner.temp }}/exact-head-evidence.json
 
   conformance-skeleton:
     name: workspace conformance skeleton (advisory)
@@ -56,9 +59,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: node scripts/ci-head-evidence.mjs --checkout
+        env:
+          AAS_EVIDENCE_PATH: ${{ runner.temp }}/exact-head-evidence.json
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
-          version: 11.24.0
           run_install: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

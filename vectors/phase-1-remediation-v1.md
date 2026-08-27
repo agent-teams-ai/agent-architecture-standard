@@ -55,8 +55,10 @@ historical `phase-0-remediation-v1.md` bytes. Machine-readable instances live in
 - Requirement: `../spec/security-and-conformance.md` §6.
 - Inputs: `schema/definition-fixtures.json` `/request-positive` and
   `schema/positive/result.json`.
-- Expected: `inputBytes` is the UTF-8 length of the canonical request identity
-  projection; `outputBytes` is the canonical result identity projection with
-  its own `outputBytes` value replaced by zero; `extensionBytes` is the
-  canonical scoped extension-map projection. Reported counters must equal
-  these derivations and remain within request budgets.
+- Expected: `inputBytes` is the exact byte length of the standalone strict-JSON
+  request wire, including whitespace; `outputBytes` is the convergent fixed
+  point over the complete canonical final envelope including self identities
+  and its final counter; `extensionBytes` is the canonical scoped extension-map
+  projection. Reported counters must equal these derivations and remain within
+  request budgets. Missing raw request length and an 8KB whitespace
+  amplification fail closed.

@@ -179,6 +179,11 @@
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "ruleId": "rule-1",
     "scope": "src",
+    "pathProfile": {
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
     "owner": "owner",
     "reasonCode": "reason-1",
     "creationPolicyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -189,7 +194,11 @@
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "consumer": "consumer-1",
     "scope": "src",
-    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+    "pathProfile": {
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
     "profiles": [
       {
         "version": "1",
@@ -239,8 +248,16 @@
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
-    "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
-    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+    "scope": {
+      "repositoryRoot": "src",
+      "subjectId": "subject-1",
+      "ruleId": "rule-1"
+    },
+    "pathProfile": {
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -251,7 +268,11 @@
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
-    "accountingProfile": { "version": "1", "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+    "accountingProfile": {
+      "version": "1",
+      "id": "agent-architecture-resource-accounting-v0@1",
+      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -280,8 +301,16 @@
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
-    "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
-    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+    "scope": {
+      "repositoryRoot": "src",
+      "subjectId": "subject-1",
+      "ruleId": "rule-1"
+    },
+    "pathProfile": {
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -292,7 +321,11 @@
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
-    "accountingProfile": { "version": "1", "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+    "accountingProfile": {
+      "version": "1",
+      "id": "agent-architecture-resource-accounting-v0@1",
+      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -319,8 +352,8 @@
     "repositoryId": "repo-1",
     "revisionSystemProfile": {
       "version": "1",
-      "id": "profile@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "id": "agent-architecture-resource-accounting-v0@1",
+      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
     },
     "nativeRevision": "abc",
     "treeAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
@@ -328,7 +361,7 @@
   "profile-positive": {
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "kind": "accounting",
-    "id": "accounting@1",
+    "id": "agent-architecture-resource-accounting-v0@1",
     "definitionVersion": "1",
     "schemas": [
       {
@@ -491,8 +524,8 @@
     },
     "accountingProfile": {
       "version": "1",
-      "id": "profile@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "id": "agent-architecture-resource-accounting-v0@1",
+      "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
     },
     "semanticExtensions": {
       "com.example.semantic": true
@@ -501,7 +534,7 @@
   "request-positive": {
     "kind": "request",
     "envelopeVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:490c9b3a500b5f16d633aad70c5184221ed8eeda8ff56ed98968ef0620530cfe",
+    "aasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
     "standardVersion": "0.1.0-rc.1",
     "operation": "validate-overlay@1",
     "targets": [
@@ -510,7 +543,11 @@
         "input": {
           "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
-          "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+          "pathProfile": {
+            "version": "1",
+            "id": "agent-architecture-portable-path-unicode17@1",
+            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
           "limits": {
             "maxInputBytes": 100,
             "maxDepth": 8,
@@ -546,7 +583,7 @@
     "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
     "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
     "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
-    "accountingProfileAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "accountingProfileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "budgets": {
       "maxInputBytes": 4096,
       "maxDepth": 8,
@@ -582,7 +619,11 @@
         "input": {
           "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-          "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+          "pathProfile": {
+            "version": "1",
+            "id": "agent-architecture-portable-path-unicode17@1",
+            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
           "limits": {
             "maxInputBytes": 100,
             "maxDepth": 8,
@@ -695,7 +736,12 @@
     "decisionTrace": {
       "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
       "selectedBindingId": "binding-1",
-      "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111" }],
+      "candidateBindings": [
+        {
+          "id": "binding-1",
+          "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
       "normalizedFacts": [
         true
       ],
@@ -704,7 +750,10 @@
       "remediationPreconditions": []
     },
     "remediationActions": [
-      { "id": "none", "preconditions": [] }
+      {
+        "id": "none",
+        "preconditions": []
+      }
     ]
   },
   "problem-positive": {
@@ -1272,11 +1321,37 @@
     ],
     "unexpected": true
   },
-  "extension-disposition-target-positive": { "extensionId": "com.example.target", "location": "target", "targetId": "target-1", "disposition": "preserved", "requestBound": true, "affectsCoreSemantics": false },
-  "extension-disposition-target-missing": { "extensionId": "com.example.target", "location": "target", "disposition": "preserved", "requestBound": true, "affectsCoreSemantics": false },
-  "extension-disposition-request-target-invented": { "extensionId": "com.example.request", "location": "request", "targetId": "target-1", "disposition": "ignored", "requestBound": true, "affectsCoreSemantics": false },
-  "binding-scope-positive": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
-  "binding-scope-negative": { "path": "src" },
+  "extension-disposition-target-positive": {
+    "extensionId": "com.example.target",
+    "location": "target",
+    "targetId": "target-1",
+    "disposition": "preserved",
+    "requestBound": true,
+    "affectsCoreSemantics": false
+  },
+  "extension-disposition-target-missing": {
+    "extensionId": "com.example.target",
+    "location": "target",
+    "disposition": "preserved",
+    "requestBound": true,
+    "affectsCoreSemantics": false
+  },
+  "extension-disposition-request-target-invented": {
+    "extensionId": "com.example.request",
+    "location": "request",
+    "targetId": "target-1",
+    "disposition": "ignored",
+    "requestBound": true,
+    "affectsCoreSemantics": false
+  },
+  "binding-scope-positive": {
+    "repositoryRoot": "src",
+    "subjectId": "subject-1",
+    "ruleId": "rule-1"
+  },
+  "binding-scope-negative": {
+    "path": "src"
+  },
   "pagination-cursor-positive": {
     "kind": "pagination-cursor",
     "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
