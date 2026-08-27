@@ -69,10 +69,19 @@ test('packaged strict-JSON case records drive declared outcomes', async () => {
     assert.equal(item.expected.version, corpus.schemaVersion);
     assert.equal(typeof item.requirement, 'string');
     assert.equal(typeof item.rationale, 'string');
-    let bytes = await readFile(new URL(item.input.reference, vectorRoot));
+    let bytes;
+    if (item.input.constructedToken) {
+      const { prefix, repeat, suffix } = item.input.constructedToken;
+      assert(Number.isSafeInteger(repeat.count) && repeat.count >= 0 && repeat.count <= item.limits.maxBytes, `${item.caseId}: bounded repeat`);
+      bytes = Buffer.from(prefix + repeat.text.repeat(repeat.count) + suffix);
+    } else bytes = await readFile(new URL(item.input.reference, vectorRoot));
     if (item.input.prefixHex) bytes = Buffer.concat([Buffer.from(item.input.prefixHex, 'hex'), bytes]);
     if (item.input.form === 'decoded-text') bytes = bytes.toString('utf8');
-    if (item.expected.diagnostic === 'none') assert.doesNotThrow(() => parseStrictJson(bytes, item.limits), item.caseId);
+    if (item.expected.diagnostic === 'none') {
+      let parsed;
+      assert.doesNotThrow(() => { parsed = parseStrictJson(bytes, item.limits); }, item.caseId);
+      if ('value' in item.expected) assert.equal(parsed, item.expected.value, item.caseId);
+    }
     else assert.throws(() => parseStrictJson(bytes, item.limits), (error) => error.code === item.expected.diagnostic, item.caseId);
   }
 });

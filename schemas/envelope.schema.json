@@ -85,7 +85,7 @@
         "highestSeverity": { "enum": ["none", "info", "warning", "error", "critical"] },
         "omissionCount": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
         "omissionReasons": { "type": "array", "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
-        "nextAction": { "$ref": "common.schema.json#/$defs/identifier" }
+        "nextAction": { "$ref": "registry-values.schema.json#/$defs/actionId" }
       },
       "allOf": [
         { "if": { "properties": { "resolution": { "const": "decided" } }, "required": ["resolution"] }, "then": { "properties": { "verdict": { "enum": ["pass", "fail", "not-applicable"] } }, "required": ["verdict"] }, "else": { "properties": { "verdict": false } } }
@@ -95,7 +95,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["id", "preconditions"],
       "properties": {
-        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "id": { "$ref": "registry-values.schema.json#/$defs/actionId" },
         "preconditions": { "type": "array", "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/identifier" } }
       }
     },
@@ -176,11 +176,13 @@
       "properties": {
         "extensionId": { "$ref": "common.schema.json#/$defs/identifier" },
         "location": { "enum": ["request", "target"] },
+        "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
         "disposition": { "enum": ["understood", "preserved", "ignored"] },
         "requestBound": { "const": true },
         "affectsCoreSemantics": { "type": "boolean" }
       },
       "allOf": [
+        { "if": { "properties": { "location": { "const": "target" } }, "required": ["location"] }, "then": { "properties": { "targetId": { "$ref": "common.schema.json#/$defs/identifier" } }, "required": ["targetId"] }, "else": { "properties": { "targetId": false } } },
         { "if": { "properties": { "disposition": { "enum": ["preserved", "ignored"] } }, "required": ["disposition"] }, "then": { "properties": { "affectsCoreSemantics": { "const": false } } } }
       ]
     },
@@ -223,7 +225,7 @@
       "properties": {
         "kind": { "const": "problem" },
         "envelopeVersion": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
-        "code": { "$ref": "common.schema.json#/$defs/identifier" }
+        "code": { "$ref": "registry-values.schema.json#/$defs/problemCode" }
       }
     }
   },

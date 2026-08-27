@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:64512caa34609fdd79b65ee73cc3fa1bce56ad72a16dd7897284443272a1223f",
+  "aasIdentity": "aas:v0:sha256:42dea7393ab2419d28852b9a470390c04274da81e4bf15ae724670aa65a36226",
   "cohort": "aas-rc-cohort",
   "maturity": "experimental",
   "members": [
@@ -44,7 +44,12 @@
     "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555"
   ],
   "traceabilityMatrices": [
-    "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+    {
+      "aasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "contentDigest": "sha256:6767676767676767676767676767676767676767676767676767676767676767",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    }
   ],
   "governanceRoleIds": [
     "normative-maintainer",

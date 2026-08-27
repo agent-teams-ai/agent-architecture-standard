@@ -69,7 +69,7 @@ export type claim = {
   "claimant": ConstrainedString;
   "providerArtifact": import("./common.js").artifactRef;
   "standard": standardVersionedArtifact;
-  "canonicalizationProfile": versionedProfile;
+  "canonicalizationProfile": import("./registry-values.js").canonicalizationProfile;
   "envelope": envelopeVersionedArtifact;
   "schemaBundle": schemaBundleVersionedArtifact;
   "registryEdition": registryEditionVersionedArtifact;
@@ -175,7 +175,7 @@ export type releaseManifest = {
   "vectors": Array<import("./common.js").aasIdentity>;
   "profiles": Array<import("./common.js").aasIdentity>;
   "claims": Array<import("./common.js").aasIdentity>;
-  "traceabilityMatrices": Array<import("./common.js").aasIdentity>;
+  "traceabilityMatrices": Array<import("./common.js").artifactRef>;
   "governanceRoleIds": Array<import("./common.js").identifier>;
   "sourceCommit": ConstrainedString;
   "releaseCommit": ConstrainedString;

@@ -3,6 +3,9 @@
   "$id": "https://schemas.aas.invalid/private/v0/registry.schema.json",
   "title": "AAS registry edition",
   "x-aas-status": "private-provisional-unpublished",
+  "$defs": {
+    "envelopeVersionIdentifier": { "type": "string", "minLength": 3, "maxLength": 64, "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$" }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": ["registry", "edition", "previousEdition", "status", "entries", "changes"],
@@ -17,14 +20,14 @@
         "type": "object", "additionalProperties": false,
         "required": ["id", "kind", "owner", "contact", "status", "semanticAuthority", "introducedEdition", "vectors", "collisionReview"],
         "properties": {
-          "id": { "anyOf": [{ "$ref": "common.schema.json#/$defs/identifier" }, { "$ref": "common.schema.json#/$defs/envelopeVersion" }] },
+          "id": { "anyOf": [{ "$ref": "common.schema.json#/$defs/identifier" }, { "$ref": "#/$defs/envelopeVersionIdentifier" }] },
           "kind": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z][a-z0-9-]*$" },
           "owner": { "type": "string", "minLength": 1, "maxLength": 255 },
           "contact": { "type": "string", "minLength": 1, "maxLength": 255 },
           "status": { "enum": ["provisional", "active", "deprecated", "withdrawn", "reserved"] },
           "semanticAuthority": { "type": "string", "minLength": 1, "maxLength": 512 },
           "introducedEdition": { "type": "string", "pattern": "^[1-9][0-9]*$" },
-          "replacement": { "$ref": "common.schema.json#/$defs/identifier" },
+          "replacement": { "anyOf": [{ "$ref": "common.schema.json#/$defs/identifier" }, { "$ref": "#/$defs/envelopeVersionIdentifier" }] },
           "semanticsAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
           "orderingRank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
           "vectors": { "type": "array", "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 512 } },
@@ -45,10 +48,10 @@
               "type": "object",
               "required": ["orderingRank"],
               "properties": {
-                "id": { "$ref": "common.schema.json#/$defs/envelopeVersion" },
+                "id": { "$ref": "#/$defs/envelopeVersionIdentifier" },
                 "kind": { "const": "envelope-version" },
                 "orderingRank": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
-                "replacement": { "$ref": "common.schema.json#/$defs/envelopeVersion" }
+                "replacement": { "$ref": "#/$defs/envelopeVersionIdentifier" }
               }
             }
           }

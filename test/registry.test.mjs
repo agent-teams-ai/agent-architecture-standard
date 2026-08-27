@@ -5,7 +5,7 @@ import { DiagnosticCode } from '../lib/diagnostics.mjs';
 import { OfflineSchemaRegistry } from '../lib/schema-registry.mjs';
 import { assertAcyclicSchemaGraph } from '../lib/schema-graph.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
-import { assertRegistryInvariants, assertRegistryVectorInvariants } from '../lib/registry-validation.mjs';
+import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
 
 const schema = (name, refs = []) => ({ $id: `https://schemas.aas.invalid/private/v0/${name}.schema.json`, $defs: Object.fromEntries(refs.map((ref, index) => [`r${index}`, { $ref: `${ref}.schema.json` }])) });
 test('offline registry rejects duplicate and unknown IDs with stable codes', () => {
@@ -59,15 +59,19 @@ test('runtime diagnostic projection exactly matches the normative registry', asy
 test('registry closure validates file identity, replacements, and vector artifact polarity', () => {
   const base = {
     registry: 'actions', edition: '1', previousEdition: null, status: 'provisional', changes: ['test'],
-    entries: [{ id: 'old', kind: 'action', status: 'deprecated', vectors: ['vectors/schema/positive/result.json', 'vectors/schema/negative/overlay-unknown-field.json'], replacement: 'new' }, { id: 'new', kind: 'action', status: 'active', vectors: ['vectors/schema/corpus.json'] }]
+    entries: [{ id: 'old', kind: 'action', status: 'deprecated', vectors: ['vectors/registry/corpus.json'], replacement: 'new' }, { id: 'new', kind: 'action', status: 'active', vectors: ['vectors/registry/corpus.json'] }]
   };
   const manifest = { artifacts: [
-    { path: 'vectors/schema/positive/result.json', class: 'vector' },
-    { path: 'vectors/schema/negative/overlay-unknown-field.json', class: 'vector' },
-    { path: 'vectors/schema/corpus.json', class: 'vector' }
+    { path: 'vectors/registry/corpus.json', class: 'vector' }
   ] };
+  const cases = indexRegistryVectorCases(new Map([['vectors/registry/corpus.json', { cases: [
+    { registry: 'actions', registryId: 'old', polarity: 'positive' },
+    { registry: 'actions', registryId: 'old', polarity: 'negative' },
+    { registry: 'actions', registryId: 'new', polarity: 'positive' },
+    { registry: 'actions', registryId: 'new', polarity: 'negative' }
+  ] }]]));
   assert.doesNotThrow(() => assertRegistryInvariants(base, 'registries/actions.json'));
-  assert.doesNotThrow(() => assertRegistryVectorInvariants(base, manifest));
+  assert.doesNotThrow(() => assertRegistryVectorInvariants(base, manifest, cases));
   for (const mutate of [
     (value) => { value.registry = 'problems'; },
     (value) => { value.entries[0].replacement = 'old'; },
@@ -75,9 +79,40 @@ test('registry closure validates file identity, replacements, and vector artifac
     (value) => { value.entries[1].kind = 'problem'; }
   ]) { const value = structuredClone(base); mutate(value); assert.throws(() => assertRegistryInvariants(value, 'registries/actions.json'), /invalid AAS registry/); }
   const badManifest = structuredClone(manifest); badManifest.artifacts[0].class = 'normative-prose';
-  assert.throws(() => assertRegistryVectorInvariants(base, badManifest), /manifest-owned validation artifact/);
+  assert.throws(() => assertRegistryVectorInvariants(base, badManifest, cases), /manifest-owned validation artifact/);
+  const unrelated = indexRegistryVectorCases(new Map([['vectors/registry/corpus.json', { cases: [
+    { registry: 'problems', registryId: 'old', polarity: 'positive' },
+    { registry: 'problems', registryId: 'old', polarity: 'negative' },
+    { registry: 'actions', registryId: 'some-other-id', polarity: 'positive' },
+    { registry: 'actions', registryId: 'some-other-id', polarity: 'negative' }
+  ] }]]));
+  assert.throws(() => assertRegistryVectorInvariants(base, manifest, unrelated), /lacks positive and negative vector polarity/);
+  const filenameOnly = { artifacts: [
+    { path: 'vectors/schema/positive/result.json', class: 'vector' },
+    { path: 'vectors/schema/negative/overlay-unknown-field.json', class: 'vector' }
+  ] };
+  const filenameOnlyRegistry = structuredClone(base);
+  for (const entry of filenameOnlyRegistry.entries) entry.vectors = filenameOnly.artifacts.map(({ path }) => path);
+  assert.throws(() => assertRegistryVectorInvariants(filenameOnlyRegistry, filenameOnly), /lacks positive and negative vector polarity/);
   const matrixRegistry = structuredClone(base); matrixRegistry.entries = [{ ...matrixRegistry.entries[0], status: 'provisional', vectors: ['version-matrix.json'] }];
   assert.doesNotThrow(() => assertRegistryVectorInvariants(matrixRegistry, { artifacts: [{ path: 'version-matrix.json', class: 'version-matrix' }] }));
+});
+test('registry corpus cases explicitly bind owned IDs to admission polarity', async () => {
+  const corpus = parseStrictJson(await readFile(new URL('../vectors/registry/corpus.json', import.meta.url)));
+  const registries = new Map();
+  for (const name of new Set(corpus.cases.map(({ registry }) => registry))) {
+    const document = parseStrictJson(await readFile(new URL(`../registries/${name}.json`, import.meta.url)));
+    registries.set(name, new Set(document.entries.map(({ id }) => id)));
+  }
+  for (const item of corpus.cases) {
+    assert.equal(typeof item.requirement, 'string', `${item.caseId}: requirement`);
+    assert.equal(typeof item.rationale, 'string', `${item.caseId}: rationale`);
+    assert(['positive', 'negative'].includes(item.polarity), `${item.caseId}: explicit polarity`);
+    assert(registries.get(item.registry)?.has(item.registryId), `${item.caseId}: admitted registry ID`);
+    const recognized = registries.get(item.registry)?.has(item.id) ?? false;
+    assert.equal(recognized, item.expected.recognized, `${item.caseId}: registry ownership`);
+    assert.equal(item.polarity, recognized ? 'positive' : 'negative', `${item.caseId}: polarity matches ownership`);
+  }
 });
 test('packaged catalog case records drive all declared adversarial dispositions', async () => {
   const corpus = parseStrictJson(await readFile(new URL('../vectors/schema/catalog-corpus.json', import.meta.url)));

@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assertPortablePackageInventory } from '../scripts/package-paths.mjs';
-import { assertPortablePath, assertPortablePathCollection } from '../lib/portable-path.mjs';
+import { assertPortablePath, assertPortablePathCollection, portablePathCollisionKey } from '../lib/portable-path.mjs';
 import { runNpmSync } from '../scripts/run-npm.mjs';
+import { assertIdentityDocumentPathInvariants } from '../lib/document-validation.mjs';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 
 test('npm runs its JavaScript CLI directly on Windows without a command shell', () => {
   let invocation;
@@ -86,7 +89,25 @@ test('shared portable-path profile enforces Unicode, UTF-8, Windows, and collect
   for (const invalid of [
     'src/cafe\u0301.json', 'src/con.txt', 'src/file. ', 'src/a\u0001b',
     'src/a\u202eb', String.raw`src\file.json`, 'C:/file.json', '/absolute/file.json'
+    , `src/${String.fromCharCode(0xd800)}`
   ]) assert.throws(() => assertPortablePath(invalid), /invalid portable path/, invalid);
   assert.throws(() => assertPortablePath(`src/${'é'.repeat(128)}`), /255 UTF-8 bytes/);
   assert.throws(() => assertPortablePathCollection(['src/STRASSE', 'src/straße']), /colliding/);
+});
+
+test('post-schema document validation closes every identity-bearing path collection', () => {
+  const artifact = { aasIdentity: 'aas:v0:sha256:' + 'a'.repeat(64), contentDigest: 'sha256:' + 'b'.repeat(64), byteLength: 1, mediaType: 'application/json' };
+  const snapshot = { pathProfile: {}, entries: [{ path: 'src/STRASSE', artifact }, { path: 'src/straße', artifact }] };
+  const overlay = { baseSnapshotAasIdentity: 'aas:v0:sha256:' + 'c'.repeat(64), operations: [{ op: 'add', path: 'src/K', contentAasIdentity: artifact.aasIdentity }, { op: 'delete', path: 'src/K' }] };
+  const policy = { scope: 'src/FF', rules: [], exceptions: [{ scope: 'src/ﬀ' }], provenance: [] };
+  const binding = { scope: { repositoryRoot: 'src', path: 'src/' + String.fromCharCode(0xd800) }, rolloutScope: 'all' };
+  for (const value of [snapshot, overlay, policy, binding]) assert.throws(() => assertIdentityDocumentPathInvariants(value), /portable path|colliding/);
+});
+
+test('vendored Unicode 17 C+F case-fold data has pinned provenance and derived bytes', async () => {
+  const bytes = await readFile(new URL('../lib/unicode-case-fold-17.mjs', import.meta.url));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '84c81c250d57fac6fa9937b4379451bd6f421242cba9e5e4b80a3b0ad29c0f2e');
+  assert.match(bytes.toString('utf8'), /Source SHA-256: ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183/);
+  assert.equal(portablePathCollisionKey('İ'), 'i\u0307');
+  assert.notEqual(portablePathCollisionKey('I'), portablePathCollisionKey('ı'), 'Turkic T fold must be excluded');
 });

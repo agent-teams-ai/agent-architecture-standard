@@ -26,6 +26,7 @@ sidecar.
 | [`overlay.schema.json`](overlay.schema.json) | `https://schemas.aas.invalid/private/v0/overlay.schema.json` | overlay operations, declarations, and receipts | 1 | `vectors/schema/corpus.json` | private provisional |
 | [`policy.schema.json`](policy.schema.json) | `https://schemas.aas.invalid/private/v0/policy.schema.json` | effective policy, bindings, exceptions, and enforcement records | 1 | schema corpus | private provisional |
 | [`provider.schema.json`](provider.schema.json) | `https://schemas.aas.invalid/private/v0/provider.schema.json` | provider description and advertised immutable versions | 1 | `vectors/schema/corpus.json` | private provisional |
+| [`registry-values.schema.json`](registry-values.schema.json) | `https://schemas.aas.invalid/private/v0/registry-values.schema.json` | generated closed wire values owned by registries | 1 | schema corpus and clean-generation gate | private provisional |
 | [`registry.schema.json`](registry.schema.json) | `https://schemas.aas.invalid/private/v0/registry.schema.json` | registry editions and entries | 1 | registry validation corpus | private provisional |
 
 Schemas MUST use closed core objects and explicit bounded extension locations.

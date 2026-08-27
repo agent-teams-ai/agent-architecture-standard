@@ -3,22 +3,35 @@ import path from 'node:path';
 import { root, walk, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
 import { sha256 } from '../lib/digests.mjs';
-import { assertRegistryInvariants, assertRegistryVectorInvariants } from '../lib/registry-validation.mjs';
+import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
 
 const immutableDigests = new Map([
+  ['decisions/README.md', 'sha256:8aa3b8d91ec3349bbee6489182741d0e7651f1a6490be869ba1c1f6b1a11c284'],
   ['decisions/phase-0-d0-d11-v1.md', 'sha256:ac3bfcc019a80483978f45ec4badc384e38124d601be606ae39566963ba422a6'],
+  ['decisions/phase-0-d0-d11-v2.md', 'sha256:2815ce512740fe0f1abc81660243bb1a19ed940f54ee83ad53570dde3a2c2a7d'],
   ['vectors/phase-0-remediation-v1.md', 'sha256:90ac226d64160c05b11eebdd0e20062c5d29e505ab11036df68ca387225b427a']
 ]);
 for (const [relative, expected] of immutableDigests) {
   const actual = sha256(await readFile(path.join(root, relative)));
   if (actual !== expected) throw new Error(`immutable historical artifact digest drift: ${relative}: ${actual}`);
 }
+const unicodeFold = await readFile(path.join(root, 'lib/unicode-case-fold-17.mjs'));
+if (sha256(unicodeFold) !== 'sha256:84c81c250d57fac6fa9937b4379451bd6f421242cba9e5e4b80a3b0ad29c0f2e') throw new Error('vendored Unicode 17 case-fold derivation drift');
+if (!unicodeFold.includes(Buffer.from('Source SHA-256: ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183'))) throw new Error('vendored Unicode 17 case-fold provenance is missing');
 
 const manifest = await readJson('artifacts.json');
 const paths = manifest.artifacts.map((entry) => entry.path);
+const registryCaseDocuments = new Map();
+for (const entry of manifest.artifacts.filter((item) => item.class === 'vector' && item.path.endsWith('.json'))) {
+  try { registryCaseDocuments.set(entry.path, await readJson(entry.path)); } catch { /* Invalid JSON vectors cannot index admission cases. */ }
+}
+const registryCaseIndex = indexRegistryVectorCases(registryCaseDocuments);
 if (new Set(paths).size !== paths.length) throw new Error('artifacts.json contains duplicate paths');
 if (paths.includes('artifacts.json') || paths.some((relative) => relative.endsWith('.tgz'))) throw new Error('manifest must not contain its own or a tarball digest');
 assertPortablePackageInventory(paths, 'manifest');
+for (const decision of ['decisions/README.md', 'decisions/phase-0-d0-d11-v1.md', 'decisions/phase-0-d0-d11-v2.md']) {
+  if (paths.filter((relative) => relative === decision).length !== 1) throw new Error(`decision provenance closure is not indexed exactly once: ${decision}`);
+}
 for (const relative of paths) {
   const bytes = await readFile(path.join(root, relative));
   if (bytes.includes(Buffer.from('\r\n')) || bytes.includes(Buffer.from('\r'))) throw new Error(`non-LF line ending: ${relative}`);
@@ -32,7 +45,7 @@ if (registryFiles.length !== registryEntries.length || registryFiles.some((item)
 for (const registryPath of registryFiles) {
   const registry = await readJson(registryPath);
   assertRegistryInvariants(registry, registryPath);
-  assertRegistryVectorInvariants(registry, manifest);
+  assertRegistryVectorInvariants(registry, manifest, registryCaseIndex);
   const ids = new Set(registry.entries.map((entry) => entry.id));
   for (const entry of registry.entries) {
     if (entry.replacement !== undefined && !ids.has(entry.replacement)) throw new Error(`registry replacement is not owned by ${registry.registry}: ${entry.id} -> ${entry.replacement}`);

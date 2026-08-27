@@ -52,13 +52,13 @@ export type binding = ({
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
   "rolloutScope": ConstrainedString;
-  "mode": "advisory";
+  "mode": ("shadow" | "advisory" | "required") & ("advisory");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
   "accountingProfile": import("./common.js").profileRef;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
-  "promotionRecordAasIdentity": import("./common.js").aasIdentity;
+  "promotionRecordAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "owner": ConstrainedString;
 }) | ({
   "schemaVersion": "0.1";
@@ -68,13 +68,13 @@ export type binding = ({
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
   "rolloutScope": ConstrainedString;
-  "mode": "required";
+  "mode": ("shadow" | "advisory" | "required") & ("required");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
   "accountingProfile": import("./common.js").profileRef;
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
-  "promotionRecordAasIdentity": import("./common.js").aasIdentity;
+  "promotionRecordAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "owner": ConstrainedString;
 }) | ({
   "schemaVersion": "0.1";
@@ -84,7 +84,7 @@ export type binding = ({
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
   "rolloutScope": ConstrainedString;
-  "mode": "shadow";
+  "mode": ("shadow" | "advisory" | "required") & ("shadow");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
   "accountingProfile": import("./common.js").profileRef;

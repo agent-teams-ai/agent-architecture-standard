@@ -483,7 +483,7 @@
   "request-positive": {
     "kind": "request",
     "envelopeVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "aasIdentity": "aas:v0:sha256:ad9628279ba001533d359523010509384ea9b1bc7688a484159f0eb12e80f2e7",
     "standardVersion": "0.1.0-rc.1",
     "operation": "validate-overlay@1",
     "targets": [
@@ -491,7 +491,7 @@
         "id": "target-1",
         "input": {
           "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-          "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
           "limits": {
             "maxInputBytes": 100,
             "maxDepth": 8,
@@ -682,7 +682,9 @@
       "exceptionDisposition": "none",
       "remediationPreconditions": []
     },
-    "remediationActions": []
+    "remediationActions": [
+      { "id": "none", "preconditions": [] }
+    ]
   },
   "problem-positive": {
     "kind": "problem",
@@ -843,7 +845,7 @@
     },
     "canonicalizationProfile": {
       "version": "0",
-      "id": "canonical@0",
+      "id": "agent-architecture-canonical-json-rfc8785@0",
       "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
     },
     "envelope": {
@@ -1096,7 +1098,7 @@
     },
     "canonicalizationProfile": {
       "version": "0",
-      "id": "canonical@0",
+      "id": "agent-architecture-canonical-json-rfc8785@0",
       "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
     },
     "envelope": {
@@ -1244,8 +1246,11 @@
     ],
     "unexpected": true
   },
+  "extension-disposition-target-positive": { "extensionId": "com.example.target", "location": "target", "targetId": "target-1", "disposition": "preserved", "requestBound": true, "affectsCoreSemantics": false },
+  "extension-disposition-target-missing": { "extensionId": "com.example.target", "location": "target", "disposition": "preserved", "requestBound": true, "affectsCoreSemantics": false },
+  "extension-disposition-request-target-invented": { "extensionId": "com.example.request", "location": "request", "targetId": "target-1", "disposition": "ignored", "requestBound": true, "affectsCoreSemantics": false },
   "binding-scope-positive": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
-  "binding-scope-negative": "src",
+  "binding-scope-negative": { "path": "src" },
   "pagination-cursor-positive": {
     "kind": "pagination-cursor",
     "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",

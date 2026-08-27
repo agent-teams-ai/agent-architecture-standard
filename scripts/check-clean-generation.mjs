@@ -7,7 +7,7 @@ const temporary = await mkdtemp(path.join(tmpdir(), 'aas-generation-'));
 try {
   const result = spawnSync(process.execPath, [path.join(root, 'scripts/generate.mjs')], { cwd: root, env: { ...process.env, AAS_GENERATE_ROOT: temporary }, encoding: 'utf8' });
   if (result.status !== 0) throw new Error(result.stderr || result.stdout);
-  const expected = ['artifacts.json', ...(await walk('generated'))];
+  const expected = ['artifacts.json', 'schemas/registry-values.schema.json', ...(await walk('generated'))];
   for (const relative of expected) {
     const checked = await readFile(path.join(root, relative));
     const fresh = await readFile(path.join(temporary, relative));

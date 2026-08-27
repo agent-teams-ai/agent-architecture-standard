@@ -21,8 +21,9 @@ historical `phase-0-remediation-v1.md` bytes. Machine-readable instances live in
 ## EXTENSION-DISPOSITION-P1-001: understood, preserved, and ignored
 
 - Requirement: `../spec/identity.md` §6 and `../spec/core.md` §6.
-- Inputs: `schema/positive/result.json` and
-  `schema/negative/result-extension-semantic-effect.json`.
+- Inputs: `schema/positive/result.json` and the
+  `/result-extension-semantic-effect` object in
+  `schema/definition-fixtures.json`.
 - Limits: at most 128 disposition records and the request's aggregate extension
   byte budget.
 - Expected: every disposition is request-bound. Preserved unknown-optional and

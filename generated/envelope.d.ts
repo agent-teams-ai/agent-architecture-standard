@@ -51,8 +51,8 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./common.js").identifier;
   "targetId": import("./common.js").identifier;
-  "resolution": "decided";
-  "verdict": "pass" | "fail" | "not-applicable";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided");
+  "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
   "mode": "shadow" | "advisory" | "required";
   "rolloutDisposition": import("./common.js").identifier;
   "bindingAasIdentity": import("./common.js").aasIdentity;
@@ -70,12 +70,12 @@ export type diagnosticHeader = ({
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
   "omissionCount": import("./common.js").nonnegativeInteger;
   "omissionReasons": Array<import("./common.js").identifier>;
-  "nextAction": import("./common.js").identifier;
+  "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
   "code": import("./common.js").identifier;
   "targetId": import("./common.js").identifier;
-  "resolution": "needs-input";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input");
   "mode": "shadow" | "advisory" | "required";
   "rolloutDisposition": import("./common.js").identifier;
   "bindingAasIdentity": import("./common.js").aasIdentity;
@@ -93,12 +93,12 @@ export type diagnosticHeader = ({
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
   "omissionCount": import("./common.js").nonnegativeInteger;
   "omissionReasons": Array<import("./common.js").identifier>;
-  "nextAction": import("./common.js").identifier;
+  "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
   "code": import("./common.js").identifier;
   "targetId": import("./common.js").identifier;
-  "resolution": "indeterminate";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate");
   "mode": "shadow" | "advisory" | "required";
   "rolloutDisposition": import("./common.js").identifier;
   "bindingAasIdentity": import("./common.js").aasIdentity;
@@ -116,12 +116,12 @@ export type diagnosticHeader = ({
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
   "omissionCount": import("./common.js").nonnegativeInteger;
   "omissionReasons": Array<import("./common.js").identifier>;
-  "nextAction": import("./common.js").identifier;
+  "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
   "code": import("./common.js").identifier;
   "targetId": import("./common.js").identifier;
-  "resolution": "unsupported";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported");
   "mode": "shadow" | "advisory" | "required";
   "rolloutDisposition": import("./common.js").identifier;
   "bindingAasIdentity": import("./common.js").aasIdentity;
@@ -139,12 +139,12 @@ export type diagnosticHeader = ({
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
   "omissionCount": import("./common.js").nonnegativeInteger;
   "omissionReasons": Array<import("./common.js").identifier>;
-  "nextAction": import("./common.js").identifier;
+  "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
   "code": import("./common.js").identifier;
   "targetId": import("./common.js").identifier;
-  "resolution": "stale";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale");
   "mode": "shadow" | "advisory" | "required";
   "rolloutDisposition": import("./common.js").identifier;
   "bindingAasIdentity": import("./common.js").aasIdentity;
@@ -162,11 +162,11 @@ export type diagnosticHeader = ({
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
   "omissionCount": import("./common.js").nonnegativeInteger;
   "omissionReasons": Array<import("./common.js").identifier>;
-  "nextAction": import("./common.js").identifier;
+  "nextAction": import("./registry-values.js").actionId;
 });
 
 export type remediationAction = {
-  "id": import("./common.js").identifier;
+  "id": import("./registry-values.js").actionId;
   "preconditions": Array<import("./common.js").identifier>;
 };
 
@@ -231,48 +231,69 @@ export type realizedCounters = {
 
 export type extensionDisposition = ({
   "extensionId": import("./common.js").identifier;
-  "location": "request" | "target";
-  "disposition": "preserved";
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "disposition": ("understood" | "preserved" | "ignored") & ("preserved");
   "requestBound": true;
-  "affectsCoreSemantics": false;
+  "affectsCoreSemantics": (boolean) & (false);
 }) | ({
   "extensionId": import("./common.js").identifier;
-  "location": "request" | "target";
-  "disposition": "ignored";
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "disposition": ("understood" | "preserved" | "ignored") & ("ignored");
   "requestBound": true;
-  "affectsCoreSemantics": false;
+  "affectsCoreSemantics": (boolean) & (false);
 }) | ({
   "extensionId": import("./common.js").identifier;
-  "location": "request" | "target";
-  "disposition": "understood";
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "disposition": ("understood" | "preserved" | "ignored") & ("understood");
+  "requestBound": true;
+  "affectsCoreSemantics": boolean;
+}) | ({
+  "extensionId": import("./common.js").identifier;
+  "location": ("request" | "target") & ("request");
+  "disposition": ("understood" | "preserved" | "ignored") & ("preserved");
+  "requestBound": true;
+  "affectsCoreSemantics": (boolean) & (false);
+}) | ({
+  "extensionId": import("./common.js").identifier;
+  "location": ("request" | "target") & ("request");
+  "disposition": ("understood" | "preserved" | "ignored") & ("ignored");
+  "requestBound": true;
+  "affectsCoreSemantics": (boolean) & (false);
+}) | ({
+  "extensionId": import("./common.js").identifier;
+  "location": ("request" | "target") & ("request");
+  "disposition": ("understood" | "preserved" | "ignored") & ("understood");
   "requestBound": true;
   "affectsCoreSemantics": boolean;
 });
 
 export type resolution = ({
   "targetId": import("./common.js").identifier;
-  "resolution": "decided";
-  "verdict": "pass" | "fail" | "not-applicable";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided");
+  "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
   "reason"?: import("./common.js").identifier;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
-  "resolution": "needs-input";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input");
   "reason"?: import("./common.js").identifier;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
-  "resolution": "indeterminate";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate");
   "reason"?: import("./common.js").identifier;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
-  "resolution": "unsupported";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported");
   "reason"?: import("./common.js").identifier;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
-  "resolution": "stale";
+  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale");
   "reason"?: import("./common.js").identifier;
   "diagnostic": diagnosticHeader;
 });
@@ -296,7 +317,7 @@ export type result = {
 export type problem = {
   "kind": "problem";
   "envelopeVersion": import("./common.js").envelopeVersion;
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").problemCode;
 };
 
 export type AASRequestResultResolutionProblemAndDiagnosticEnvelopes = (request) | (result) | (problem) | (diagnosticHeader) | (diagnostic) | (paginationCursor);
