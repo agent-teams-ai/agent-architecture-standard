@@ -192,13 +192,52 @@ prose MUST NOT become remediation commands or instructions.
 
 ## 6. Resource limits and privacy
 
-The profile MUST define deterministic ceilings and accounting units for encoded
-input bytes, nesting, path segments and bytes, entries, logical bytes, read
-bytes, per-entry bytes, overlay operations, requested targets, evidence
-references, extension bytes, diagnostics, output bytes, concurrency, and total
-work.
+### Stable v0 resource-accounting profile
 
-Aggregate budgets MUST NOT reset per target, extension, retry, or page.
+The sole normative owner of every counter unit, byte basis, retry/revisit rule,
+aggregation boundary, sum/peak rule, componentwise-minimum rule, output
+fixed-point rule, preflight lower bound, and `totalWork` formula is
+[`profiles/resource-accounting-v0-1-semantics.md`](../profiles/resource-accounting-v0-1-semantics.md).
+Bindings, requests, analysis keys, and operator-authorized profile documents
+MUST name that identity-bound accounting definition. This specification does
+not independently redefine those mutable semantics.
+
+### Trusted invocation kernel boundary
+
+Before accepting untrusted requests, the trusted composition root MUST create
+one synchronous invocation kernel from operator authority, target authority,
+and provider budgets. Operator authority supplies one complete binding set and
+exact allowlisted collections of effective-policy, profile, analyzer, and
+promotion-record documents as strict raw JSON bytes. The kernel copies and
+schema-validates those bytes once, recomputes every identity, closes all exact
+references and profile dependencies, validates portable paths, and freezes the
+admitted catalog. Request data MUST NOT supply or replace that authority, the
+resolver, provider budgets, target coordinates or cohorts, or an analysis key.
+
+The invocation API accepts only a `Uint8Array` backed by a non-shared
+`ArrayBuffer` for each request or result. It copies before strict parsing,
+derives the received byte count, and rejects proxies, shared buffers, parsed
+objects, and caller byte counts. Before target resolution it rejects every
+known request, overlay, extension, path, target, and minimum-work lower bound
+against the provisional componentwise budget.
+
+Target authority resolves identity-bound coordinates and rollout cohorts from
+operator-owned immutable integration context. Its cloned result MUST have the
+exact target keys, schema, identity, portable path and request-bound
+target-selection identity. The kernel uses a bootstrap-built bounded binding
+index, while preserving complete candidate ordering, all-rank conflict checks,
+and normative precedence. It derives the complete analysis key from admitted
+request state, selected artifacts, semantic extensions, exact inputs, and
+trusted provider budgets.
+
+Preflight returns a separately deeply frozen evaluator plan and an opaque
+per-kernel capability held in private weak storage. Reconciliation accepts only
+that kernel's original capability and strict raw result bytes, enforces stored
+path lower bounds and final componentwise budgets, and returns a deeply frozen
+validated result clone. Operator revocation affects current authorization, not
+cached result identity: relevant target/binding changes alter request/analysis
+identity, whereas unrelated catalog changes do not.
+
 Implementations MUST validate before allocation and MUST detect integer
 overflow, sparse-file amplification, repeated-reference amplification, and
 diagnostic amplification. Exhausting a valid per-target budget yields
@@ -375,15 +414,21 @@ dogfood of built artifacts and isolated qualification of packed artifacts.
 ## 13. Release channel sequence
 
 The accepted v0 publication sequence is a public release candidate whose
-immutable SemVer is exactly `X.Y.Z-rc.N`. `X`, `Y`, and `Z` are canonical SemVer
+immutable SemVer is exactly `0.Y.Z-rc.N`. `Y` and `Z` are canonical SemVer
 nonnegative decimal integers with no leading zeroes except `0`; `N` is a
 canonical positive decimal integer matching `[1-9][0-9]*`. Build metadata and
 additional prerelease identifiers are forbidden. The RC MUST use a non-`latest`
 dist-tag. It is followed by a separately built and qualified numeric 0.x
 release whose exact SemVer is `0.Y.Z`, with canonical nonnegative `Y` and `Z`
 and no prerelease or build metadata. The numeric release MUST be a separately
-immutable artifact cohort; it MUST NOT reuse RC bytes, be a dist-tag promotion,
-or otherwise substitute relabeling for qualification.
+immutable artifact cohort; it MUST NOT reuse release-owned RC outputs, be a
+dist-tag promotion, or otherwise substitute relabeling for qualification.
+Paired RC and numeric manifests MAY share exact immutable prerequisite
+identities in their `schemas`, `registries`, `vectors`, and `profiles`
+collections. Those prerequisites are not rebuilt merely because a consuming
+release cohort changes. Identity or byte reuse remains forbidden for member
+artifacts, provenance, SBOMs, claims, qualification or approval sidecars,
+traceability matrices, release evidence, and the manifests themselves.
 
 An RC MUST remain explicitly experimental, MUST NOT use `latest`, and MUST have
 its own release manifest and provisional or qualified claim status. External RC

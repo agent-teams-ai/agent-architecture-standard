@@ -64,7 +64,7 @@ The distinction is deterministic:
 | Valid rule whose required observed fact is absent from incomplete coverage | target `indeterminate` |
 | Valid rule outside the target's policy-defined applicability | target `decided/not-applicable` |
 | Valid rule and complete evidence support its condition | target `decided/pass` or `decided/fail` |
-| Expected shared policy `aasIdentity` differs from the supplied valid policy | every requested target `stale` in one complete result |
+| Every target's expected policy `aasIdentity` differs from its supplied valid policy | every requested target `stale` in one complete result |
 | Expected per-target policy `aasIdentity` differs from that target's supplied valid policy | only that target `stale`; other targets resolve normally |
 
 ## 3. Provenance
@@ -146,13 +146,52 @@ selection algorithm:
 3. At equal specificity, a binding naming the exact rule outranks one applying
    to all rules.
 4. At equal specificity in all dimensions, the bindings MUST have identical
-   policy, profiles, budgets, mode, rollout scope, and exception set; otherwise
-   the entire binding set is invalid and produces a binding-set problem with no
-   result envelope.
+   consumer, repository, scope, portable-path profile, rollout scope, mode,
+   policy identity, profiles, accounting profile, budgets, exception set, and
+   promotion-record identity; otherwise the entire binding set is invalid and produces
+   `aas.problem.binding-set-conflict` with no result envelope.
+
+Applicability authority is the complete enabled binding set admitted once by
+the trusted invocation kernel, never a request or repository-selected subset.
+Target authority independently resolves each `aas.target-selection.v0`
+coordinate and its identity-bound rollout cohorts from immutable local
+integration context; invocation data cannot provide coordinates or cohorts.
+The kernel clones and validates each resolution and requires its exact target
+key and identity to equal the request-bound target-selection identity. A target
+coordinate carries the exact path profile and MUST equal the target overlay
+profile; bindings from other profile namespaces are inapplicable, with no
+fallback. Target keys close exactly and candidates form a complete bijection
+with the derived same-profile applicable members. Every applicable equal-rank
+class is checked for semantic conflict before selection, including classes
+below the winning rank. A bounded index constructed during catalog admission
+MUST avoid scanning the entire binding catalog per target without changing any
+selection result, conflict check, candidate member, or ordering.
+
+Before target authority runs, the kernel computes cheap lower bounds only from
+the exact raw request and its overlay operations. It MUST handle empty operation
+arrays and distinct paths across multiple targets without inventing a target
+coordinate. The effective invocation ceiling is the componentwise minimum of
+the request ceiling, the trusted provider ceiling recorded in the analysis key,
+every selected binding ceiling, and every target-overlay ceiling. Selected
+profile `limits` are not an additional invocation budget authority.
+
+After semantic rank is computed, the wire candidate array is ordered by
+descending rank and then ascending binding `aasIdentity`. Equivalent top-rank
+bindings use the lowest-identity binding's ID as their sole representative.
+Binding identities are lowercase ASCII, and implementations MUST compare them
+by ASCII/code-unit order without locale-sensitive collation.
+This is representation ordering, not semantic precedence. Every permutation of
+one complete set therefore yields one candidate order, selected ID, and request
+identity.
 
 Declaration order, filename order, lexical binding ID, installation order, and
-last-write-wins MUST NOT resolve ambiguity. A provider MUST expose the selected
-binding ID and the complete candidate set in the decision trace.
+last-write-wins MUST NOT resolve ambiguity. Each request target MUST bind the
+complete ordered applicable candidate set and the selected binding/policy
+identities, or the explicit absent/`binding-missing` state, into the immutable
+request identity. Every result header MUST repeat that decision exactly even
+when there are zero detailed diagnostics. Joint validation MUST enforce an exact
+target bijection, candidate ID/identity/policy bijection, and selected-or-absent
+identity equality; a detailed diagnostic MUST repeat the same header decision.
 
 An uncovered target does not inherit a global policy unless a root-scope binding
 explicitly exists. With no applicable binding, an enforcement invocation returns
@@ -178,7 +217,8 @@ produces `indeterminate` with budget evidence.
 ## 7. Governed exceptions
 
 An exception is semantically complete only if it conveys exactly one rule, a
-bounded subject/path scope, owner, reason code, an already-finalized earlier
+bounded subject/path scope, the exact registered portable-path profile reference
+used to validate that scope, owner, reason code, an already-finalized earlier
 creation-policy `aasIdentity`, and one exact immutable `validForRevision`. Its
 JSON Schema is the sole authority for field names and requiredness.
 `validForRevision` is the domain-framed repository-revision `aasIdentity` defined
@@ -187,6 +227,12 @@ for every other revision, including any descendant or content-equivalent revisio
 Absolute timestamps, durations, mutable issue states, branch names, and
 latest-revision selectors MUST NOT be expiry conditions in v0. A perpetual
 exception is invalid.
+
+Every exception embedded in an effective policy MUST use the exact same path
+profile ID, version, and `aasIdentity` as that policy. Semantic path collections
+in a policy or binding MAY repeat an identical accepted spelling (including the
+same scope used by different rules), but MUST reject two distinct spellings
+whose Unicode 17 NFC/full-default-case-fold collision keys are equal.
 
 The creation policy MUST have been finalized before the exception bytes were
 created and MUST NOT include that exception or any artifact that transitively
@@ -258,6 +304,10 @@ cohort is still `required` with a narrow rollout scope.
 Rollout selection MUST be deterministic from identity-bearing inputs and MUST
 be recorded in the receipt. Random runtime sampling, mutable feature flags, or
 server-side cohort changes MUST NOT support a required result.
+The exact target-selection identity is bound into the request and, through the
+request identity, the analysis key before evaluation. An evaluator or cache
+MUST NOT reuse applicability or rollout derived for a different target-selection
+identity.
 
 Mode promotion MUST create a new binding and MUST cite an immutable promotion
 record whose qualifying approval is in a later external sidecar. Promotion MUST
@@ -267,6 +317,16 @@ policy, analyzer, exposure interval, denominators, escapes, false blocks,
 confidence intervals, incidents, owner, thresholds, rollout scope,
 previous mode, rollback operation, and response SLA. Its JSON Schema is the sole
 authority for field names and requiredness.
+
+The operator MUST supply the exact promotion-record collection and a local
+duplicate-free qualification allowlist projected from those external approval
+sidecars. Every advisory or required binding MUST have an exact rule scope and
+cite one supplied, locally qualified record. The kernel MUST cross-check the
+consumer, exact rule, policy, complete profile references, rollout scope,
+request analyzer, and the adjacent `shadow` to `advisory` or `advisory` to
+`required` transition; `nextMode` MUST equal the binding mode. A shadow binding
+MUST NOT cite a promotion record. These requirements do not add approval
+evidence, approver identity, or sidecar identity to either identity document.
 
 The promotion record and binding MUST NOT contain approval evidence, an approver
 identity, or the later approval-sidecar identity.
@@ -280,7 +340,7 @@ boundary. Agent invocation and prompts are conveniences, not enforcement.
 A result becomes stale when any identity-bearing input relevant to its decision
 changes. This includes base revision, snapshot content or declared observation
 coverage, integration state, policy, binding (including its complete rollout
-scope), profile, analyzer, bound promotion/evidence artifacts, exception or
+scope), target selection (including rollout cohorts), profile, analyzer, bound promotion/evidence artifacts, exception or
 `validForRevision`, overlay, request, declared budget, or accounting profile.
 Realized counters are result outputs and are compared through result
 `aasIdentity`; they are not pre-evaluation freshness inputs.
@@ -306,7 +366,11 @@ the semantic authority:
 
 - diagnostic contract version and stable code;
 - target ID, resolution, and any decided verdict;
-- enforcement mode, binding `aasIdentity`, and deterministic rollout disposition;
+- selected enforcement mode and binding/policy `aasIdentity` values when a
+  binding exists, or explicit binding-absent state, plus deterministic rollout
+  disposition;
+- the complete request-bound applicable candidate set and selected/absent
+  binding decision;
 - snapshot, policy, profile, analyzer, request, result, and applicable overlay
   `aasIdentity` values;
 - freshness status;
@@ -323,6 +387,11 @@ The diagnostic header's `resultAasIdentity` is the post-hash self-identity
 projection defined by `identity.md`; it MUST equal the top-level result
 `aasIdentity` and is not an additional input to result identity.
 
+Header freshness and resolution are coupled in both directions: the resolution
+is `stale` if and only if header freshness is `stale`. Every resolution other
+than `stale` MUST carry freshness `fresh`; no decided verdict can coexist with
+stale freshness.
+
 A diagnostic code is a provisional namespaced identifier registered to one
 stable semantic condition. Rendered prose is nonnormative and MAY change without
 changing the code. Codes MUST NOT embed paths, line numbers, severity, mode, or
@@ -334,6 +403,14 @@ closed remediation actions. Its JSON Schema is the sole authority for field name
 and requiredness. A semantically complete decision trace conveys the effective
 binding, normalized facts, evaluated branch, exception disposition, and
 remediation preconditions; its JSON Schema owns field names and requiredness.
+Each detailed diagnostic target MUST resolve to exactly one resolution header.
+Its binding decision MUST be byte-for-byte canonical-JSON equal to that header's
+request-bound decision. Candidate binding IDs and identities MUST each be
+unique. In selected state, `selectedBindingId` MUST select exactly one candidate
+whose binding and policy identities equal the selection and header. In absent
+state the candidate set is empty and the target resolution is exactly
+`needs-input` with `binding-missing`. A trace cannot invent a second binding
+interpretation for the same target.
 
 Remediation actions MUST come from trusted static profile data and a closed
 action registry. Repository or provider prose MUST NOT supply commands. Values

@@ -1,0 +1,32 @@
+{
+  "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300",
+  "kind": "accounting",
+  "id": "agent-architecture-resource-accounting-v0@1",
+  "definitionVersion": "1",
+  "schemas": [{
+    "aasIdentity": "aas:v0:sha256:0cef85f35dee8bad91a71c85348137a6ab26bc941f70963a5b5107beaf18d9d8",
+    "contentDigest": "sha256:d5621a94927aea261063d375794f45654528ebb674c552e6782a0ebd73c5e6f7",
+    "byteLength": 5327,
+    "mediaType": "application/json"
+  }],
+  "dependencies": [],
+  "limits": {
+    "maxInputBytes": 9007199254740991, "maxDepth": 256, "maxPathSegments": 64, "maxPathBytes": 4096,
+    "maxEntries": 1000000, "maxLogicalBytes": 9007199254740991, "maxReadBytes": 9007199254740991,
+    "maxPerEntryBytes": 9007199254740991, "maxOverlayOperations": 100000, "maxTargets": 100000,
+    "maxEvidenceReferences": 1000000, "maxExtensionBytes": 9007199254740991, "maxDiagnostics": 1000000,
+    "maxOutputBytes": 9007199254740991, "maxConcurrency": 100000, "maxTotalWork": 9007199254740991
+  },
+  "semanticsArtifacts": [{
+    "aasIdentity": "aas:v0:sha256:8882b50b389191be5af5bec1fa937060d6beff17a454100c715bd866b89c16bc",
+    "contentDigest": "sha256:addce43af0b5c2325aadf1dd9d79d5f53f194badec426b6b7b4f05c379167809",
+    "byteLength": 3125,
+    "mediaType": "text/markdown"
+  }],
+  "definitionVectorSuites": [{
+    "aasIdentity": "aas:v0:sha256:44e2045d47d9e28f64246b41246987939301d5185b13e25070db0e3930286f5c",
+    "contentDigest": "sha256:2bf7c23d9145c8953b9545c938f76311b58cd88d425afe6f14aa0824e2bf82b0",
+    "byteLength": 6114,
+    "mediaType": "text/markdown"
+  }]
+}

@@ -1,0 +1,11 @@
+{
+  "registry": "problems",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    { "id": "aas.problem.no-common-envelope-version", "kind": "problem", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "version-matrix.json", "introducedEdition": "1", "vectors": ["vectors/registry/corpus.json"], "collisionReview": "Closed private provisional negotiation problem code." },
+    { "id": "aas.problem.binding-set-conflict", "kind": "problem", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/policy-and-enforcement.md#5-scope-precedence-and-overlap", "introducedEdition": "1", "vectors": ["vectors/phase-1-remediation-v1.md"], "collisionReview": "Closed private provisional binding-set failure code." }
+  ],
+  "changes": ["Initial closed provisional problem-code registry.", "Registered fail-closed conflicting equal-rank binding-set semantics."]
+}

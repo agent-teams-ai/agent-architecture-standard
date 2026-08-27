@@ -1,0 +1,39 @@
+{
+  "suite": "binding-selection-permutations-v1",
+  "identityOrdering": "ascending-lowercase-ascii-code-unit",
+  "cases": [
+    {
+      "inputOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "bindingSetAasIdentity": "aas:v0:sha256:52f240716bfc24a1ddaf31b3facf5b8e08986ce813c540a24c07346b3578498f",
+      "candidateOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:61906cdeb034f7ce8c9ef89e3a02041e606531aed095a790f902098e0f5b84bd"
+    },
+    {
+      "inputOrder": [
+        "binding-a",
+        "binding-z"
+      ],
+      "bindingSetAasIdentity": "aas:v0:sha256:0e510a1e6eca51259ead39c529597772a18482833dbf9a5bb6deab3eb524335a",
+      "candidateOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:61906cdeb034f7ce8c9ef89e3a02041e606531aed095a790f902098e0f5b84bd"
+    }
+  ],
+  "negativeCases": [
+    {
+      "name": "equal-rank-different-path-profile",
+      "difference": "pathProfile.aasIdentity",
+      "expectedProblem": "binding-profile-not-applicable"
+    }
+  ]
+}

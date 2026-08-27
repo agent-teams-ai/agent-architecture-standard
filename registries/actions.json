@@ -1,0 +1,10 @@
+{
+  "registry": "actions",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    { "id": "none", "kind": "action", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "introducedEdition": "1", "vectors": ["vectors/schema/positive/result.json"], "collisionReview": "Closed core no-action value; private and provisional." }
+  ],
+  "changes": ["Initial closed provisional remediation-action registry."]
+}

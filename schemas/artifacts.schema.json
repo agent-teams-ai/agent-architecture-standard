@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aas.invalid/private/v0/artifacts.schema.json",
+  "title": "AAS artifact, snapshot, coverage, and evidence descriptors",
+  "x-aas-status": "private-provisional-unpublished",
+  "$defs": {
+    "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stage", "denominator", "included", "policyExcluded", "unreadable", "unsupported", "unstable", "unknown", "budgetExhausted"],
+      "properties": {
+        "stage": { "enum": ["discovery", "capture", "classification", "evaluation", "overlay-reevaluation"] },
+        "denominator": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "included": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "policyExcluded": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "unreadable": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "unsupported": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "unstable": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "unknown": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "budgetExhausted": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "artifact", "location", "producerAasIdentity", "derivation", "sensitivity", "inputContentDigest", "applicableRuleOrProfile", "integrityStatus", "producerAssurance", "semanticStatus"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/identifier" },
+        "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
+        "location": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind", "offset", "length"], "properties": { "kind": { "const": "byte-range" }, "offset": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" }, "length": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "pointer"], "properties": { "kind": { "const": "structured-pointer" }, "pointer": { "type": "string", "minLength": 1, "maxLength": 4096, "pattern": "^(?:/([^~/]|~[01])*)+$" } } }
+          ]
+        },
+        "producerAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "derivation": { "type": "object", "additionalProperties": false, "required": ["method", "inputs"], "properties": { "method": { "$ref": "common.schema.json#/$defs/profileRef" }, "inputs": { "type": "array", "minItems": 1, "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/contentDigest" } } } },
+        "sensitivity": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "inputContentDigest": { "$ref": "common.schema.json#/$defs/contentDigest" },
+        "applicableRuleOrProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
+        "integrityStatus": { "enum": ["unresolved", "digest-matched", "snapshot-bound"] },
+        "producerAssurance": { "enum": ["self-asserted", "policy-allowlisted", "externally-attested"] },
+        "semanticStatus": { "enum": ["unchecked", "schema-valid", "conformance-checked"] }
+      }
+    },
+    "snapshot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["aasIdentity", "repositoryId", "captureProfile", "pathProfile", "entries", "coverage"],
+      "properties": {
+        "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
+        "repositoryId": { "$ref": "common.schema.json#/$defs/identifier" },
+        "captureProfile": { "$ref": "registry-values.schema.json#/$defs/snapshotCaptureProfile" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
+        "entries": {
+          "type": "array", "maxItems": 1000000,
+          "items": { "type": "object", "additionalProperties": false, "required": ["path", "artifact"], "properties": { "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } } }
+        },
+        "coverage": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "$ref": "#/$defs/coverage" } }
+      }
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/artifact" },
+    { "$ref": "#/$defs/snapshot" },
+    { "$ref": "#/$defs/coverage" },
+    { "$ref": "#/$defs/evidence" }
+  ]
+}

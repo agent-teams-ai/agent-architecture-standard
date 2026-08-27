@@ -1,0 +1,6 @@
+{
+  "aasIdentity": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "baseSnapshotAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "limits": {"maxInputBytes":1048576,"maxDepth":64,"maxPathSegments":64,"maxPathBytes":4096,"maxEntries":10000,"maxLogicalBytes":10485760,"maxReadBytes":10485760,"maxPerEntryBytes":1048576,"maxOverlayOperations":1000,"maxTargets":1000,"maxEvidenceReferences":10000,"maxExtensionBytes":65536,"maxDiagnostics":10000,"maxOutputBytes":1048576,"maxConcurrency":8,"maxTotalWork":1000000},
+  "operations": [{ "op": "delete", "path": "src\\file.ts" }]
+}

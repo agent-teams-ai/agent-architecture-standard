@@ -157,13 +157,15 @@ field. `artifact` alone uses exact raw bytes as the framed payload. Fields named
 | profile | `aas.profile.v0` | profile kind/ID/version, schema `aasIdentity` values, dependencies, limits, semantics artifact `aasIdentity` values, definition-vector-suite `aasIdentity` values | qualification-vector/report/sidecar identities, publication time, mutable URL, provider metadata |
 | effective policy | `aas.policy.v0` | policy schema version, fully materialized rules/parameters/defaults, governed exception `aasIdentity` values, source-provenance artifact `aasIdentity` values | local source paths, compiler identity, timestamps |
 | repository revision | `aas.revision.v0` | repository ID, revision-system profile `aasIdentity`, exact immutable native revision identifier, revision content/tree `aasIdentity` | branch or tag name, checkout path, wall clock |
-| exception | `aas.exception.v0` | exact rule and scope, owner, reason, already-finalized earlier creation-policy `aasIdentity`, exact repository-revision `aasIdentity` as `validForRevision` | approval evidence or approver identity, timestamp or duration, mutable issue state, wall clock |
+| exception | `aas.exception.v0` | exact rule and scope, portable-path profile ID/version/`aasIdentity`, owner, reason, already-finalized earlier creation-policy `aasIdentity`, exact repository-revision `aasIdentity` as `validForRevision` | approval evidence or approver identity, timestamp or duration, mutable issue state, wall clock |
 | promotion record | `aas.promotion.v0` | rule, consumer, policy/profile/analyzer `aasIdentity` values, rollout scope, mode transition, observation-evidence artifact `aasIdentity` values, denominators, counters, thresholds, incidents, owner, rollback and SLA | approval evidence or approver identity, mutable dashboard, current feature flag, later observations |
 | binding | `aas.binding.v0` | consumer/repository ID, exact scope, complete rollout scope, mode, profile `aasIdentity` values, policy `aasIdentity`, budgets/accounting profile, exception `aasIdentity` values, promotion-record `aasIdentity` when promoted | local file location, environment, installation state |
+| binding set | `aas.binding-set.v0` | the complete closed ordered member binding documents, including every recomputable member identity | applicability caches, installation or discovery order |
+| target selection | `aas.target-selection.v0` | target ID, consumer, repository, exact subject/path/rule coordinates, and rollout cohorts | transport routing, caller applicability conclusions |
 | analyzer | `aas.analyzer.v0` | immutable implementation artifact `aasIdentity` values, analyzer configuration, supported profile `aasIdentity` values | process ID, host path, runtime clock |
 | overlay | `aas.overlay.v0` | base snapshot `aasIdentity`, ordered operations, portable paths, preconditions, content artifact `aasIdentity` values, limits | working directory, author, timestamp |
-| request | `aas.request.v0` | envelope/operation versions, unique targets, snapshot/policy/binding/profile/analyzer/overlay `aasIdentity` values, budgets/accounting profile, extensions | correlation-only metadata, transport fields |
-| analysis key | `aas.analysis.v0` | operation/profile/evaluator `aasIdentity` values, all substantive input `aasIdentity` values, declared budgets, accounting-profile `aasIdentity`, understood semantic extensions | realized counters, deadline clock, cancellation token, cache location |
+| request | `aas.request.v0` | envelope/operation versions, unique targets, per-target target-selection, snapshot/policy/binding/profile/analyzer/overlay `aasIdentity` values, budgets/accounting profile, extensions | correlation-only metadata, transport fields |
+| analysis key | `aas.analysis.v0` | request `aasIdentity`, operation and request profile/analyzer/snapshot identities, operation/evaluator profiles, exact ordered snapshot/target input identities, exact componentwise-effective invocation budgets, accounting-profile identity, and complete scoped semantic extensions | realized counters, deadline clock, cancellation token, cache location |
 | result | `aas.result.v0` | request and analysis-key `aasIdentity` values, per-target resolutions, coverage, evidence, omissions, deterministic diagnostic identity projections, realized output counters | every self `resultAasIdentity` projection, logs, elapsed wall time, rendering |
 | receipt | `aas.receipt.v0` | result and binding `aasIdentity` values, integration snapshot/revision/worktree state, exception-validity revision, qualification context | signer transport metadata, publication time |
 | release manifest | `aas.release-manifest.v0` | cohort name, member artifact `aasIdentity`/`contentDigest`/versions, dependency edges, already-finalized claim/matrix/qualification-sidecar `aasIdentity` values, governance role IDs | approval evidence or approver identity, any forward reference from an earlier artifact, dist-tag lookup result, mutable registry metadata |
@@ -173,11 +175,24 @@ it semantic. Worktree or integration state participates through explicit
 snapshot entries and receipt fields and MUST NOT participate through a
 machine-local directory.
 
-Budgets participate in request identity. The declared deterministic limits and
-exact accounting-profile semantics participate in the pre-evaluation analysis
+Each request target's `targetSelectionAasIdentity` participates in request
+identity. Consequently the analysis key binds it through `requestAasIdentity`;
+the target selection includes its exact portable-path profile, and relevant
+target/binding or rollout-cohort changes cannot occur without changing request
+and analysis-key identities. Private operator authority, authorization
+allowlists, and unrelated catalog members are deliberately excluded from AAS
+content identity. Revocation is current verifier state, not a mutation of a
+previous result identity. Budgets participate in request identity. The declared deterministic limits and
+exact componentwise-effective budgets and accounting-profile semantics participate in the pre-evaluation analysis
 key. Realized counters do not exist until evaluation and MUST NOT participate in
 that key; they participate in result identity. Wall-clock deadlines and external
 cancellation are reported but excluded from deterministic identities.
+
+At the raw-byte admission boundary, an authentic non-shared `Uint8Array` whose
+length exceeds `maxBytes` MUST be rejected before allocation or parsing. Schema
+validation MUST fail fast and expose at most three errors in a deterministic
+diagnostic bounded to 512 code units; proxy and shared-buffer rejection remains
+mandatory.
 
 All extension maps participate in request identity. An understood extension
 that affects semantics also participates in the analysis key and result.

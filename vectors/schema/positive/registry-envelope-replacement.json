@@ -1,0 +1,34 @@
+{
+  "registry": "envelope-versions",
+  "edition": "2",
+  "previousEdition": "1",
+  "status": "provisional",
+  "entries": [
+    {
+      "id": "0.1",
+      "kind": "envelope-version",
+      "owner": "test",
+      "contact": "GOVERNANCE.md",
+      "status": "deprecated",
+      "semanticAuthority": "spec/core.md#7-registry-lifecycle",
+      "introducedEdition": "1",
+      "replacement": "0.2",
+      "orderingRank": 1,
+      "vectors": [],
+      "collisionReview": "Structural replacement counterexample."
+    },
+    {
+      "id": "0.2",
+      "kind": "envelope-version",
+      "owner": "test",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/core.md#7-registry-lifecycle",
+      "introducedEdition": "2",
+      "orderingRank": 2,
+      "vectors": [],
+      "collisionReview": "Structural replacement counterexample target."
+    }
+  ],
+  "changes": ["Exercise a non-self numeric envelope-version replacement."]
+}

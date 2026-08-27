@@ -265,6 +265,16 @@ Identifier statuses are `provisional`, `active`, `deprecated`, `withdrawn`, and
 `reserved`. All identifiers in Phase 0 are `provisional`. A provisional value
 MUST NOT appear in a public conformance claim.
 
+Across adjacent editions a retained ID freezes its kind, role (when present),
+semantic authority, introduction edition, ordering rank (when present), and any
+existing `semanticsAasIdentity`. An absent `semanticsAasIdentity` MAY be
+established once only while a reserved or provisional entry enters or remains
+provisional; once present it is immutable. The only status transitions are: `reserved` to
+`provisional`; `provisional` to `active`, `deprecated`, or `withdrawn`; `active`
+to `deprecated` or `withdrawn`; and `deprecated` to `withdrawn`. Retaining the
+same status is permitted. `withdrawn` is terminal. Reactivation and every other
+transition are forbidden.
+
 Admission requires a complete definition, authority citation, positive and
 negative vectors, collision review, and a named maintainer. External operations,
 profiles, findings, reasons, and extensions SHOULD use URI or reverse-DNS

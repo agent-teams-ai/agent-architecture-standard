@@ -1,0 +1,49 @@
+{
+  "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752",
+  "kind": "path",
+  "id": "agent-architecture-portable-path-unicode17@1",
+  "definitionVersion": "1",
+  "schemas": [
+    {
+      "aasIdentity": "aas:v0:sha256:0cef85f35dee8bad91a71c85348137a6ab26bc941f70963a5b5107beaf18d9d8",
+      "contentDigest": "sha256:d5621a94927aea261063d375794f45654528ebb674c552e6782a0ebd73c5e6f7",
+      "byteLength": 5327,
+      "mediaType": "application/json"
+    }
+  ],
+  "dependencies": [],
+  "limits": {
+    "maxInputBytes": 9007199254740991,
+    "maxDepth": 256,
+    "maxPathSegments": 64,
+    "maxPathBytes": 4096,
+    "maxEntries": 1000000,
+    "maxLogicalBytes": 9007199254740991,
+    "maxReadBytes": 9007199254740991,
+    "maxPerEntryBytes": 9007199254740991,
+    "maxOverlayOperations": 100000,
+    "maxTargets": 100000,
+    "maxEvidenceReferences": 1000000,
+    "maxExtensionBytes": 9007199254740991,
+    "maxDiagnostics": 1000000,
+    "maxOutputBytes": 9007199254740991,
+    "maxConcurrency": 100000,
+    "maxTotalWork": 9007199254740991
+  },
+  "semanticsArtifacts": [
+    {
+    "aasIdentity": "aas:v0:sha256:1e5c04d040bf2222bfd6f17a60eb8eeb91511c29cdcdd531507e4835b5f47489",
+    "contentDigest": "sha256:7eb9e3216a9d4117c1f4efa34ebdb5b8c9b24730aacbcb91bf1c6886d0424b51",
+    "byteLength": 23099,
+      "mediaType": "text/markdown"
+    }
+  ],
+  "definitionVectorSuites": [
+    {
+    "aasIdentity": "aas:v0:sha256:6e641426cc8776cf516230931c5c64018822cf196dd43711c3d17ecdfcb56a52",
+      "contentDigest": "sha256:90ac226d64160c05b11eebdd0e20062c5d29e505ab11036df68ca387225b427a",
+    "byteLength": 5549,
+      "mediaType": "text/markdown"
+    }
+  ]
+}

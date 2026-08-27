@@ -1,0 +1,43 @@
+{
+  "matrixVersion": "1",
+  "status": "provisional-unpublished",
+  "standardVersion": "0.1.0-rc.1",
+  "selection": {
+    "input": "intersection of advertised immutable envelope versions",
+    "orderingAuthority": "registries/envelope-versions.json",
+    "ordering": "ascending orderingRank of exact provisional registry entries",
+    "result": "highest mutual version unless the request pins another mutual version",
+    "noOverlap": "aas.problem.no-common-envelope-version",
+    "silentDowngrade": "forbidden"
+  },
+  "supported": {
+    "standardVersions": ["0.1.0-rc.1"],
+    "envelopeVersions": ["0.1"],
+    "schemaBundle": "0.1",
+    "registryEdition": "1",
+    "vectorSuite": "0.1",
+    "conformanceSuite": "0.1",
+    "envelopeVersionRegistry": "registries/envelope-versions.json"
+  },
+  "cases": [
+    { "id": "same-version", "reader": ["0.1"], "writer": ["0.1"], "pin": null, "selected": "0.1", "outcome": "selected" },
+    { "id": "same-version-pinned", "reader": ["0.1"], "writer": ["0.1"], "pin": "0.1", "selected": "0.1", "outcome": "selected" },
+    { "id": "unknown-reader-version", "reader": ["9.9"], "writer": ["0.1"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "unknown-writer-version", "reader": ["0.1"], "writer": ["9.9"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "mutual-unregistered-version", "reader": ["9.9"], "writer": ["9.9"], "pin": null, "selected": null, "outcome": "problem" },
+    { "id": "mutual-unregistered-version-pinned", "reader": ["9.9"], "writer": ["9.9"], "pin": "9.9", "selected": null, "outcome": "problem" },
+    { "id": "non-mutual-pin", "reader": ["0.1"], "writer": ["0.1"], "pin": "9.9", "selected": null, "outcome": "problem" },
+    { "id": "no-overlap", "reader": ["0.1"], "writer": [], "pin": null, "selected": null, "outcome": "problem" }
+  ],
+  "identityRules": {
+    "constructorsPresent": false,
+    "authority": "spec/identity.md#5-normative-identity-table",
+    "profileSubstitution": "exact textual ID and aasIdentity must both match",
+    "withdrawnProfile": "new production forbidden; historical interpretation retained",
+    "historicalDecoding": "retain original schema, registry edition, profile identity meaning, and canonicalization profile",
+    "unknownCoreField": "reject",
+    "unknownOptionalExtension": "preserve request binding without changing core semantics",
+    "unknownCriticalEnvelopeExtension": "problem",
+    "unknownCriticalTargetExtension": "unsupported target resolution"
+  }
+}

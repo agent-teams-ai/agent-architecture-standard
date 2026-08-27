@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "0.1",
+  "aasIdentity": "aas:v0:sha256:361247e7fcfc810e111368c59fbc9fdebc822de43b50b023f0c939b56ffbb5fa",
+  "cohort": "aas-numeric-cohort",
+  "maturity": "experimental",
+  "members": [
+    {
+      "name": "aas-core",
+      "version": "0.1.0",
+      "artifact": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      },
+      "provenance": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      },
+      "sbom": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "byteLength": 1,
+        "mediaType": "application/json"
+      }
+    }
+  ],
+  "dependencies": [],
+  "schemas": [
+    "aas:v0:sha256:1313131313131313131313131313131313131313131313131313131313131313"
+  ],
+  "registries": [
+    "aas:v0:sha256:1414141414141414141414141414141414141414141414141414141414141414"
+  ],
+  "vectors": [
+    "aas:v0:sha256:1515151515151515151515151515151515151515151515151515151515151515"
+  ],
+  "profiles": [
+    "aas:v0:sha256:1616161616161616161616161616161616161616161616161616161616161616"
+  ],
+  "claims": [
+    "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  ],
+  "traceabilityMatrices": [
+    {
+      "aasIdentity": "aas:v0:sha256:1717171717171717171717171717171717171717171717171717171717171717",
+      "contentDigest": "sha256:1818181818181818181818181818181818181818181818181818181818181818",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    }
+  ],
+  "governanceRoleIds": [
+    "normative-maintainer",
+    "conformance-qualifier",
+    "release-approver"
+  ],
+  "sourceCommit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "releaseCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "qualificationSidecars": [
+    "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "releaseEvidence": {
+    "registryInstallation": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "packageInventory": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "upgrade": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "downgrade": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "publicApi": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "rollback": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    },
+    "consumerCanary": {
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byteLength": 1,
+      "mediaType": "application/json"
+    }
+  },
+  "publicationOrder": [
+    "aas-core"
+  ],
+  "completionStatus": "complete",
+  "approvalSidecars": {
+    "normative": "aas:v0:sha256:1212121212121212121212121212121212121212121212121212121212121212",
+    "conformance": "aas:v0:sha256:3434343434343434343434343434343434343434343434343434343434343434",
+    "release": "aas:v0:sha256:5656565656565656565656565656565656565656565656565656565656565656"
+  },
+  "limitations": [],
+  "supportedVersions": [
+    "0.1.0"
+  ],
+  "withdrawalInstructions": [
+    "install an earlier exact cohort"
+  ]
+}

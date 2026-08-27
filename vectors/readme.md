@@ -1,6 +1,6 @@
 # Conformance vector index
 
-Status: normative index; Phase 0 placeholders only; no evidence produced
+Status: normative index; private Phase 1 definition corpora; no qualification evidence produced
 
 Golden vectors are the sole authority for exact observable bytes, raw
 `contentDigest` values, framed `aasIdentity` values,
@@ -11,8 +11,9 @@ authority.
 Phase 0 contains one provisional remediation suite. It supplies exact examples
 for specification review but has not received independent-oracle review and
 cannot support a conformance claim. Future suites MUST be immutable,
-language-neutral, and indexed exactly once here. Their own digest, artifact
-identity, and qualification belong in a later external sidecar, never in the
+language-neutral, and indexed exactly once here. `artifacts.json` inventories
+their raw SHA-256 digest, byte length, and media type. Artifact identity,
+approval, and qualification belong in a later external sidecar, never in the
 suite itself.
 
 A suite used in profile construction MUST declare exactly one of two classes. A
@@ -25,6 +26,12 @@ qualification-vector suite MUST instead bind an already finalized profile
 | Suite path | Owns exact examples for | Authority citations | Status |
 | --- | --- | --- | --- |
 | [phase-0-remediation-v1.md](phase-0-remediation-v1.md) | UTF-16 ordering, raw/framed identity, result self-identity, exception freshness, static hard-link rejection, and link-count race instability | `identity.md` §§2, 4–6; `policy-and-enforcement.md` §§7–9; `security-and-conformance.md` §4 | provisional; independently recomputed, not qualified |
+| [phase-1-remediation-v1.md](phase-1-remediation-v1.md) | complete result projections, scoped extension dispositions, and non-reused RC/numeric release cohorts | `identity.md` §§5–6; `core.md` §6; `security-and-conformance.md` §§11–13 | private provisional; not qualified |
+| [`binding-selection-permutations-v1.json`](binding-selection-permutations-v1.json) | canonical equal-rank binding representation across complete-set permutations | `policy-and-enforcement.md` §5 | private provisional; not qualified |
+| [`json/`](json/) | strict byte-level JSON acceptance and deterministic rejection diagnostics | `identity.md` §2; `security-and-conformance.md` §6 | private provisional definition corpus; not independently qualified |
+| [`schema/corpus.json`](schema/corpus.json) | positive and negative closed-schema instances, including portable Windows path failures | schema index; `core.md` §3 | private provisional definition corpus; not independently qualified |
+| [`schema/catalog-corpus.json`](schema/catalog-corpus.json) | offline catalog duplicate, alias, unknown-reference, cycle, network, and case-collision failures | schema index; `core.md` §3 | private provisional definition corpus; not independently qualified |
+| [`registry/corpus.json`](registry/corpus.json) | registry-ID recognition with explicit admitted-ID and polarity bindings | `core.md` §7; registry index | private provisional admission corpus; not independently qualified |
 
 Minimum future suites are:
 
@@ -40,9 +47,17 @@ Minimum future suites are:
 - conformance claim lifecycle and release manifests.
 
 Every normative `MUST` in a claim requires at least one positive and one negative
-vector. A vector record MUST contain a stable case ID, requirement IDs, exact
+vector. A vector record MUST contain a stable case ID, requirement citations, exact
 inputs, expected validity or problem, exact canonical bytes where relevant,
 expected identities/results, applicable versions, and rationale.
+
+Every structured `requirement` citation is interpreted exactly once from the
+package root and therefore starts with `spec/` or another package-root artifact
+such as `schemas/readme.md`. Owner-relative paths and an implicit `spec/` base
+are forbidden. Markdown links continue to resolve relative to their containing
+document. Current structured citations identify authoritative specification
+sections, not atomic `MUST` IDs; they provide section-level provenance and MUST
+NOT be represented as atomic requirement traceability.
 
 Vector generation MUST NOT import the reference implementation as its identity
 oracle. At least one exact-byte suite MUST be independently authored and

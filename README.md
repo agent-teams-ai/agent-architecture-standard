@@ -1,6 +1,6 @@
 # Agent Architecture Standard
 
-Status: Phase 0 normative scaffold overview; unpublished; identifiers provisional
+Status: private Phase 1 normative-artifact implementation; unpublished; identifiers provisional
 
 This README is an index and has no independent semantic authority.
 
@@ -10,10 +10,11 @@ inputs, and reporting deterministic enforcement results. Agent Architecture
 Protocol (AAP) is only the request/response and negotiation component of AAS. It
 is not a second umbrella standard or an independently promoted product.
 
-This repository contains specification artifacts only. It contains no runtime,
-transport, plugin system, policy-module compiler, architecture inference,
-package scaffold, or release automation. The documents deliberately describe an
-experimental 0.x boundary and do not claim that an implementation exists.
+This repository contains specification artifacts plus private deterministic
+generation and verification tooling. It contains no provider runtime,
+transport, plugin system, policy-module compiler, architecture inference, or
+release automation. The artifacts describe an experimental 0.x boundary and
+do not constitute a published release or conformance claim.
 
 All public identifiers in this scaffold are provisional. Before any public 0.x
 schema, identifier, conformance claim, or package, normative-standard authority
@@ -42,10 +43,10 @@ remain provisional.
 
 ## Artifact indexes
 
-- [schemas/README.md](schemas/README.md) indexes future wire-shape schemas.
-- [registries/README.md](registries/README.md) defines registry files and their
+- [schemas/readme.md](schemas/readme.md) indexes the checked-in provisional wire-shape schemas.
+- [registries/readme.md](registries/readme.md) defines registry files and their
   lifecycle.
-- [vectors/README.md](vectors/README.md) indexes future exact observable
+- [vectors/readme.md](vectors/readme.md) indexes the checked-in provisional exact observable
   examples.
 - [templates/normative-traceability.md](templates/normative-traceability.md)
   defines the mandatory traceability record.
@@ -77,7 +78,7 @@ incubation, and security responder for private incubation. The independent
 conformance maintainer and release maintainer are unassigned, and no namespace
 custodian is assigned or recorded. See [GOVERNANCE.md](GOVERNANCE.md),
 [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
-[repository decision index](docs/decisions/README.md).
+[current decision packet](decisions/phase-0-d0-d11-v2.md).
 
 ## Research provenance
 

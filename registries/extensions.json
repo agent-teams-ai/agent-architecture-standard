@@ -1,0 +1,8 @@
+{
+  "registry": "extensions",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [],
+  "changes": ["Initial empty extension registry; external namespaced extensions require no central allocation."]
+}

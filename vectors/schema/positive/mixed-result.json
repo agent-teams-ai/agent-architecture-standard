@@ -1,0 +1,226 @@
+{
+  "kind": "result",
+  "envelopeVersion": "0.1",
+  "aasIdentity": "aas:v0:sha256:85551b6884f953ea4f9495aafb00f46d983c1b0cc7a8e24c2f433379b20a0121",
+  "requestAasIdentity": "aas:v0:sha256:4b30b3d78fe3b99092256cb90543070c7ea13c5ef3999b9222853727b9a97bd7",
+  "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+  "resolutions": [
+    {
+      "targetId": "target-1",
+      "resolution": "decided",
+      "verdict": "pass",
+      "coverage": [
+        {
+          "stage": "evaluation",
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        },
+        {
+          "stage": "overlay-reevaluation",
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        }
+      ],
+      "diagnostic": {
+        "version": "0.1",
+        "code": "aas.example.ok",
+        "targetId": "target-1",
+        "resolution": "decided",
+        "verdict": "pass",
+        "mode": "advisory",
+        "rolloutDisposition": "included",
+        "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+        "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+        "overlayAasIdentity": "aas:v0:sha256:72c3f41243d020e957eadb1195c128e1bf8eef8fdfed467678f99b3c7767fa81",
+        "requestAasIdentity": "aas:v0:sha256:4b30b3d78fe3b99092256cb90543070c7ea13c5ef3999b9222853727b9a97bd7",
+        "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+        "resultAasIdentity": "aas:v0:sha256:85551b6884f953ea4f9495aafb00f46d983c1b0cc7a8e24c2f433379b20a0121",
+        "freshness": "fresh",
+        "coverageSummary": {
+          "denominator": 1,
+          "included": 1,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 0,
+          "budgetExhausted": 0
+        },
+        "severityCounts": {
+          "info": 0,
+          "warning": 0,
+          "error": 0,
+          "critical": 0
+        },
+        "highestSeverity": "none",
+        "omissionCount": 0,
+        "omissionReasons": [],
+        "nextAction": "none",
+        "bindingState": "selected",
+        "decisionTrace": {
+          "state": "selected",
+          "selectedBindingId": "binding-1",
+          "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "candidateBindings": [
+            {
+              "id": "binding-1",
+              "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "targetId": "target-2",
+      "resolution": "indeterminate",
+      "coverage": [
+        {
+          "stage": "evaluation",
+          "denominator": 1,
+          "included": 0,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 1,
+          "budgetExhausted": 0
+        },
+        {
+          "stage": "overlay-reevaluation",
+          "denominator": 1,
+          "included": 0,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 1,
+          "budgetExhausted": 0
+        }
+      ],
+      "diagnostic": {
+        "version": "0.1",
+        "code": "aas.example.ok",
+        "targetId": "target-2",
+        "resolution": "indeterminate",
+        "mode": "advisory",
+        "rolloutDisposition": "included",
+        "bindingAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "policyAasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+        "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+        "overlayAasIdentity": "aas:v0:sha256:e1f7fa22e9f0d3d6131190e30c0b3c4e8b3f7829eaad25cb712933d5abcfc97b",
+        "requestAasIdentity": "aas:v0:sha256:4b30b3d78fe3b99092256cb90543070c7ea13c5ef3999b9222853727b9a97bd7",
+        "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+        "resultAasIdentity": "aas:v0:sha256:85551b6884f953ea4f9495aafb00f46d983c1b0cc7a8e24c2f433379b20a0121",
+        "freshness": "fresh",
+        "coverageSummary": {
+          "denominator": 1,
+          "included": 0,
+          "policyExcluded": 0,
+          "unreadable": 0,
+          "unsupported": 0,
+          "unstable": 0,
+          "unknown": 1,
+          "budgetExhausted": 0
+        },
+        "severityCounts": {
+          "info": 0,
+          "warning": 0,
+          "error": 0,
+          "critical": 0
+        },
+        "highestSeverity": "none",
+        "omissionCount": 0,
+        "omissionReasons": [],
+        "nextAction": "none",
+        "bindingState": "selected",
+        "decisionTrace": {
+          "state": "selected",
+          "selectedBindingId": "binding-2",
+          "bindingAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "policyAasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "candidateBindings": [
+            {
+              "id": "binding-2",
+              "aasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "policyAasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "stage": "evaluation",
+      "denominator": 2,
+      "included": 1,
+      "policyExcluded": 0,
+      "unreadable": 0,
+      "unsupported": 0,
+      "unstable": 0,
+      "unknown": 1,
+      "budgetExhausted": 0
+    },
+    {
+      "stage": "overlay-reevaluation",
+      "denominator": 2,
+      "included": 1,
+      "policyExcluded": 0,
+      "unreadable": 0,
+      "unsupported": 0,
+      "unstable": 0,
+      "unknown": 1,
+      "budgetExhausted": 0
+    }
+  ],
+  "evidence": [],
+  "omissions": [],
+  "realizedCounters": {
+    "inputBytes": 4154,
+    "depth": 1,
+    "pathSegments": 1,
+    "pathBytes": 1,
+    "entries": 1,
+    "logicalBytes": 1,
+    "readBytes": 1,
+    "peakEntryBytes": 1,
+    "overlayOperations": 2,
+    "targets": 2,
+    "evidenceReferences": 0,
+    "extensionBytes": 208,
+    "diagnostics": 0,
+    "outputBytes": 5801,
+    "peakConcurrency": 1,
+    "totalWork": 215
+  },
+  "diagnostics": [],
+  "extensionDispositions": [
+    {
+      "extensionId": "com.example.semantic",
+      "location": "request",
+      "disposition": "understood",
+      "requestBound": true,
+      "affectsCoreSemantics": true
+    }
+  ],
+  "extensions": {}
+}

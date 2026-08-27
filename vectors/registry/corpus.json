@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.1",
+  "status": "private-provisional-unqualified",
+  "cases": [
+    {
+      "caseId": "problem-no-common-envelope-version-positive",
+      "requirement": "spec/core.md#7-registry-lifecycle",
+      "registry": "problems",
+      "registryId": "aas.problem.no-common-envelope-version",
+      "id": "aas.problem.no-common-envelope-version",
+      "polarity": "positive",
+      "input": { "reader": ["0.1"], "writer": [] },
+      "expected": { "recognized": true, "outcome": "problem" },
+      "rationale": "The exact registered problem code supplies positive admission polarity."
+    },
+    {
+      "caseId": "problem-no-common-envelope-version-negative-alias",
+      "requirement": "spec/core.md#7-registry-lifecycle",
+      "registry": "problems",
+      "registryId": "aas.problem.no-common-envelope-version",
+      "id": "AAS.PROBLEM.NO-COMMON-ENVELOPE-VERSION",
+      "polarity": "negative",
+      "input": { "reader": ["0.1"], "writer": [] },
+      "expected": { "recognized": false, "outcome": "unknown-identifier" },
+      "rationale": "A case-variant alias is the explicit negative for the same admitted registry ID."
+    }
+  ]
+}

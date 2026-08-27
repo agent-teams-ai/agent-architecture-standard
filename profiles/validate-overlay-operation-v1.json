@@ -1,0 +1,32 @@
+{
+  "aasIdentity": "aas:v0:sha256:3281942269682561a520a37b1ba2045bf54e54eca48f6226b487d5b2f18bcdee",
+  "kind": "operation",
+  "id": "agent-architecture-validate-overlay@1",
+  "definitionVersion": "1",
+  "schemas": [{
+    "aasIdentity": "aas:v0:sha256:08554edc65213e8aa7412bcec47908c1ea7a67ad62b28691ec7e14ed2af4ef6f",
+    "contentDigest": "sha256:c65e5fc636d9a5e3bab49f103115bfd464575acb55a757bac4b3534233a0e379",
+    "byteLength": 3290,
+    "mediaType": "application/json"
+  }],
+  "dependencies": [],
+  "limits": {
+    "maxInputBytes": 9007199254740991, "maxDepth": 256, "maxPathSegments": 64, "maxPathBytes": 4096,
+    "maxEntries": 1000000, "maxLogicalBytes": 9007199254740991, "maxReadBytes": 9007199254740991,
+    "maxPerEntryBytes": 9007199254740991, "maxOverlayOperations": 100000, "maxTargets": 100000,
+    "maxEvidenceReferences": 1000000, "maxExtensionBytes": 9007199254740991, "maxDiagnostics": 1000000,
+    "maxOutputBytes": 9007199254740991, "maxConcurrency": 100000, "maxTotalWork": 9007199254740991
+  },
+  "semanticsArtifacts": [{
+    "aasIdentity": "aas:v0:sha256:79b5af399e3322652148c2791c5c128c8dc3ab5f4029f8a4068b0c4bddca6029",
+    "contentDigest": "sha256:6374437a3e90216125c229c03c67dd838320078f84de065f836e10d00436459e",
+    "byteLength": 24317,
+    "mediaType": "text/markdown"
+  }],
+  "definitionVectorSuites": [{
+    "aasIdentity": "aas:v0:sha256:44e2045d47d9e28f64246b41246987939301d5185b13e25070db0e3930286f5c",
+    "contentDigest": "sha256:2bf7c23d9145c8953b9545c938f76311b58cd88d425afe6f14aa0824e2bf82b0",
+    "byteLength": 6114,
+    "mediaType": "text/markdown"
+  }]
+}

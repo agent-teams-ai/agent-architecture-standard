@@ -1,0 +1,14 @@
+{
+  "registry": "resolutions",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    { "id": "decided", "kind": "resolution", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/core.md#4-core-result-invariants", "introducedEdition": "1", "vectors": ["vectors/schema/positive/result.json"], "collisionReview": "Closed core value; private and provisional." },
+    { "id": "needs-input", "kind": "resolution", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/core.md#4-core-result-invariants", "introducedEdition": "1", "vectors": [], "collisionReview": "Closed core value; private and provisional." },
+    { "id": "indeterminate", "kind": "resolution", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/core.md#4-core-result-invariants", "introducedEdition": "1", "vectors": [], "collisionReview": "Closed core value; private and provisional." },
+    { "id": "unsupported", "kind": "resolution", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/core.md#4-core-result-invariants", "introducedEdition": "1", "vectors": [], "collisionReview": "Closed core value; private and provisional." },
+    { "id": "stale", "kind": "resolution", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/core.md#4-core-result-invariants", "introducedEdition": "1", "vectors": [], "collisionReview": "Closed core value; private and provisional." }
+  ],
+  "changes": ["Initial closed provisional resolution taxonomy."]
+}
