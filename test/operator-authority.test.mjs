@@ -123,6 +123,54 @@ test('kernel derives a frozen plan and reconciles only raw bytes with its opaque
   assert.throws(() => kernel.reconcileInvocationResult(capability, new Uint8Array(new SharedArrayBuffer(16))), /non-shared ArrayBuffer/);
 });
 
+test('analysis key binds the exact componentwise effective budgets from every invocation authority', () => {
+  const plans = [];
+  for (const [source, ceiling] of [['request', 900000], ['overlay', 800000], ['binding', 700000]]) {
+    const state = makeState();
+    if (source === 'request') state.request.budgets.maxDiagnostics = ceiling;
+    if (source === 'overlay') {
+      state.request.targets[0].input.limits.maxDiagnostics = ceiling;
+      state.request.targets[0].input.aasIdentity = computeOverlayAasIdentity(state.request.targets[0].input);
+    }
+    if (source === 'binding') {
+      state.binding.budgets.maxDiagnostics = ceiling;
+      state.binding.aasIdentity = computeBindingAasIdentity(state.binding);
+      state.bindingSet.bindings = [state.binding]; state.bindingSet.aasIdentity = computeBindingSetAasIdentity(state.bindingSet);
+      state.authorityBytes.bindingSet = encode(state.bindingSet);
+      Object.assign(state.request.targets[0].bindingSelection, { bindingAasIdentity: state.binding.aasIdentity,
+        candidateBindings: [{ id: state.binding.id, aasIdentity: state.binding.aasIdentity, policyAasIdentity: state.policy.aasIdentity }] });
+    }
+    state.request.aasIdentity = computeRequestAasIdentity(state.request);
+    const { plan } = state.create().preflightInvocation(encode(state.request));
+    assert.deepEqual(plan.analysisKey.budgets, plan.effectiveBudgets, source);
+    assert.equal(plan.effectiveBudgets.maxDiagnostics, ceiling, source);
+    plans.push(plan);
+  }
+  assert.equal(new Set(plans.map(({ analysisKey }) => analysisKey.aasIdentity)).size, plans.length);
+});
+
+test('oversized admission fails before copying, parsing, or target resolution', () => {
+  const state = makeState(), kernel = state.create({ ingressLimits: { maxBytes: 5000, maxDepth: 128 } });
+  const originalSlice = Uint8Array.prototype.slice;
+  let copies = 0;
+  Uint8Array.prototype.slice = function (...args) { copies += 1; return Reflect.apply(originalSlice, this, args); };
+  try { assert.throws(() => kernel.preflightInvocation(new Uint8Array(5001)), /exceeds maxBytes/); }
+  finally { Uint8Array.prototype.slice = originalSlice; }
+  assert.equal(copies, 0);
+  assert.equal(state.calls(), 0);
+});
+
+test('schema admission diagnostics remain bounded for high-fanout malformed documents', async () => {
+  const { assertSchema } = await import('../lib/schema-admission.mjs');
+  const malformed = structuredClone(fixtures['request-positive']);
+  malformed.targets = Array.from({ length: 10000 }, () => ({}));
+  assert.throws(() => assertSchema(malformed, 'request', 'high-fanout request'), (error) => {
+    assert.match(error.message, /^invalid AAS high-fanout request schema:/);
+    assert.ok(error.message.length <= 512, `schema failure length was ${error.message.length}`);
+    return true;
+  });
+});
+
 test('authority bytes are copied at bootstrap and later mutation has no effect', () => {
   const state = makeState(), kernel = state.create();
   for (const bytes of [state.authorityBytes.bindingSet, ...state.authorityBytes.effectivePolicies, ...state.authorityBytes.profiles,

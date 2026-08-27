@@ -165,7 +165,7 @@ field. `artifact` alone uses exact raw bytes as the framed payload. Fields named
 | analyzer | `aas.analyzer.v0` | immutable implementation artifact `aasIdentity` values, analyzer configuration, supported profile `aasIdentity` values | process ID, host path, runtime clock |
 | overlay | `aas.overlay.v0` | base snapshot `aasIdentity`, ordered operations, portable paths, preconditions, content artifact `aasIdentity` values, limits | working directory, author, timestamp |
 | request | `aas.request.v0` | envelope/operation versions, unique targets, per-target target-selection, snapshot/policy/binding/profile/analyzer/overlay `aasIdentity` values, budgets/accounting profile, extensions | correlation-only metadata, transport fields |
-| analysis key | `aas.analysis.v0` | request `aasIdentity`, operation and request profile/analyzer/snapshot identities, operation/evaluator profiles, exact ordered snapshot/target input identities, budgets, accounting-profile identity, and complete scoped semantic extensions | realized counters, deadline clock, cancellation token, cache location |
+| analysis key | `aas.analysis.v0` | request `aasIdentity`, operation and request profile/analyzer/snapshot identities, operation/evaluator profiles, exact ordered snapshot/target input identities, exact componentwise-effective invocation budgets, accounting-profile identity, and complete scoped semantic extensions | realized counters, deadline clock, cancellation token, cache location |
 | result | `aas.result.v0` | request and analysis-key `aasIdentity` values, per-target resolutions, coverage, evidence, omissions, deterministic diagnostic identity projections, realized output counters | every self `resultAasIdentity` projection, logs, elapsed wall time, rendering |
 | receipt | `aas.receipt.v0` | result and binding `aasIdentity` values, integration snapshot/revision/worktree state, exception-validity revision, qualification context | signer transport metadata, publication time |
 | release manifest | `aas.release-manifest.v0` | cohort name, member artifact `aasIdentity`/`contentDigest`/versions, dependency edges, already-finalized claim/matrix/qualification-sidecar `aasIdentity` values, governance role IDs | approval evidence or approver identity, any forward reference from an earlier artifact, dist-tag lookup result, mutable registry metadata |
@@ -183,10 +183,16 @@ and analysis-key identities. Private operator authority, authorization
 allowlists, and unrelated catalog members are deliberately excluded from AAS
 content identity. Revocation is current verifier state, not a mutation of a
 previous result identity. Budgets participate in request identity. The declared deterministic limits and
-exact accounting-profile semantics participate in the pre-evaluation analysis
+exact componentwise-effective budgets and accounting-profile semantics participate in the pre-evaluation analysis
 key. Realized counters do not exist until evaluation and MUST NOT participate in
 that key; they participate in result identity. Wall-clock deadlines and external
 cancellation are reported but excluded from deterministic identities.
+
+At the raw-byte admission boundary, an authentic non-shared `Uint8Array` whose
+length exceeds `maxBytes` MUST be rejected before allocation or parsing. Schema
+validation MUST fail fast and expose at most three errors in a deterministic
+diagnostic bounded to 512 code units; proxy and shared-buffer rejection remains
+mandatory.
 
 All extension maps participate in request identity. An understood extension
 that affects semantics also participates in the analysis key and result.

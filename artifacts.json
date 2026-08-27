@@ -382,9 +382,9 @@
     {
       "path": "spec/identity.md",
       "class": "normative-prose",
-      "contentDigest": "sha256:a2d854dcb52cb34077ca666165e941f00ab2e1999bf9e548b19c2fe5e04e639a",
+      "contentDigest": "sha256:ce51b1f35a648eeb58669a03092c1574f29f12a5ba8432b7062d851f09d65175",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 16015,
+      "byteLength": 16420,
       "mediaType": "text/markdown"
     },
     {
