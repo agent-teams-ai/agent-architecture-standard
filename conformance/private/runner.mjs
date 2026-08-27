@@ -107,6 +107,8 @@ async function teardown(child, deadline, closeState) {
   return reaped ? 'bounded-attempt-complete' : 'bounded-attempt-deadline';
 }
 
+export const __testOnlyTeardown = teardown;
+
 function parseTinyRecord(text) {
   let offset = 0;
   const whitespace = () => {

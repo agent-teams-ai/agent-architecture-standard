@@ -1,15 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { copyFile, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import childProcess, { spawnSync } from 'node:child_process';
 import { syncBuiltinESMExports } from 'node:module';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 import {
   CANDIDATE_LOADER_SOURCE,
   CANDIDATE_NODE_ARGS,
   DEFAULT_BOUNDS,
+  __testOnlyTeardown,
   createTransportPlan,
   runSuite,
   validateResponse,
@@ -179,55 +181,52 @@ test('Windows candidate admission rejects supported final-path symlink and non-f
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('Windows teardown never launches an external helper from hostile CWD, PATH, SystemRoot, or NODE_OPTIONS', { skip: process.platform !== 'win32' }, async () => {
+test('Windows teardown never launches an environment-derived helper and kills the root child directly', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), 'aas-hostile-helper-'));
-  const hostileRoot = path.join(directory, 'Windows');
-  const system32 = path.join(hostileRoot, 'System32');
-  const bareFake = path.join(directory, 'taskkill.exe');
-  const derivedFake = path.join(system32, 'taskkill.exe');
-  const hook = path.join(directory, 'marker-hook.cjs');
-  const marker = path.join(directory, 'fake-helper-invoked');
+  const hostileRoot = 'Z:\\Windows';
   const previous = {
     cwd: process.cwd(),
     path: process.env.PATH,
     systemRoot: process.env.SystemRoot,
     windir: process.env.windir,
     nodeOptions: process.env.NODE_OPTIONS,
+    comSpec: process.env.ComSpec,
+    platform: Object.getOwnPropertyDescriptor(process, 'platform'),
     spawn: childProcess.spawn,
   };
-  let externalLaunchAttempt = false;
-  await mkdir(system32, { recursive: true });
-  await copyFile(process.execPath, bareFake);
-  await copyFile(process.execPath, derivedFake);
-  await writeFile(hook, `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'invoked')`);
+  const externalLaunches = [];
+  const rootKillSignals = [];
   try {
     process.chdir(directory);
     process.env.PATH = directory;
     process.env.SystemRoot = hostileRoot;
     process.env.windir = hostileRoot;
-    process.env.NODE_OPTIONS = `--require=${hook}`;
-    childProcess.spawn = (file, ...args) => {
-      if (file !== process.execPath) {
-        externalLaunchAttempt = true;
-        throw new Error('unexpected-external-helper');
-      }
-      return previous.spawn(file, ...args);
+    process.env.NODE_OPTIONS = `--require=${path.join(directory, 'marker-hook.cjs')}`;
+    process.env.ComSpec = path.join(directory, 'cmd.exe');
+    Object.defineProperty(process, 'platform', { ...previous.platform, value: 'win32' });
+    childProcess.spawn = (file) => {
+      externalLaunches.push(file);
+      throw new Error('unexpected-external-helper');
     };
     syncBuiltinESMExports();
-    const bounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 50, settlementMilliseconds: 500 });
-    const report = await runSuite({ candidatePath: candidate('timeout.mjs'), candidateName: 'hostile-helper', bounds });
-    assert(report.invocations.every((item) => item.failure === 'timeout'));
-    assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
-    assert.equal(externalLaunchAttempt, false);
-    await assert.rejects(readFile(marker), (error) => error?.code === 'ENOENT');
+    const cleanup = await __testOnlyTeardown(
+      { pid: 4242, kill: (signal) => { rootKillSignals.push(signal); } },
+      performance.now() + DEFAULT_BOUNDS.settlementMilliseconds,
+      { isClosed: () => true, promise: Promise.resolve(true) },
+    );
+    assert.deepEqual(externalLaunches, []);
+    assert.deepEqual(rootKillSignals, ['SIGKILL']);
+    assert.equal(cleanup, 'bounded-attempt-complete');
   } finally {
     childProcess.spawn = previous.spawn;
     syncBuiltinESMExports();
+    Object.defineProperty(process, 'platform', previous.platform);
     process.chdir(previous.cwd);
     if (previous.path === undefined) delete process.env.PATH; else process.env.PATH = previous.path;
     if (previous.systemRoot === undefined) delete process.env.SystemRoot; else process.env.SystemRoot = previous.systemRoot;
     if (previous.windir === undefined) delete process.env.windir; else process.env.windir = previous.windir;
     if (previous.nodeOptions === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = previous.nodeOptions;
+    if (previous.comSpec === undefined) delete process.env.ComSpec; else process.env.ComSpec = previous.comSpec;
     await rm(directory, { recursive: true, force: true });
   }
 });
