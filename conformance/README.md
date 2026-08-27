@@ -21,18 +21,28 @@ node --test conformance/test/*.test.mjs
 
 ## Artifact admission and execution
 
-The runner opens one candidate handle with `O_NOFOLLOW`, verifies regular-file
-state with that handle, and reads no more than `candidateBytes + 1`. It checks
-the same handle again for concurrent size or metadata changes. The digest is
-over the resulting admitted buffer.
+The runner takes strict pre-open `lstat`/`realpath` evidence, opens one
+candidate handle, compares handle `fstat` evidence, and reads no more than
+`candidateBytes + 1`. It then compares strict post-open pathname and handle
+evidence before admitting the buffer. Nonzero `O_NOFOLLOW` and `O_NONBLOCK`
+flags are used where the platform supplies them. This rejects links, reparse
+points, junctions, non-files, substitutions, and observable races without
+blocking on a POSIX FIFO. Windows supplies no native no-follow flag through
+Node, so the runner makes no native no-follow claim there; it uses the
+strongest deterministic pure-Node pre/post pathname and opened-handle evidence
+available. The digest is over the resulting admitted buffer.
 
-No candidate pathname or staged copy is executed. A fixed ESM loader reads the
-admitted bytes from inherited FD 3, verifies their length and SHA-256 against a
-separate inherited binding record on FD 4, and only then imports their base64
-`data:` URL; stdin remains exclusively the JSON-line protocol. Candidates
-therefore remain one file and can import only `node:` built-ins under the fixed
-permission contract. The exact spawned Node command is feature-tested and the
-run fails closed if its permission behavior is unavailable.
+No candidate pathname or staged copy is executed. The parent closes one binary
+frame on inherited FD 3: fixed magic, bounded unsigned source length, raw
+SHA-256 binding, and exact source bytes. A fixed ESM loader uses exact-length
+`readSync` loops, requires EOF immediately after the declared source, validates
+the bound digest, and only then imports the verified bytes through a base64
+`data:` URL. Truncation, surplus, oversize, and digest mismatch all fail closed;
+stdin remains exclusively the JSON-line protocol. The permission probe uses
+the same frame. Candidates therefore remain one file and can import only
+`node:` built-ins under the fixed permission contract. The exact spawned Node
+command is feature-tested and the run fails closed if its permission behavior
+is unavailable.
 
 ## Security and process boundary
 
@@ -46,15 +56,18 @@ prove that ordinary and detached child attempts cannot create a marker.
 Node 24 permission mode does not control network access. This slice supplies no
 network namespace, firewall policy, Windows Job Object, POSIX cgroup, or other
 OS containment. It is not a universal hostile-code sandbox. On POSIX the
-runner makes a bounded process-group kill attempt; on Windows it makes a
-bounded `taskkill /T /F` attempt and reaps that helper. These are fallback
-teardown mechanisms, not confirmed tree containment. The closed report calls
-them only `bounded-attempt-complete` or `bounded-attempt-deadline` and records
-the absent OS containment and uncontrolled network boundary explicitly.
+runner makes a bounded process-group kill attempt. On Windows it attempts to
+terminate the process tree with bounded `taskkill /T /F`, attempts to reap that
+helper, and then attempts to observe/reap root-process closure within the same
+deadline. No Windows cleanup outcome claims unconditional reaping or process
+containment. These are fallback teardown mechanisms, not confirmed tree
+containment. The closed report calls them only `bounded-attempt-complete` or
+`bounded-attempt-deadline` and records the absent OS containment and
+uncontrolled network boundary explicitly.
 
 One absolute deadline covers invocation plus settlement work. Response, root
 exit, close, timeout, and pipe errors all enter teardown. Candidate stdin,
-stdout, stderr, FDs 3/4, spawn errors, and taskkill errors are handled without
+stdout, stderr, FD 3, spawn errors, and taskkill errors are handled without
 echoing their contents. Fixtures cover malformed and oversized output, early
 root exit, delay, pipe holding, and denied ordinary/detached descendants.
 
@@ -69,9 +82,10 @@ deterministic. `replayId` remains a deterministic digest of input and observed
 toolchain/source evidence, not transport state.
 
 Responses are tiny closed JSON objects with exactly `version`, `token`,
-`diagnostic`, and `valueDigest`. A strict parser rejects duplicate keys,
-including escape-equivalent spellings, rather than accepting JSON
-last-key-wins behavior. Successful cases bind independently reviewed literal
+`diagnostic`, and `valueDigest`. A strict parser rejects every escape in an
+object key (and therefore all escape-equivalent duplicate spellings) rather
+than accepting JSON last-key-wins behavior; supported strict escapes remain
+available in string values. Successful cases bind independently reviewed literal
 canonical-value digests. Unexpected fields, malformed output, unbounded
 strings, stderr, environment values, arbitrary paths, and candidate output are
 not copied into the bounded report.

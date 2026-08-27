@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { constants, open, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { createHash, randomBytes, randomInt } from 'node:crypto';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadOracleCases } from './oracle.mjs';
+import { admitCandidate } from './candidate-admission.mjs';
+import { CANDIDATE_LOADER_SOURCE, createCandidateFrame } from './candidate-frame.mjs';
 
 const PROTOCOL = 'private-aas-json-v0';
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
@@ -31,7 +33,7 @@ export const DEFAULT_BOUNDS = Object.freeze({
   settlementMilliseconds: 1000,
 });
 
-export const CANDIDATE_LOADER_SOURCE = "import{readFileSync}from'node:fs';import{createHash}from'node:crypto';const source=readFileSync(3),binding=readFileSync(4,'utf8'),actual=source.length+'\\0sha256:'+createHash('sha256').update(source).digest('hex');if(binding!==actual)throw new Error('candidate-byte-binding');await import('data:text/javascript;base64,'+source.toString('base64'))";
+export { CANDIDATE_LOADER_SOURCE };
 export const CANDIDATE_NODE_ARGS = Object.freeze([
   '--permission',
   '--no-addons',
@@ -132,7 +134,7 @@ function parseTinyRecord(text) {
   const whitespace = () => {
     while (text[offset] === ' ' || text[offset] === '\t' || text[offset] === '\r' || text[offset] === '\n') offset += 1;
   };
-  const string = () => {
+  const string = (escapes = true) => {
     whitespace();
     if (text[offset] !== '"') throw new Error('string');
     const start = offset;
@@ -145,6 +147,7 @@ function parseTinyRecord(text) {
       }
       if (code < 0x20) throw new Error('control');
       if (code === 0x5c) {
+        if (!escapes) throw new Error('escaped-key');
         offset += 1;
         if (text[offset] === 'u') {
           if (!/^[0-9a-fA-F]{4}$/.test(text.slice(offset + 1, offset + 5))) throw new Error('escape');
@@ -166,7 +169,7 @@ function parseTinyRecord(text) {
   if (text[offset] === '}') offset += 1;
   else {
     for (;;) {
-      const key = string();
+      const key = string(false);
       if (seen.has(key)) throw new Error('duplicate');
       seen.add(key);
       whitespace();
@@ -225,7 +228,7 @@ export function verifyNodePermissionContract() {
         detached: process.platform !== 'win32',
         env: candidateEnvironment(),
         shell: false,
-        stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'],
+        stdio: ['ignore', 'ignore', 'ignore', 'pipe'],
         windowsHide: true,
       });
     } catch { return false; }
@@ -240,10 +243,7 @@ export function verifyNodePermissionContract() {
         resolve(code === 0);
       });
     });
-    const writes = Promise.all([
-      writePipe(child.stdio[3], probe),
-      writePipe(child.stdio[4], Buffer.from(`${probe.length}\0${sha256(probe)}`)),
-    ]);
+    const writes = writePipe(child.stdio[3], createCandidateFrame(probe));
     const supported = await waitUntil(settled, deadline, false);
     await teardown(child, deadline, { promise: closePromise, isClosed: () => closed });
     await waitUntil(writes, deadline, false);
@@ -252,7 +252,7 @@ export function verifyNodePermissionContract() {
   return permissionContractCheck;
 }
 
-async function executeOne(candidateBytes, candidateDigest, request, bounds) {
+async function executeOne(candidateBytes, request, bounds) {
   const encoded = Buffer.from(`${JSON.stringify(request)}\n`);
   if (encoded.length > bounds.requestBytes) throw new Error('request-too-large');
   const started = performance.now();
@@ -264,7 +264,7 @@ async function executeOne(candidateBytes, candidateDigest, request, bounds) {
       detached: process.platform !== 'win32',
       env: candidateEnvironment(),
       shell: false,
-      stdio: ['pipe', 'pipe', 'pipe', 'pipe', 'pipe'],
+      stdio: ['pipe', 'pipe', 'pipe', 'pipe'],
       windowsHide: true,
     });
   } catch {
@@ -296,12 +296,11 @@ async function executeOne(candidateBytes, candidateDigest, request, bounds) {
     notifyEvent('stderr');
   });
 
-  const candidateWrite = writePipe(child.stdio[3], candidateBytes);
-  const bindingWrite = writePipe(child.stdio[4], Buffer.from(`${candidateBytes.length}\0${candidateDigest}`));
+  const candidateWrite = writePipe(child.stdio[3], createCandidateFrame(candidateBytes));
   const requestWrite = writePipe(child.stdin, encoded);
   const first = await waitUntil(event, invocationDeadline, 'timeout');
   const cleanup = await teardown(child, absoluteDeadline, { promise: closePromise, isClosed: () => closed });
-  const writes = await waitUntil(Promise.all([candidateWrite, bindingWrite, requestWrite]), absoluteDeadline, [false, false, false]);
+  const writes = await waitUntil(Promise.all([candidateWrite, requestWrite]), absoluteDeadline, [false, false]);
 
   if (cleanup === 'bounded-attempt-deadline') return { failure: 'settlement-timeout', diagnostic: null, cleanup };
   if (first === 'error' || !child.pid) return { failure: 'launch-failed', diagnostic: null, cleanup };
@@ -360,36 +359,6 @@ function validateReport(report) {
   return report;
 }
 
-async function admitCandidate(candidatePath, bounds) {
-  if (typeof constants.O_NOFOLLOW !== 'number') throw new Error('candidate-nofollow-unavailable');
-  let handle;
-  try {
-    handle = await open(candidatePath, constants.O_RDONLY | constants.O_NOFOLLOW);
-    const before = await handle.stat({ bigint: true });
-    if (!before.isFile() || before.size < 1n) throw new Error('invalid-candidate-artifact');
-    const buffer = Buffer.allocUnsafe(bounds.candidateBytes + 1);
-    let length = 0;
-    while (length < buffer.length) {
-      const { bytesRead } = await handle.read(buffer, length, buffer.length - length, length);
-      if (bytesRead === 0) break;
-      length += bytesRead;
-    }
-    if (length < 1 || length > bounds.candidateBytes) throw new Error('invalid-candidate-artifact');
-    const after = await handle.stat({ bigint: true });
-    if (!after.isFile() || before.dev !== after.dev || before.ino !== after.ino
-        || before.size !== after.size || after.size !== BigInt(length)
-        || before.mtimeNs !== after.mtimeNs || before.ctimeNs !== after.ctimeNs) {
-      throw new Error('candidate-artifact-race');
-    }
-    return Buffer.from(buffer.subarray(0, length));
-  } catch (error) {
-    if (error?.code === 'ELOOP') throw new Error('invalid-candidate-artifact');
-    throw error;
-  } finally {
-    await handle?.close();
-  }
-}
-
 export function createTransportPlan(length) {
   if (!Number.isSafeInteger(length) || length < 1 || length > 1024) throw new Error('invalid-transport-length');
   const indexes = Array.from({ length }, (_, index) => index);
@@ -407,7 +376,7 @@ export async function runSuite({ candidatePath, candidateName, bounds: suppliedB
   const bounds = validateBounds(suppliedBounds);
   const name = boundedCandidateName(candidateName, bounds);
   if (!(await verifyNodePermissionContract())) throw new Error('unsupported-node-permission-contract');
-  const candidateBytes = await admitCandidate(candidatePath, bounds);
+  const candidateBytes = await admitCandidate(candidatePath, bounds.candidateBytes);
   const candidateDigest = sha256(candidateBytes);
   const oracle = await loadOracleCases();
   const oracleObservedBytes = await readFile(new URL('./oracle.mjs', import.meta.url));
@@ -426,7 +395,7 @@ export async function runSuite({ candidatePath, candidateName, bounds: suppliedB
   for (const transport of createTransportPlan(oracle.cases.length)) {
     const { caseIndex: index, token } = transport;
     const item = oracle.cases[index];
-    const observed = await executeOne(candidateBytes, candidateDigest, requestFor(item, token), bounds);
+    const observed = await executeOne(candidateBytes, requestFor(item, token), bounds);
     const matched = observed.failure === 'none' && observed.diagnostic === item.diagnostic && observed.valueDigest === item.valueDigest;
     invocations[index] = {
       status: matched ? 'pass' : 'fail',

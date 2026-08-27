@@ -26,17 +26,45 @@ test('result-validation facade has the fixed 26-name compatibility surface', () 
   assert.deepEqual(Object.keys(facade).sort(), expectedExports.sort());
 });
 
-test('base function and arrow export forms remain reflection compatible', () => {
-  const declarations = ['resultIdentityProjection', 'requestIdentityProjection', 'exceptionIdentityProjection',
-    'computeExceptionAasIdentity', 'computeRequestAasIdentity', 'computeResultAasIdentity'];
-  const arrows = ['computeBindingAasIdentity', 'computeBindingSetAasIdentity', 'computeTargetSelectionAasIdentity',
-    'computeOverlayAasIdentity', 'computeAnalysisKeyAasIdentity', 'computeProfileAasIdentity',
-    'computeEffectivePolicyAasIdentity', 'computeAnalyzerAasIdentity', 'computePromotionAasIdentity'];
-  for (const name of declarations) assert.equal(Object.hasOwn(facade[name], 'prototype'), true, name);
-  for (const name of arrows) assert.equal(Object.hasOwn(facade[name], 'prototype'), false, name);
-  assert.equal(facade.createInvocationKernel.name, 'createInvocationKernel');
-  assert.equal(facade.createInvocationKernel.length, 0);
-  assert.equal(Object.hasOwn(facade.createInvocationKernel, 'prototype'), true);
+test('all 26 facade exports retain base reflection, constants, and signatures', () => {
+  const reflection = [
+    ['RESOURCE_ACCOUNTING_PROFILE_AAS_IDENTITY', 'string', undefined, 78, false],
+    ['assertRequestInvariants', 'function', 'assertRequestInvariants', 2, true],
+    ['assertRequestResultInvariants', 'function', 'assertRequestResultInvariants', 3, true],
+    ['assertResultInvariants', 'function', 'assertResultInvariants', 3, true],
+    ['canonicalRequestExtensionBytes', 'function', 'canonicalRequestExtensionBytes', 1, false],
+    ['canonicalRequestWireBytes', 'function', 'canonicalRequestWireBytes', 1, false],
+    ['canonicalResultOutputBytes', 'function', 'canonicalResultOutputBytes', 1, false],
+    ['computeAnalysisKeyAasIdentity', 'function', 'computeAnalysisKeyAasIdentity', 1, false],
+    ['computeAnalyzerAasIdentity', 'function', 'computeAnalyzerAasIdentity', 1, false],
+    ['computeBindingAasIdentity', 'function', 'computeBindingAasIdentity', 1, false],
+    ['computeBindingSetAasIdentity', 'function', 'computeBindingSetAasIdentity', 1, false],
+    ['computeEffectivePolicyAasIdentity', 'function', 'computeEffectivePolicyAasIdentity', 1, false],
+    ['computeExceptionAasIdentity', 'function', 'computeExceptionAasIdentity', 1, true],
+    ['computeOverlayAasIdentity', 'function', 'computeOverlayAasIdentity', 1, false],
+    ['computeProfileAasIdentity', 'function', 'computeProfileAasIdentity', 1, false],
+    ['computePromotionAasIdentity', 'function', 'computePromotionAasIdentity', 1, false],
+    ['computeRequestAasIdentity', 'function', 'computeRequestAasIdentity', 1, true],
+    ['computeResultAasIdentity', 'function', 'computeResultAasIdentity', 1, true],
+    ['computeTargetSelectionAasIdentity', 'function', 'computeTargetSelectionAasIdentity', 1, false],
+    ['createInvocationKernel', 'function', 'createInvocationKernel', 0, true],
+    ['deriveBindingSelection', 'function', 'deriveBindingSelection', 2, true],
+    ['deriveEffectiveBudgets', 'function', 'deriveEffectiveBudgets', 1, true],
+    ['exceptionIdentityProjection', 'function', 'exceptionIdentityProjection', 1, true],
+    ['requestIdentityProjection', 'function', 'requestIdentityProjection', 1, true],
+    ['resultIdentityProjection', 'function', 'resultIdentityProjection', 1, true],
+    ['terminalFields', 'object', undefined, 7, false],
+  ];
+  assert.equal(reflection.length, 26);
+  for (const [exportName, type, name, length, ownsPrototype] of reflection) {
+    const value = facade[exportName];
+    assert.equal(typeof value, type, `${exportName} typeof`);
+    assert.equal(value.name, name, `${exportName} name`);
+    assert.equal(value.length, length, `${exportName} length`);
+    assert.equal(Object.hasOwn(value, 'prototype'), ownsPrototype, `${exportName} prototype`);
+  }
+  assert.deepEqual(facade.terminalFields, ['included', 'policyExcluded', 'unreadable', 'unsupported', 'unstable', 'unknown', 'budgetExhausted']);
+  assert.equal(facade.RESOURCE_ACCOUNTING_PROFILE_AAS_IDENTITY, 'aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300');
 });
 
 test('createInvocationKernel preserves base destructuring and caller observation behavior', () => {

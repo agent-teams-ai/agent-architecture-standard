@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -53,9 +54,9 @@ test('the exact candidate command enables the fail-closed Node 24 permission con
     '--permission', '--no-addons', '--disable-proto=delete', '--input-type=module', '--eval', CANDIDATE_LOADER_SOURCE,
   ]);
   assert(!CANDIDATE_NODE_ARGS.some((argument) => argument.startsWith('--allow-')));
-  assert.match(CANDIDATE_LOADER_SOURCE, /readFileSync\(3\)/);
-  assert.match(CANDIDATE_LOADER_SOURCE, /readFileSync\(4/);
-  assert.match(CANDIDATE_LOADER_SOURCE, /candidate-byte-binding/);
+  assert.doesNotMatch(CANDIDATE_LOADER_SOURCE, /readFileSync/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /readSync\(3/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /candidate-frame-(?:truncated|surplus|digest)/);
   assert.match(CANDIDATE_LOADER_SOURCE, /data:text\/javascript;base64/);
   assert.equal(await verifyNodePermissionContract(), true);
 });
@@ -69,12 +70,14 @@ test('the admitted buffer executes as a data URL with only the closed opaque req
   assert(report.invocations.every((item) => item.observedDiagnostic === 'aas.json.invalid-syntax'));
 });
 
-test('strict response parser rejects literal and escaped duplicate keys', () => {
+test('strict response parser rejects every escaped key while retaining strict value escapes', () => {
   const token = '0123456789abcdef0123456789abcdef';
   const valid = `{"version":"private-aas-json-v0","token":"${token}","diagnostic":"aas.json.invalid-syntax","valueDigest":null}`;
   assert.equal(validateResponse(valid, token).failure, 'none');
   assert.equal(validateResponse(valid.replace('{', '{"token":"other",'), token).failure, 'malformed-response');
   assert.equal(validateResponse(valid.replace('{', '{"tok\\u0065n":"other",'), token).failure, 'malformed-response');
+  assert.equal(validateResponse(valid.replace('"version"', '"vers\\u0069on"'), token).failure, 'malformed-response');
+  assert.equal(validateResponse(valid.replace('private-aas-json-v0', 'private-aas-json-v\\u0030'), token).failure, 'none');
 });
 
 test('seeded substitution, diagnostic map, and ordinary JSON parser cannot pass', async () => {
@@ -112,18 +115,55 @@ test('report is closed and does not echo candidate secrets, stderr, env, or path
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('candidate admission rejects symlinks and oversized artifacts from the opened handle', async () => {
+test('candidate admission rejects oversized artifacts from the opened handle', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), 'aas-admission-'));
-  const artifact = path.join(directory, 'candidate.mjs');
-  const link = path.join(directory, 'link.mjs');
   const oversized = path.join(directory, 'oversized.mjs');
-  await writeFile(artifact, 'process.exit(0)');
-  await symlink(artifact, link);
   await writeFile(oversized, Buffer.alloc(65));
   const bounds = { ...fastBounds, candidateBytes: 64 };
   try {
-    await assert.rejects(runSuite({ candidatePath: link, candidateName: 'link', bounds }), /invalid-candidate-artifact/);
     await assert.rejects(runSuite({ candidatePath: oversized, candidateName: 'oversized', bounds }), /invalid-candidate-artifact/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('POSIX candidate admission rejects a symlink and FIFO without opening a blocking reader', { skip: process.platform === 'win32' }, async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-posix-admission-'));
+  const artifact = path.join(directory, 'candidate.mjs');
+  const link = path.join(directory, 'link.mjs');
+  const fifo = path.join(directory, 'candidate.fifo');
+  await writeFile(artifact, 'process.exit(0)');
+  await symlink(artifact, link);
+  const made = spawnSync('mkfifo', [fifo], { encoding: 'utf8', timeout: 1000 });
+  assert.equal(made.status, 0, made.stderr);
+  try {
+    await assert.rejects(runSuite({ candidatePath: link, candidateName: 'link', bounds: fastBounds }), /invalid-candidate-artifact/);
+    await assert.rejects(runSuite({ candidatePath: fifo, candidateName: 'fifo', bounds: fastBounds }), /invalid-candidate-artifact/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('Windows candidate admission rejects supported symlink and junction reparse points', { skip: process.platform !== 'win32' }, async (context) => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-windows-admission-'));
+  const artifact = path.join(directory, 'candidate.mjs');
+  const link = path.join(directory, 'link.mjs');
+  const targetDirectory = path.join(directory, 'target-directory');
+  const junction = path.join(directory, 'candidate-junction');
+  await writeFile(artifact, 'process.exit(0)');
+  await mkdir(targetDirectory);
+  let exercised = 0;
+  try {
+    try {
+      await symlink(artifact, link, 'file');
+      await assert.rejects(runSuite({ candidatePath: link, candidateName: 'file-reparse', bounds: fastBounds }), /invalid-candidate-artifact/);
+      exercised += 1;
+    } catch (error) {
+      if (!['EPERM', 'EACCES', 'UNKNOWN'].includes(error?.code)) throw error;
+    }
+    await symlink(targetDirectory, junction, 'junction');
+    await assert.rejects(runSuite({ candidatePath: junction, candidateName: 'junction-reparse', bounds: fastBounds }), /invalid-candidate-artifact/);
+    exercised += 1;
+    assert(exercised > 0);
+  } catch (error) {
+    if (exercised === 0 && ['EPERM', 'EACCES', 'UNKNOWN'].includes(error?.code)) context.skip(`reparse creation unavailable: ${error.code}`);
+    else throw error;
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
