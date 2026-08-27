@@ -1,18 +1,13 @@
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
 import { sha256 } from '../lib/digests.mjs';
 import { root, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
+import { runNpmSync } from './run-npm.mjs';
 
 const temporary = await mkdtemp(path.join(tmpdir(), 'aas-package-'));
-const run = (args, cwd = root) => {
-  const command = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  const result = spawnSync(command, args, { cwd, encoding: 'utf8', env: { ...process.env, npm_config_cache: path.join(temporary, 'npm-cache') } });
-  if (result.status !== 0) throw new Error(result.stderr || result.stdout);
-  return result.stdout;
-};
+const run = (args, cwd = root) => runNpmSync(args, { cwd, encoding: 'utf8', env: { ...process.env, npm_config_cache: path.join(temporary, 'npm-cache') } });
 try {
   const inventory = JSON.parse(run(['pack', '--json', '--dry-run']))[0].files.map((entry) => entry.path).sort();
   const manifest = await readJson('artifacts.json');
