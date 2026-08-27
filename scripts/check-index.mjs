@@ -4,7 +4,8 @@ import { root, walk, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
 import { sha256 } from '../lib/digests.mjs';
 import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
-import { computeProfileAasIdentity } from '../lib/result-validation.mjs';
+import { computeProfileAasIdentity } from '../lib/identity-framing.mjs';
+import { assertProfileSourceClosure, createProfileSourceBoundary } from './profile-source-closure.mjs';
 
 const immutableDigests = new Map([
   ['decisions/README.md', 'sha256:8aa3b8d91ec3349bbee6489182741d0e7651f1a6490be869ba1c1f6b1a11c284'],
@@ -54,35 +55,9 @@ if (registryFiles.length !== registryEntries.length || registryFiles.some((item)
 const registryIndex = (await indexLinks('registries/readme.md')).filter((item) => item.endsWith('.json'));
 if (JSON.stringify([...registryIndex].sort()) !== JSON.stringify([...registryFiles].sort())) throw new Error('registry index rows do not exactly match physical registries');
 const profileArtifacts = await walk('profiles');
-const profileDefinitions = profileArtifacts.filter((item) => item.endsWith('.json'));
 const profileEntries = manifest.artifacts.filter((entry) => entry.class === 'profile-definition').map((entry) => entry.path);
 if (JSON.stringify(profileEntries.sort()) !== JSON.stringify(profileArtifacts.sort())) throw new Error('immutable profile-definition inventory is not indexed exactly');
-for (const relative of profileDefinitions) {
-  const definition = await readJson(relative);
-  if (computeProfileAasIdentity(definition) !== definition.aasIdentity) throw new Error(`profile definition identity mismatch: ${relative}`);
-  const registration = (await readJson('registries/profiles.json')).entries.find(({ id }) => id === definition.id);
-  if (!registration || registration.definitionArtifact !== relative || registration.profileAasIdentity !== definition.aasIdentity) throw new Error(`profile definition is not exactly anchored by registry: ${relative}`);
-  const sourcesByProfile = {
-    'agent-architecture-resource-accounting-v0@1': ['schemas/common.schema.json', 'profiles/resource-accounting-v0-1-semantics.md', 'vectors/phase-1-remediation-v1.md'],
-    'agent-architecture-portable-path-unicode17@1': ['schemas/common.schema.json', 'spec/security-and-conformance.md', 'vectors/phase-0-remediation-v1.md'],
-    'agent-architecture-validate-overlay@1': ['schemas/overlay.schema.json', 'spec/policy-and-enforcement.md', 'vectors/phase-1-remediation-v1.md']
-  };
-  const sources = sourcesByProfile[definition.id];
-  if (!sources) throw new Error(`profile definition has no exact source map: ${relative}`);
-  const anchoredSources = [[definition.schemas[0], sources[0]], [definition.semanticsArtifacts[0], sources[1]], [definition.definitionVectorSuites[0], sources[2]]];
-  for (const [reference, source] of anchoredSources) {
-    let bytes = await readFile(path.join(root, source));
-    // Phase 1 status corrections are repository metadata, not profile semantics.
-    // Reconstruct the originally pinned status line while checking exact source
-    // bytes so the already-issued private identity vectors do not drift.
-    const historicalStatus = new Map([
-      ['spec/security-and-conformance.md', 'Status: normative Phase 0 scaffold; unpublished; all claim IDs provisional'],
-      ['spec/policy-and-enforcement.md', 'Status: normative Phase 0 scaffold; unpublished; all identifiers provisional']
-    ]).get(source);
-    if (historicalStatus) bytes = Buffer.from(bytes.toString('utf8').replace(/^Status: .*$/mu, historicalStatus));
-    if (reference.contentDigest !== sha256(bytes) || reference.byteLength !== bytes.byteLength) throw new Error(`profile definition source pin mismatch: ${relative} -> ${source}`);
-  }
-}
+await assertProfileSourceClosure(createProfileSourceBoundary(root), computeProfileAasIdentity);
 const vectorFiles = (await walk('vectors')).filter((item) => item !== 'vectors/readme.md');
 const vectorEntries = manifest.artifacts.filter((entry) => entry.class === 'vector').map((entry) => entry.path);
 if (JSON.stringify([...vectorEntries].sort()) !== JSON.stringify([...vectorFiles].sort())) throw new Error('manifest vector inventory does not exactly match physical vectors');

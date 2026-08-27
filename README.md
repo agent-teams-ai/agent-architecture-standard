@@ -4,6 +4,10 @@ Status: private Phase 1 normative-artifact implementation; unpublished; identifi
 
 This README is an index and has no independent semantic authority.
 
+The immutable `spec/` Status headers identify their normative Phase 0 edition;
+[SOURCE.md](SOURCE.md) records the repository's separate private Phase 1
+implementation phase. The versioned `@1` profiles are not revised in place.
+
 The Agent Architecture Standard (AAS) defines language-neutral contracts for
 describing repository architecture policy, binding evaluation to immutable
 inputs, and reporting deterministic enforcement results. Agent Architecture

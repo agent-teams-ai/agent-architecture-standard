@@ -1,6 +1,6 @@
 # AAS Phase 0 governance and change control
 
-Status: normative artifacts with private Phase 1 implementation; unpublished; governance roles not yet operational; D1 neutral authority unresolved
+Status: normative Phase 0 scaffold; governance roles not yet operational
 
 ## 1. Honest current state
 

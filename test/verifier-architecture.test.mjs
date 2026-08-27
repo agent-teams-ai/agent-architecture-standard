@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import * as facade from '../lib/result-validation.mjs';
 import * as identities from '../lib/identity-validation.mjs';
 import { createInvocationKernel as createPrivateKernel } from '../lib/invocation-kernel.mjs';
 import { copyWireBytes, parseAdmittedSchemaBytes } from '../lib/schema-admission-core.mjs';
+import { computeProfileAasIdentity } from '../lib/identity-framing.mjs';
+import { assertProfileSourceClosure, createProfileSourceBoundary } from '../scripts/profile-source-closure.mjs';
 
 const expectedExports = [
   'RESOURCE_ACCOUNTING_PROFILE_AAS_IDENTITY', 'assertRequestInvariants', 'assertRequestResultInvariants',
@@ -21,6 +24,41 @@ const expectedExports = [
 
 test('result-validation facade has the fixed 26-name compatibility surface', () => {
   assert.deepEqual(Object.keys(facade).sort(), expectedExports.sort());
+});
+
+test('base function and arrow export forms remain reflection compatible', () => {
+  const declarations = ['resultIdentityProjection', 'requestIdentityProjection', 'exceptionIdentityProjection',
+    'computeExceptionAasIdentity', 'computeRequestAasIdentity', 'computeResultAasIdentity'];
+  const arrows = ['computeBindingAasIdentity', 'computeBindingSetAasIdentity', 'computeTargetSelectionAasIdentity',
+    'computeOverlayAasIdentity', 'computeAnalysisKeyAasIdentity', 'computeProfileAasIdentity',
+    'computeEffectivePolicyAasIdentity', 'computeAnalyzerAasIdentity', 'computePromotionAasIdentity'];
+  for (const name of declarations) assert.equal(Object.hasOwn(facade[name], 'prototype'), true, name);
+  for (const name of arrows) assert.equal(Object.hasOwn(facade[name], 'prototype'), false, name);
+  assert.equal(facade.createInvocationKernel.name, 'createInvocationKernel');
+  assert.equal(facade.createInvocationKernel.length, 0);
+  assert.equal(Object.hasOwn(facade.createInvocationKernel, 'prototype'), true);
+});
+
+test('createInvocationKernel preserves base destructuring and caller observation behavior', () => {
+  function baseShape({ operatorAuthority, targetAuthority, providerBudgets, ingressLimits } = {}) {
+    return { operatorAuthority, targetAuthority, providerBudgets, ingressLimits };
+  }
+  const thrown = (call) => { try { call(); } catch (error) { return error; } assert.fail('expected throw'); };
+  const expectedNull = thrown(() => baseShape(null));
+  const actualNull = thrown(() => facade.createInvocationKernel(null));
+  assert.equal(actualNull.constructor, expectedNull.constructor);
+  assert.equal(actualNull.message, expectedNull.message);
+
+  const observations = [];
+  const inherited = Object.create({ operatorAuthority: undefined, targetAuthority: undefined,
+    providerBudgets: undefined, ingressLimits: undefined });
+  Object.defineProperty(inherited, 'unrelated', { enumerable: true, get() { observations.push('unrelated'); } });
+  const options = new Proxy(inherited, {
+    get(target, property, receiver) { observations.push(`get:${String(property)}`); return Reflect.get(target, property, receiver); },
+    ownKeys(target) { observations.push('ownKeys'); return Reflect.ownKeys(target); }
+  });
+  assert.throws(() => facade.createInvocationKernel(options), /providerBudgets/);
+  assert.deepEqual(observations, ['get:operatorAuthority', 'get:targetAuthority', 'get:providerBudgets', 'get:ingressLimits']);
 });
 
 test('all twelve identity functions retain exact vectors and three projections remove only duplicated identities', async () => {
@@ -54,18 +92,25 @@ test('all twelve identity functions retain exact vectors and three projections r
 });
 
 test('identity domains and canonical JSON implementation have one closed source without drift or duplicates', async () => {
-  const identitySource = await readFile(new URL('../lib/identity-validation.mjs', import.meta.url), 'utf8');
-  const modules = await Promise.all(['canonical-json', 'identity-validation', 'binding-selection', 'resource-accounting',
+  const identitySource = await readFile(new URL('../lib/identity-framing.mjs', import.meta.url), 'utf8');
+  const modules = await Promise.all(['canonical-json', 'identity-framing', 'identity-validation', 'binding-selection', 'resource-accounting',
     'result-invariants', 'invocation-kernel', 'release-validation'].map((name) => readFile(new URL(`../lib/${name}.mjs`, import.meta.url), 'utf8')));
   const domains = [...identitySource.matchAll(/'aas\.[a-z-]+\.v0'/gu)].map(([value]) => value);
-  assert.equal(domains.length, 12);
-  assert.equal(new Set(domains).size, 12);
+  assert.equal(domains.length, 13);
+  assert.equal(new Set(domains).size, 13);
   assert.equal((modules.join('\n').match(/function canonicalJson\(/gu) ?? []).length, 1);
   assert.equal((identitySource.match(/aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300/gu) ?? []).length, 1);
+  const runtimeLiterals = /AAS-ID|agent-architecture-canonical-json-rfc8785@0|'aas\.[a-z-]+\.v0'|aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300/gu;
+  for (const name of ['canonical-json', 'identity-validation', 'binding-selection', 'resource-accounting',
+    'result-invariants', 'invocation-kernel', 'release-validation']) {
+    const source = await readFile(new URL(`../lib/${name}.mjs`, import.meta.url), 'utf8');
+    assert.equal(runtimeLiterals.test(source), false, `${name} duplicates identity framing literal`);
+    runtimeLiterals.lastIndex = 0;
+  }
 });
 
 test('private verifier dependency graph is acyclic and has no facade backedge', async () => {
-  const names = ['result-validation', 'canonical-json', 'identity-validation', 'binding-selection', 'resource-accounting',
+  const names = ['result-validation', 'canonical-json', 'identity-framing', 'identity-validation', 'binding-selection', 'resource-accounting',
     'result-invariants', 'invocation-kernel', 'schema-admission', 'schema-admission-core'];
   const graph = new Map();
   for (const name of names) {
@@ -82,6 +127,29 @@ test('private verifier dependency graph is acyclic and has no facade backedge', 
     visiting.add(name); for (const dependency of graph.get(name) ?? []) visit(dependency); visiting.delete(name); visited.add(name);
   };
   for (const name of names) visit(name);
+  for (const entry of await readdir(new URL('../scripts/', import.meta.url), { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.mjs')) continue;
+    const source = await readFile(new URL(`../scripts/${entry.name}`, import.meta.url), 'utf8');
+    assert.equal(source.includes('../lib/result-validation.mjs'), false, `${entry.name} imports facade`);
+  }
+});
+
+test('profile source closure rejects a one-byte immutable Status mutation', async () => {
+  const sourceRoot = fileURLToPath(new URL('..', import.meta.url));
+  const boundary = createProfileSourceBoundary(sourceRoot);
+  await assertProfileSourceClosure(boundary, computeProfileAasIdentity);
+  const mutatedBoundary = {
+    root: boundary.root,
+    read: async (relative) => {
+      const bytes = await boundary.read(relative);
+      if (relative !== 'spec/security-and-conformance.md') return bytes;
+      const mutated = Buffer.from(bytes);
+      const status = mutated.indexOf(Buffer.from('Status:'));
+      mutated[status + Buffer.byteLength('Status: normative Phase ')] ^= 1;
+      return mutated;
+    }
+  };
+  await assert.rejects(() => assertProfileSourceClosure(mutatedBoundary, computeProfileAasIdentity), /exact-byte mismatch|pin mismatch/);
 });
 
 test('identity and facade imports neither read schemas nor load or compile Ajv', () => {
@@ -116,6 +184,6 @@ test('kernel captures each injected schema-admission dependency exactly once', (
   for (const name of Object.keys(reads)) Object.defineProperty(schemaAdmission, name, {
     enumerable: true, get() { reads[name] += 1; return () => {}; }
   });
-  assert.throws(() => createPrivateKernel({ schemaAdmission }), /providerBudgets/);
+  assert.throws(() => createPrivateKernel({}, schemaAdmission), /providerBudgets/);
   assert.deepEqual(reads, { assertSchema: 1, parseSchemaBytes: 1 });
 });

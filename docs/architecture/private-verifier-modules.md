@@ -2,6 +2,10 @@
 
 Status: private Phase 1 implementation; unpublished and nonnormative.
 
+Immutable `spec/` Status headers name the normative edition. `SOURCE.md` names
+the repository's distinct implementation phase; private Phase 1 work does not
+revise the versioned `@1` profiles in place.
+
 `lib/result-validation.mjs` is the compatibility and composition facade. It
 preserves the existing 26-name synchronous API while the package manifest keeps
 all `lib/` modules private.
@@ -9,7 +13,8 @@ all `lib/` modules private.
 ```text
 result-validation facade -> focused modules + lazy default schema adapter
 invocation-kernel -> identity, binding, accounting, invariants + injected admission port
-identity/binding/accounting/invariants -> canonical-json primitive
+identity validation + release validation -> identity-framing leaf -> canonical-json primitive
+binding/accounting/invariants -> canonical-json primitive
 schema-admission adapter -> pure schema-admission-core
 ```
 

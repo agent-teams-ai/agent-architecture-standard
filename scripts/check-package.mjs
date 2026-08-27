@@ -6,10 +6,13 @@ import { sha256 } from '../lib/digests.mjs';
 import { root, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
 import { runNpmSync } from './run-npm.mjs';
+import { computeProfileAasIdentity } from '../lib/identity-framing.mjs';
+import { assertProfileSourceClosure, createProfileSourceBoundary } from './profile-source-closure.mjs';
 
 const temporary = await mkdtemp(path.join(tmpdir(), 'aas-package-'));
 const run = (args, cwd = root) => runNpmSync(args, { cwd, encoding: 'utf8', env: { ...process.env, npm_config_cache: path.join(temporary, 'npm-cache') } });
 try {
+  await assertProfileSourceClosure(createProfileSourceBoundary(root), computeProfileAasIdentity);
   const inventory = JSON.parse(run(['pack', '--json', '--dry-run']))[0].files.map((entry) => entry.path).sort();
   const manifest = await readJson('artifacts.json');
   const rootPackageFiles = ['LICENSE', 'README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'package.json', 'artifacts.json'];
@@ -31,6 +34,7 @@ try {
   const installedManifest = JSON.parse(await readFile(installed, 'utf8'));
   if (JSON.stringify(installedManifest) !== JSON.stringify(manifest)) throw new Error('installed manifest differs');
   const installedRoot = path.dirname(installed);
+  await assertProfileSourceClosure(createProfileSourceBoundary(installedRoot), computeProfileAasIdentity);
   const listFiles = async (directory, prefix = '') => {
     const output = [];
     for (const entry of await readdir(directory, { withFileTypes: true })) {
