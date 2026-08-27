@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assertPortablePackageInventory } from '../scripts/package-paths.mjs';
 import { assertPortablePath, assertPortablePathCollection, portablePathCollisionKey } from '../lib/portable-path.mjs';
-import { runNpmSync } from '../scripts/run-npm.mjs';
+import { runNpmSync, runPnpmVersionSync } from '../scripts/run-npm.mjs';
 import { assertIdentityDocumentPathInvariants } from '../lib/document-validation.mjs';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
@@ -56,6 +56,36 @@ test('npm runs its JavaScript CLI directly on POSIX without PATH lookup', () => 
     spawnSync(command, args) { invocation = { command, args }; return { status: 0, stdout: '', stderr: '' }; }
   });
   assert.deepEqual(invocation, { command: '/opt/node/bin/node', args: ['/opt/node/lib/node_modules/npm/bin/npm-cli.js', 'pack'] });
+});
+
+test('pnpm version runs its Windows command shim through cmd.exe', () => {
+  let invocation;
+  const version = runPnpmVersionSync({ encoding: 'utf8' }, {
+    platform: 'win32',
+    comSpec: String.raw`C:\Windows\System32\cmd.exe`,
+    spawnSync(command, args, options) {
+      invocation = { command, args, options };
+      return { status: 0, signal: null, stdout: '11.24.0\r\n', stderr: '' };
+    }
+  });
+  assert.equal(version, '11.24.0');
+  assert.deepEqual(invocation, {
+    command: String.raw`C:\Windows\System32\cmd.exe`,
+    args: ['/d', '/s', '/c', 'pnpm.cmd --version'],
+    options: { encoding: 'utf8' }
+  });
+});
+
+test('pnpm version runs directly on POSIX and requires version output', () => {
+  let invocation;
+  assert.throws(() => runPnpmVersionSync({}, {
+    platform: 'linux',
+    spawnSync(command, args) {
+      invocation = { command, args };
+      return { status: 0, signal: null, stdout: '', stderr: '' };
+    }
+  }), /produced no version/);
+  assert.deepEqual(invocation, { command: 'pnpm', args: ['--version'] });
 });
 
 test('package inventory rejects Windows case-fold collisions', () => {

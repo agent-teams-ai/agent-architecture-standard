@@ -3,7 +3,7 @@ import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { arch, platform, release, tmpdir } from 'node:os';
 import path from 'node:path';
-import { runNpmSync } from './run-npm.mjs';
+import { runNpmSync, runPnpmVersionSync } from './run-npm.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const git = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
@@ -31,8 +31,7 @@ try {
   if (firstDigest !== secondDigest) throw new Error('post-gate npm tarball is not reproducible');
   tarballDigest = firstDigest;
 } finally { await rm(temporary, { recursive: true, force: true }); }
-const pnpm = spawnSync('pnpm', ['--version'], { encoding: 'utf8' });
-if (pnpm.status !== 0) throw new Error(pnpm.stderr || 'pnpm version failed');
+const pnpmVersion = runPnpmVersionSync({ encoding: 'utf8' });
 const evidence = {
   schemaVersion: '0.1',
   event: process.env.GITHUB_EVENT_NAME ?? null,
@@ -40,7 +39,7 @@ const evidence = {
   pullRequestBase: process.env.AAS_PR_BASE || null,
   pullRequestHead: process.env.AAS_PR_HEAD || null,
   platform: { os: platform(), release: release(), architecture: arch() },
-  toolchain: { node: process.version, pnpm: pnpm.stdout.trim(), packageManager: 'pnpm@11.24.0' },
+  toolchain: { node: process.version, pnpm: pnpmVersion, packageManager: 'pnpm@11.24.0' },
   gateOutcomes: {
     checkFast: 'passed', cleanGeneration: 'passed', package: 'passed', conformance: 'passed'
   },
