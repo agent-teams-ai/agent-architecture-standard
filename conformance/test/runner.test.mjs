@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { copyFile, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -176,6 +176,31 @@ test('Windows candidate admission rejects supported final-path symlink and non-f
     if (exercised === 0 && ['EPERM', 'EACCES', 'UNKNOWN'].includes(error?.code)) context.skip(`reparse creation unavailable: ${error.code}`);
     else throw error;
   } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('Windows teardown never substitutes taskkill from hostile CWD or PATH', { skip: process.platform !== 'win32' }, async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-hostile-taskkill-'));
+  const fake = path.join(directory, 'taskkill.exe');
+  const hook = path.join(directory, 'marker-hook.cjs');
+  const marker = path.join(directory, 'fake-taskkill-invoked');
+  const previous = { cwd: process.cwd(), path: process.env.PATH, nodeOptions: process.env.NODE_OPTIONS };
+  await copyFile(process.execPath, fake);
+  await writeFile(hook, `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'invoked')`);
+  try {
+    process.chdir(directory);
+    process.env.PATH = directory;
+    process.env.NODE_OPTIONS = `--require=${hook}`;
+    const bounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 50, settlementMilliseconds: 500 });
+    const report = await runSuite({ candidatePath: candidate('timeout.mjs'), candidateName: 'hostile-taskkill', bounds });
+    assert(report.invocations.every((item) => item.failure === 'timeout'));
+    assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
+    await assert.rejects(readFile(marker), (error) => error?.code === 'ENOENT');
+  } finally {
+    process.chdir(previous.cwd);
+    if (previous.path === undefined) delete process.env.PATH; else process.env.PATH = previous.path;
+    if (previous.nodeOptions === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = previous.nodeOptions;
+    await rm(directory, { recursive: true, force: true });
+  }
 });
 
 test('early exit, delayed response, and a pipe-holding root return bounded reports without EPIPE', async () => {

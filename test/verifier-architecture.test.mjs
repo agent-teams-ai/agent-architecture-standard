@@ -119,6 +119,41 @@ test('all twelve identity functions retain exact vectors and three projections r
   assert.equal(fixtures['request-positive'].aasIdentity.startsWith('aas:'), true, 'projection does not mutate input');
 });
 
+test('exception identity retains the base two-clone projection path and accessor order', async () => {
+  const fixtures = JSON.parse(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const source = fixtures['exception-positive'];
+  const observations = [];
+  const exception = {};
+  for (const [key, value] of Object.entries(source)) Object.defineProperty(exception, key, {
+    enumerable: true,
+    configurable: true,
+    get() { observations.push(`get:${key}`); return value; },
+  });
+  const nativeStructuredClone = globalThis.structuredClone;
+  globalThis.structuredClone = (value, options) => {
+    observations.push('clone:start');
+    const cloned = nativeStructuredClone(value, options);
+    observations.push('clone:end');
+    return cloned;
+  };
+  try {
+    assert.equal(identities.computeExceptionAasIdentity(exception), 'aas:v0:sha256:5cd536b1e65d83259a715ae2ec5f1a4683b11809634b7e581abe5fe9851fab9c');
+    assert.deepEqual(observations, [
+      'clone:start', ...Object.keys(source).map((key) => `get:${key}`), 'clone:end',
+      'clone:start', 'clone:end',
+    ]);
+    observations.length = 0;
+    Object.defineProperty(exception, 'ruleId', {
+      enumerable: true,
+      get() { observations.push('get:ruleId'); throw new Error('stateful-rule'); },
+    });
+    assert.throws(() => identities.computeExceptionAasIdentity(exception), /stateful-rule/);
+    assert.deepEqual(observations, ['clone:start', 'get:aasIdentity', 'get:ruleId']);
+  } finally {
+    globalThis.structuredClone = nativeStructuredClone;
+  }
+});
+
 test('identity domains and canonical JSON implementation have one closed source without drift or duplicates', async () => {
   const identitySource = await readFile(new URL('../lib/identity-framing.mjs', import.meta.url), 'utf8');
   const modules = await Promise.all(['canonical-json', 'identity-framing', 'identity-validation', 'binding-selection', 'resource-accounting',

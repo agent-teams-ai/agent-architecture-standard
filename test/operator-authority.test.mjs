@@ -123,6 +123,42 @@ test('kernel derives a frozen plan and reconciles only raw bytes with its opaque
   assert.throws(() => kernel.reconcileInvocationResult(capability, new Uint8Array(new SharedArrayBuffer(16))), /non-shared ArrayBuffer/);
 });
 
+test('kernel retains base validate-then-capture target resolver getter ordering', () => {
+  const state = makeState();
+  const trace = [];
+  const targetAuthority = {};
+  let resolveReads = 0;
+  Object.defineProperties(targetAuthority, {
+    resolve: {
+      enumerable: true,
+      get() { resolveReads += 1; trace.push(`resolve:${resolveReads}`); return () => ({ [state.coordinate.targetId]: state.coordinate }); },
+    },
+    integrationContext: {
+      enumerable: true,
+      get() { trace.push('integrationContext'); return { installation: 'trusted' }; },
+    },
+  });
+  const kernel = state.create({ targetAuthority });
+  assert.equal(typeof kernel.preflightInvocation, 'function');
+  assert.deepEqual(trace, ['resolve:1', 'resolve:2', 'integrationContext']);
+
+  const throwing = {};
+  Object.defineProperties(throwing, {
+    resolve: {
+      enumerable: true,
+      get() {
+        trace.push('throwing-resolve');
+        if (trace.filter((item) => item === 'throwing-resolve').length === 2) throw new Error('capture-failed');
+        return () => ({});
+      },
+    },
+    integrationContext: { enumerable: true, get() { trace.push('unexpected-integrationContext'); return {}; } },
+  });
+  trace.length = 0;
+  assert.throws(() => state.create({ targetAuthority: throwing }), /capture-failed/);
+  assert.deepEqual(trace, ['throwing-resolve', 'throwing-resolve']);
+});
+
 test('analysis key binds the exact componentwise effective budgets from every invocation authority', () => {
   const plans = [];
   for (const [source, ceiling] of [['request', 900000], ['overlay', 800000], ['binding', 700000]]) {

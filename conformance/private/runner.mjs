@@ -82,13 +82,33 @@ function waitUntil(promise, deadline, fallback) {
   });
 }
 
+function trustedTaskkill() {
+  const candidate = process.env.SystemRoot;
+  if (typeof candidate !== 'string' || candidate.includes('\0') || !path.win32.isAbsolute(candidate)) return null;
+  const normalized = path.win32.normalize(candidate);
+  const parsed = path.win32.parse(normalized);
+  if (parsed.root.startsWith('\\\\') || path.win32.dirname(normalized) !== parsed.root
+      || path.win32.basename(normalized).toLowerCase() !== 'windows') return null;
+  const system32 = path.win32.join(normalized, 'System32');
+  return {
+    executable: path.win32.join(system32, 'taskkill.exe'),
+    options: {
+      cwd: system32,
+      env: { SystemRoot: normalized, windir: normalized },
+      shell: false,
+      windowsHide: true,
+      stdio: 'ignore',
+    },
+  };
+}
+
 async function taskkill(pid, deadline) {
   if (remaining(deadline) === 0) return false;
+  const trusted = trustedTaskkill();
+  if (!trusted) return false;
   let utility;
   try {
-    utility = spawn('taskkill.exe', ['/PID', String(pid), '/T', '/F'], {
-      shell: false, windowsHide: true, stdio: 'ignore',
-    });
+    utility = spawn(trusted.executable, ['/PID', String(pid), '/T', '/F'], trusted.options);
   } catch { return false; }
   const settled = new Promise((resolve) => {
     utility.once('error', () => resolve(false));
