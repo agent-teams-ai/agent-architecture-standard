@@ -1,30 +1,80 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_BOUNDS, runSuite } from '../private/runner.mjs';
+import {
+  CANDIDATE_LOADER_SOURCE,
+  CANDIDATE_NODE_ARGS,
+  DEFAULT_BOUNDS,
+  createTransportPlan,
+  runSuite,
+  validateResponse,
+  verifyNodePermissionContract,
+} from '../private/runner.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const candidate = (name) => path.join(root, 'candidates', name);
-const fastBounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 2000, settlementMilliseconds: 500 });
+const fastBounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 1500, settlementMilliseconds: 500 });
 const timeoutBounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 250, settlementMilliseconds: 500 });
-const descendantBounds = Object.freeze({ ...DEFAULT_BOUNDS, invocationMilliseconds: 1500, settlementMilliseconds: 500 });
-const isAlive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
-test('independent candidate passes all 18 cases twice with a deterministic bound report', async () => {
+test('independent candidate passes twice with deterministic reports that omit random transport state', async () => {
   const options = { candidatePath: candidate('good-strict-json.mjs'), candidateName: 'independent-strict-json', bounds: fastBounds };
   const first = await runSuite(options);
   const second = await runSuite(options);
   assert.deepEqual(second, first);
   assert.deepEqual(first.summary, { total: 18, passed: 18, failed: 0, result: 'pass' });
   assert.equal(first.qualification, 'none-private-nonnormative');
-  assert.equal(first.boundary.internalPrototypeSemantics, 'omitted-unobservable');
-  assert.equal(first.boundary.networkIsolation, 'not-provided');
-  assert.equal(first.boundary.runtimeBinaryAttestation, 'not-provided');
-  assert.equal(first.boundary.multiFileClosureAttestation, 'not-provided');
+  assert.equal(first.candidate.artifact, 'admitted-handle-bytes-data-url-node-esm');
+  assert.equal(first.boundary.nodePermissionControls, 'fs-child-worker-addon-denied');
+  assert.equal(first.boundary.networkIsolation, 'not-controlled-by-node24-permissions');
+  assert.equal(first.boundary.osProcessContainment, 'absent-bounded-group-or-taskkill-attempt-only');
+  assert.equal(first.boundary.runtimeExecutionAttestation, 'not-provided');
+  assert.equal(first.boundary.sourceBindings, 'post-load-observed-sources-not-executed-byte-attestation');
   for (const value of Object.values(first.bindings)) assert.match(value, /^sha256:[0-9a-f]{64}$/);
+  assert(!JSON.stringify(first).includes('token'));
+  assert(!JSON.stringify(first).includes('nonce'));
+});
+
+test('transport tokens and order are cryptographically fresh and independent of replayId', () => {
+  const plans = Array.from({ length: 4 }, () => createTransportPlan(18));
+  for (const plan of plans) {
+    assert.deepEqual([...plan.map(({ caseIndex }) => caseIndex)].sort((a, b) => a - b), Array.from({ length: 18 }, (_, index) => index));
+    assert.equal(new Set(plan.map(({ token }) => token)).size, 18);
+    for (const { token } of plan) assert.match(token, /^[0-9a-f]{32}$/);
+  }
+  assert.equal(new Set(plans.flatMap((plan) => plan.map(({ token }) => token))).size, 72);
+  assert(new Set(plans.map((plan) => plan.map(({ caseIndex }) => caseIndex).join(','))).size > 1);
+});
+
+test('the exact candidate command enables the fail-closed Node 24 permission contract', async () => {
+  assert.deepEqual(CANDIDATE_NODE_ARGS, [
+    '--permission', '--no-addons', '--disable-proto=delete', '--input-type=module', '--eval', CANDIDATE_LOADER_SOURCE,
+  ]);
+  assert(!CANDIDATE_NODE_ARGS.some((argument) => argument.startsWith('--allow-')));
+  assert.match(CANDIDATE_LOADER_SOURCE, /readFileSync\(3\)/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /readFileSync\(4/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /candidate-byte-binding/);
+  assert.match(CANDIDATE_LOADER_SOURCE, /data:text\/javascript;base64/);
+  assert.equal(await verifyNodePermissionContract(), true);
+});
+
+test('the admitted buffer executes as a data URL with only the closed opaque request', async () => {
+  const report = await runSuite({
+    candidatePath: candidate('transport-contract.mjs'),
+    candidateName: 'transport-contract',
+    bounds: fastBounds,
+  });
+  assert(report.invocations.every((item) => item.observedDiagnostic === 'aas.json.invalid-syntax'));
+});
+
+test('strict response parser rejects literal and escaped duplicate keys', () => {
+  const token = '0123456789abcdef0123456789abcdef';
+  const valid = `{"version":"private-aas-json-v0","token":"${token}","diagnostic":"aas.json.invalid-syntax","valueDigest":null}`;
+  assert.equal(validateResponse(valid, token).failure, 'none');
+  assert.equal(validateResponse(valid.replace('{', '{"token":"other",'), token).failure, 'malformed-response');
+  assert.equal(validateResponse(valid.replace('{', '{"tok\\u0065n":"other",'), token).failure, 'malformed-response');
 });
 
 test('seeded substitution, diagnostic map, and ordinary JSON parser cannot pass', async () => {
@@ -44,74 +94,63 @@ test('malformed and oversized candidate output is closed and bounded', async () 
   assert(JSON.stringify(oversized).length < 16000);
 });
 
-test('report has a closed schema and does not echo candidate secrets, stderr, env, or paths', async () => {
+test('report is closed and does not echo candidate secrets, stderr, env, or paths', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), 'aas-report-schema-'));
   const artifact = path.join(directory, 'candidate.mjs');
   const secret = 'DO_NOT_ECHO_PRIVATE_SECRET';
-  await writeFile(artifact, `process.stderr.write(${JSON.stringify(secret)});process.stdin.resume();process.stdin.once('data',()=>process.stdout.write(JSON.stringify({version:'private-aas-json-v0',token:'invalid',diagnostic:'none',valueDigest:null,data:${JSON.stringify(secret)}})+'\\n'));`);
+  await writeFile(artifact, `process.stderr.write(${JSON.stringify(secret)});process.stdin.resume()`);
   try {
     const report = await runSuite({ candidatePath: artifact, candidateName: 'bounded-name', bounds: fastBounds });
     assert.deepEqual(Object.keys(report).sort(), ['bindings', 'boundary', 'bounds', 'candidate', 'invocations', 'qualification', 'schemaVersion', 'summary']);
     assert.deepEqual(Object.keys(report.candidate).sort(), ['artifact', 'digest', 'name']);
-    assert.deepEqual(Object.keys(report.summary).sort(), ['failed', 'passed', 'result', 'total']);
-    assert.deepEqual(Object.keys(report.invocations[0]).sort(), ['cleanup', 'failure', 'observedDiagnostic', 'status', 'token']);
+    assert.deepEqual(Object.keys(report.invocations[0]).sort(), ['cleanup', 'failure', 'observedDiagnostic', 'status']);
     const serialized = JSON.stringify(report);
     assert(!serialized.includes(secret));
     assert(!serialized.includes(directory));
     assert(!serialized.includes(process.env.PATH ?? 'path-not-present'));
-    assert(report.invocations.every((item) => item.failure === 'malformed-response'));
     await assert.rejects(runSuite({ candidatePath: artifact, candidateName: '../unbounded/private/path', bounds: fastBounds }), /invalid-candidate-name/);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('opaque requests expose neither case IDs nor oracle labels', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'aas-request-spy-'));
-  const marker = path.join(directory, 'requests.jsonl');
-  const artifact = path.join(directory, 'spy.mjs');
-  await writeFile(artifact, `import{appendFileSync}from'node:fs';import{createInterface}from'node:readline';const r=createInterface({input:process.stdin,crlfDelay:Infinity});for await(const line of r){appendFileSync(${JSON.stringify(marker)},line+'\\n');const q=JSON.parse(line);process.stdout.write(JSON.stringify({version:q.version,token:q.token,diagnostic:'none',valueDigest:'sha256:0000000000000000000000000000000000000000000000000000000000000000'})+'\\n')}`);
+test('candidate admission rejects symlinks and oversized artifacts from the opened handle', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-admission-'));
+  const artifact = path.join(directory, 'candidate.mjs');
+  const link = path.join(directory, 'link.mjs');
+  const oversized = path.join(directory, 'oversized.mjs');
+  await writeFile(artifact, 'process.exit(0)');
+  await symlink(artifact, link);
+  await writeFile(oversized, Buffer.alloc(65));
+  const bounds = { ...fastBounds, candidateBytes: 64 };
   try {
-    await runSuite({ candidatePath: artifact, candidateName: 'request-spy', bounds: fastBounds });
-    const requests = (await readFile(marker, 'utf8')).trim().split('\n').map(JSON.parse);
-    assert.equal(requests.length, 18);
-    for (const request of requests) {
-      assert.deepEqual(Object.keys(request).sort(), ['input', 'limits', 'token', 'version']);
-      assert.match(request.token, /^[0-9a-f]{32}$/);
-      const serialized = JSON.stringify(request);
-      assert(!serialized.includes('caseId'));
-      assert(!serialized.includes('expected'));
-      assert(!serialized.includes('duplicate-key'));
-      assert(!serialized.includes('raw-bytes-required'));
-    }
+    await assert.rejects(runSuite({ candidatePath: link, candidateName: 'link', bounds }), /invalid-candidate-artifact/);
+    await assert.rejects(runSuite({ candidatePath: oversized, candidateName: 'oversized', bounds }), /invalid-candidate-artifact/);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('timeout kills and reaps the process tree within both deadlines', async () => {
+test('early exit, delayed response, and a pipe-holding root return bounded reports without EPIPE', async () => {
   const started = Date.now();
-  const report = await runSuite({ candidatePath: candidate('timeout.mjs'), candidateName: 'timeout', bounds: timeoutBounds });
-  assert(report.invocations.every((item) => item.failure === 'timeout' && item.cleanup === 'confirmed'));
-  assert(Date.now() - started < 10000);
+  const early = await runSuite({ candidatePath: candidate('early-root-exit.mjs'), candidateName: 'early-exit', bounds: fastBounds });
+  assert(early.invocations.every((item) => item.failure === 'malformed-response'));
+  const delayed = await runSuite({ candidatePath: candidate('timeout.mjs'), candidateName: 'delayed', bounds: timeoutBounds });
+  assert(delayed.invocations.every((item) => item.failure === 'timeout'));
+  const holder = await runSuite({ candidatePath: candidate('pipe-holder.mjs'), candidateName: 'pipe-holder', bounds: fastBounds });
+  assert(holder.invocations.every((item) => item.failure === 'malformed-response'));
+  for (const report of [early, delayed, holder]) {
+    assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
+  }
+  assert(Date.now() - started < 30000);
 });
 
-test('spawned descendants holding pipes are killed with no surviving recorded PID', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'aas-descendant-proof-'));
-  const marker = path.join(directory, 'pids.txt');
-  const seeded = await readFile(candidate('descendant-pipe-holder.mjs'), 'utf8');
-  const artifact = path.join(directory, 'descendant.mjs');
-  const instrumented = seeded
-    .replace("import { spawn } from 'node:child_process';", "import { spawn } from 'node:child_process';\nimport { appendFileSync } from 'node:fs';")
-    .replace('child.unref();', `appendFileSync(${JSON.stringify(marker)}, String(child.pid) + '\\n');\nchild.unref();`);
-  assert.notEqual(instrumented, seeded);
-  await writeFile(artifact, instrumented);
+test('permission mode denies ordinary and detached descendants so no child marker survives', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-spawn-denial-'));
+  const marker = path.join(directory, 'child-marker');
+  const artifact = path.join(directory, 'spawn-attempts.mjs');
+  const seeded = await readFile(candidate('permission-spawn-attempts.mjs'), 'utf8');
+  await writeFile(artifact, seeded.replace("'__MARKER_PATH__'", JSON.stringify(marker)));
   try {
-    const started = Date.now();
-    const report = await runSuite({ candidatePath: artifact, candidateName: 'descendant-proof', bounds: descendantBounds });
-    assert(report.invocations.every((item) => item.failure === 'malformed-response' && item.cleanup === 'confirmed'));
-    assert(Date.now() - started < 20000);
-    const pids = (await readFile(marker, 'utf8')).trim().split('\n').map(Number);
-    assert.equal(pids.length, 18);
-    for (let attempt = 0; attempt < 20 && pids.some(isAlive); attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 25));
-    }
-    assert.deepEqual(pids.filter(isAlive), []);
+    const report = await runSuite({ candidatePath: artifact, candidateName: 'spawn-denial', bounds: fastBounds });
+    assert(report.invocations.every((item) => item.observedDiagnostic === 'aas.json.invalid-syntax'));
+    assert(report.invocations.every((item) => item.cleanup === 'bounded-attempt-complete'));
+    await assert.rejects(readFile(marker), (error) => error?.code === 'ENOENT');
   } finally { await rm(directory, { recursive: true, force: true }); }
 });

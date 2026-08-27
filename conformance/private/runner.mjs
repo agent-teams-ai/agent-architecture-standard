@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { lstat, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { constants, open, readFile } from 'node:fs/promises';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
 import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadOracleCases } from './oracle.mjs';
 
@@ -19,6 +19,7 @@ const FAILURE_CODES = new Set([
   'none', 'oracle-mismatch', 'malformed-response', 'unexpected-response-field',
   'response-too-large', 'timeout', 'settlement-timeout', 'launch-failed',
 ]);
+const CLEANUP = new Set(['bounded-attempt-complete', 'bounded-attempt-deadline', 'launch-failed']);
 
 export const DEFAULT_BOUNDS = Object.freeze({
   candidateBytes: 262144,
@@ -30,9 +31,20 @@ export const DEFAULT_BOUNDS = Object.freeze({
   settlementMilliseconds: 1000,
 });
 
+export const CANDIDATE_LOADER_SOURCE = "import{readFileSync}from'node:fs';import{createHash}from'node:crypto';const source=readFileSync(3),binding=readFileSync(4,'utf8'),actual=source.length+'\\0sha256:'+createHash('sha256').update(source).digest('hex');if(binding!==actual)throw new Error('candidate-byte-binding');await import('data:text/javascript;base64,'+source.toString('base64'))";
+export const CANDIDATE_NODE_ARGS = Object.freeze([
+  '--permission',
+  '--no-addons',
+  '--disable-proto=delete',
+  '--input-type=module',
+  '--eval',
+  CANDIDATE_LOADER_SOURCE,
+]);
+
 const sha256 = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 const ownKeysAre = (value, keys) => value !== null && typeof value === 'object' && !Array.isArray(value)
   && Object.keys(value).sort().join('\0') === [...keys].sort().join('\0');
+const remaining = (deadline) => Math.max(0, Math.ceil(deadline - performance.now()));
 
 function validateBounds(value) {
   if (!ownKeysAre(value, Object.keys(DEFAULT_BOUNDS))) throw new Error('invalid-bounds');
@@ -48,78 +60,138 @@ function boundedCandidateName(name, bounds) {
   return name;
 }
 
-function candidateEnvironment(stage) {
-  const executableDirectory = path.dirname(process.execPath);
-  return Object.freeze({
-    HOME: stage,
-    LANG: 'C',
-    LC_ALL: 'C',
-    PATH: executableDirectory,
-    TEMP: stage,
-    TMP: stage,
-    TMPDIR: stage,
-    TZ: 'UTC',
+function candidateEnvironment() {
+  return Object.freeze({ LANG: 'C', LC_ALL: 'C', TZ: 'UTC' });
+}
+
+function waitUntil(promise, deadline, fallback) {
+  const milliseconds = remaining(deadline);
+  if (milliseconds === 0) return Promise.resolve(fallback);
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(fallback), milliseconds);
+    Promise.resolve(promise).then(finish, () => finish(fallback));
   });
 }
 
-const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
-
-async function waitForExit(child, milliseconds) {
-  if (child.exitCode !== null || child.signalCode !== null) return true;
-  return Promise.race([
-    new Promise((resolve) => child.once('exit', () => resolve(true))),
-    delay(milliseconds).then(() => false),
-  ]);
-}
-
-async function taskkill(pid, milliseconds) {
+async function taskkill(pid, deadline) {
+  if (remaining(deadline) === 0) return false;
   let utility;
   try {
     utility = spawn('taskkill.exe', ['/PID', String(pid), '/T', '/F'], {
-      shell: false,
-      windowsHide: true,
-      stdio: 'ignore',
+      shell: false, windowsHide: true, stdio: 'ignore',
     });
   } catch { return false; }
-  return Promise.race([
-    new Promise((resolve) => utility.once('exit', (code) => resolve(code === 0))),
-    delay(milliseconds).then(() => { utility.kill(); return false; }),
-  ]);
+  const settled = new Promise((resolve) => {
+    utility.once('error', () => resolve(false));
+    utility.once('close', (code) => resolve(code === 0));
+  });
+  const result = await waitUntil(settled, deadline, false);
+  if (utility.exitCode === null && utility.signalCode === null) {
+    try { utility.kill('SIGKILL'); } catch { /* bounded best effort */ }
+    await waitUntil(new Promise((resolve) => utility.once('close', resolve)), deadline, false);
+  }
+  return result;
 }
 
-async function terminateTree(child, bounds) {
-  if (!child.pid) return false;
-  let requested = false;
+async function teardown(child, deadline, closeState) {
+  if (!child?.pid) return 'launch-failed';
   if (process.platform === 'win32') {
-    requested = await taskkill(child.pid, bounds.settlementMilliseconds);
-    if (!requested) requested = child.kill('SIGKILL');
+    if (!(await taskkill(child.pid, deadline))) {
+      try { child.kill('SIGKILL'); } catch { /* bounded best effort */ }
+    }
   } else {
-    try { process.kill(-child.pid, 'SIGKILL'); requested = true; } catch (error) {
-      if (error.code === 'ESRCH') requested = true;
-      else { try { requested = child.kill('SIGKILL'); } catch { requested = false; } }
+    try { process.kill(-child.pid, 'SIGKILL'); } catch (error) {
+      if (error?.code !== 'ESRCH') {
+        try { child.kill('SIGKILL'); } catch { /* bounded best effort */ }
+      }
     }
   }
-  const reaped = await waitForExit(child, bounds.settlementMilliseconds);
+  const closed = closeState
+    ? (closeState.isClosed() ? Promise.resolve(true) : closeState.promise)
+    : (child.exitCode !== null || child.signalCode !== null
+      ? Promise.resolve(true)
+      : new Promise((resolve) => child.once('close', () => resolve(true))));
+  const reaped = await waitUntil(closed, deadline, false);
   child.stdin?.destroy();
   child.stdout?.destroy();
   child.stderr?.destroy();
-  if (process.platform !== 'win32') {
-    const deadline = Date.now() + bounds.settlementMilliseconds;
-    while (Date.now() <= deadline) {
-      try { process.kill(-child.pid, 0); } catch (error) {
-        if (error.code === 'ESRCH') return requested && reaped;
-      }
-      await delay(10);
-    }
-    return false;
-  }
-  return requested && reaped;
+  child.stdio?.[3]?.destroy();
+  child.stdio?.[4]?.destroy();
+  return reaped ? 'bounded-attempt-complete' : 'bounded-attempt-deadline';
 }
 
-function validateResponse(line, expectedToken, bounds) {
+function parseTinyRecord(text) {
+  let offset = 0;
+  const whitespace = () => {
+    while (text[offset] === ' ' || text[offset] === '\t' || text[offset] === '\r' || text[offset] === '\n') offset += 1;
+  };
+  const string = () => {
+    whitespace();
+    if (text[offset] !== '"') throw new Error('string');
+    const start = offset;
+    offset += 1;
+    while (offset < text.length) {
+      const code = text.charCodeAt(offset);
+      if (code === 0x22) {
+        offset += 1;
+        return JSON.parse(text.slice(start, offset));
+      }
+      if (code < 0x20) throw new Error('control');
+      if (code === 0x5c) {
+        offset += 1;
+        if (text[offset] === 'u') {
+          if (!/^[0-9a-fA-F]{4}$/.test(text.slice(offset + 1, offset + 5))) throw new Error('escape');
+          offset += 5;
+          continue;
+        }
+        if (!/["\\/bfnrt]/.test(text[offset] ?? '')) throw new Error('escape');
+      }
+      offset += 1;
+    }
+    throw new Error('unterminated');
+  };
+  whitespace();
+  if (text[offset] !== '{') throw new Error('object');
+  offset += 1;
+  const value = Object.create(null);
+  const seen = new Set();
+  whitespace();
+  if (text[offset] === '}') offset += 1;
+  else {
+    for (;;) {
+      const key = string();
+      if (seen.has(key)) throw new Error('duplicate');
+      seen.add(key);
+      whitespace();
+      if (text[offset] !== ':') throw new Error('colon');
+      offset += 1;
+      whitespace();
+      if (text.startsWith('null', offset)) {
+        value[key] = null;
+        offset += 4;
+      } else value[key] = string();
+      whitespace();
+      if (text[offset] === '}') { offset += 1; break; }
+      if (text[offset] !== ',') throw new Error('comma');
+      offset += 1;
+    }
+  }
+  whitespace();
+  if (offset !== text.length) throw new Error('trailing');
+  return value;
+}
+
+export function validateResponse(line, expectedToken, bounds = DEFAULT_BOUNDS) {
   if (Buffer.byteLength(line) > bounds.responseBytes) return { failure: 'response-too-large' };
   let value;
-  try { value = JSON.parse(line); } catch { return { failure: 'malformed-response' }; }
+  try { value = parseTinyRecord(line); } catch { return { failure: 'malformed-response' }; }
   const keys = ['version', 'token', 'diagnostic', 'valueDigest'];
   if (!ownKeysAre(value, keys)) return { failure: 'unexpected-response-field' };
   if (value.version !== PROTOCOL || value.token !== expectedToken || !TOKEN.test(value.token)
@@ -131,80 +203,120 @@ function validateResponse(line, expectedToken, bounds) {
   return { failure: 'none', diagnostic: value.diagnostic, valueDigest: value.valueDigest };
 }
 
-async function executeOne(candidateBytes, candidateDigest, request, bounds) {
-  const stage = await mkdtemp(path.join(tmpdir(), 'aas-private-json-'));
-  const artifact = path.join(stage, 'candidate.mjs');
-  let child;
-  try {
-    await writeFile(artifact, candidateBytes, { flag: 'wx', mode: 0o500 });
-    if (sha256(await readFile(artifact)) !== candidateDigest) throw new Error('staged-digest-mismatch');
-    const encoded = `${JSON.stringify(request)}\n`;
-    if (Buffer.byteLength(encoded) > bounds.requestBytes) throw new Error('request-too-large');
+function writePipe(stream, bytes) {
+  return new Promise((resolve) => {
+    if (!stream) { resolve(false); return; }
+    let settled = false;
+    const finish = (ok) => { if (!settled) { settled = true; resolve(ok); } };
+    stream.once('error', () => finish(false));
+    stream.end(bytes, () => finish(true));
+  });
+}
+
+let permissionContractCheck;
+export function verifyNodePermissionContract() {
+  permissionContractCheck ??= (async () => {
+    if (process.versions.node.split('.')[0] !== '24') return false;
+    const probe = Buffer.from("const scopes=['fs.read','fs.write','child','worker','addons'];if(!scopes.every((scope)=>process.permission?.has(scope)===false))process.exitCode=91");
+    const deadline = performance.now() + DEFAULT_BOUNDS.invocationMilliseconds + DEFAULT_BOUNDS.settlementMilliseconds;
+    let child;
     try {
-      child = spawn(process.execPath, ['--no-addons', '--disable-proto=delete', 'candidate.mjs'], {
-        cwd: stage,
+      child = spawn(process.execPath, CANDIDATE_NODE_ARGS, {
         detached: process.platform !== 'win32',
-        env: candidateEnvironment(stage),
+        env: candidateEnvironment(),
         shell: false,
-        stdio: ['pipe', 'pipe', 'pipe'],
+        stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'],
         windowsHide: true,
       });
-    } catch { return { failure: 'launch-failed', diagnostic: null, cleanup: 'not-needed' }; }
-
-    let stdout = Buffer.alloc(0);
-    let stderrBytes = 0;
-    let forcedFailure = null;
-    let terminating = false;
-    let cleanupConfirmed = false;
-    let terminationPromise;
-    let notifyTermination;
-    const terminationReady = new Promise((resolve) => { notifyTermination = () => resolve('terminated'); });
-    const termination = async (failure) => {
-      if (terminating) return terminationPromise;
-      terminating = true;
-      notifyTermination();
-      terminationPromise = (async () => {
-        forcedFailure = failure;
-        cleanupConfirmed = await terminateTree(child, bounds);
-        if (!cleanupConfirmed) forcedFailure = 'settlement-timeout';
-      })();
-      return terminationPromise;
-    };
-    child.stdout.on('data', (chunk) => {
-      stdout = Buffer.concat([stdout, chunk], Math.min(stdout.length + chunk.length, bounds.responseBytes + 1));
-      if (stdout.length > bounds.responseBytes) void termination('response-too-large');
+    } catch { return false; }
+    let closed = false;
+    let notifyClose;
+    const closePromise = new Promise((resolve) => { notifyClose = resolve; });
+    const settled = new Promise((resolve) => {
+      child.once('error', () => resolve(false));
+      child.once('close', (code) => {
+        closed = true;
+        notifyClose(true);
+        resolve(code === 0);
+      });
     });
-    child.stderr.on('data', (chunk) => {
-      stderrBytes += chunk.length;
-      void termination(stderrBytes > bounds.stderrBytes ? 'response-too-large' : 'malformed-response');
-    });
-    child.on('error', () => { forcedFailure = 'launch-failed'; });
-    child.stdin.write(encoded);
+    const writes = Promise.all([
+      writePipe(child.stdio[3], probe),
+      writePipe(child.stdio[4], Buffer.from(`${probe.length}\0${sha256(probe)}`)),
+    ]);
+    const supported = await waitUntil(settled, deadline, false);
+    await teardown(child, deadline, { promise: closePromise, isClosed: () => closed });
+    await waitUntil(writes, deadline, false);
+    return supported;
+  })();
+  return permissionContractCheck;
+}
 
-    const closed = new Promise((resolve) => child.once('close', () => resolve('closed')));
-    const exited = new Promise((resolve) => child.once('exit', () => resolve('exited')));
-    const responseReady = new Promise((resolve) => child.stdout.on('data', () => {
-      if (stdout.includes(0x0a)) resolve('response');
-    }));
-    const first = await Promise.race([responseReady, terminationReady, closed, exited, delay(bounds.invocationMilliseconds).then(() => 'timeout')]);
-    if (first === 'timeout') await termination('timeout');
-    else if (first === 'exited') {
-      const settled = await Promise.race([closed, delay(bounds.settlementMilliseconds).then(() => 'unsettled')]);
-      if (settled === 'unsettled') await termination('settlement-timeout');
-    } else if (first === 'response') {
-      await termination('none');
-    }
-    if (terminating) await terminationPromise;
-    if (forcedFailure && forcedFailure !== 'none') return { failure: forcedFailure, diagnostic: null, cleanup: cleanupConfirmed ? 'confirmed' : 'unconfirmed' };
-    if ((!terminating && child.exitCode !== 0) || stderrBytes !== 0) return { failure: 'malformed-response', diagnostic: null, cleanup: terminating ? 'confirmed' : 'not-needed' };
-    const text = stdout.toString('utf8');
-    if (!text.endsWith('\n') || text.slice(0, -1).includes('\n')) return { failure: 'malformed-response', diagnostic: null, cleanup: 'not-needed' };
-    const checked = validateResponse(text.slice(0, -1), request.token, bounds);
-    return { ...checked, cleanup: terminating ? 'confirmed' : 'not-needed' };
-  } finally {
-    if (child && child.exitCode === null && child.signalCode === null) await terminateTree(child, bounds);
-    await rm(stage, { recursive: true, force: true });
+async function executeOne(candidateBytes, candidateDigest, request, bounds) {
+  const encoded = Buffer.from(`${JSON.stringify(request)}\n`);
+  if (encoded.length > bounds.requestBytes) throw new Error('request-too-large');
+  const started = performance.now();
+  const invocationDeadline = started + bounds.invocationMilliseconds;
+  const absoluteDeadline = invocationDeadline + bounds.settlementMilliseconds;
+  let child;
+  try {
+    child = spawn(process.execPath, CANDIDATE_NODE_ARGS, {
+      detached: process.platform !== 'win32',
+      env: candidateEnvironment(),
+      shell: false,
+      stdio: ['pipe', 'pipe', 'pipe', 'pipe', 'pipe'],
+      windowsHide: true,
+    });
+  } catch {
+    return { failure: 'launch-failed', diagnostic: null, cleanup: 'launch-failed' };
   }
+
+  let stdout = Buffer.alloc(0);
+  let stderrBytes = 0;
+  let streamFailure = false;
+  let responseSeen = false;
+  let closed = false;
+  let notifyEvent;
+  const event = new Promise((resolve) => { notifyEvent = resolve; });
+  let notifyClose;
+  const closePromise = new Promise((resolve) => { notifyClose = resolve; });
+  child.once('error', () => { streamFailure = true; notifyEvent('error'); });
+  child.once('exit', () => notifyEvent('exit'));
+  child.once('close', () => { closed = true; notifyClose(true); notifyEvent('close'); });
+  child.stdout.on('error', () => { streamFailure = true; notifyEvent('pipe-error'); });
+  child.stderr.on('error', () => { streamFailure = true; notifyEvent('pipe-error'); });
+  child.stdout.on('data', (chunk) => {
+    const available = Math.max(0, bounds.responseBytes + 1 - stdout.length);
+    if (available > 0) stdout = Buffer.concat([stdout, chunk.subarray(0, available)]);
+    if (stdout.includes(0x0a)) { responseSeen = true; notifyEvent('response'); }
+    if (stdout.length > bounds.responseBytes) notifyEvent('oversized');
+  });
+  child.stderr.on('data', (chunk) => {
+    stderrBytes = Math.min(bounds.stderrBytes + 1, stderrBytes + chunk.length);
+    notifyEvent('stderr');
+  });
+
+  const candidateWrite = writePipe(child.stdio[3], candidateBytes);
+  const bindingWrite = writePipe(child.stdio[4], Buffer.from(`${candidateBytes.length}\0${candidateDigest}`));
+  const requestWrite = writePipe(child.stdin, encoded);
+  const first = await waitUntil(event, invocationDeadline, 'timeout');
+  const cleanup = await teardown(child, absoluteDeadline, { promise: closePromise, isClosed: () => closed });
+  const writes = await waitUntil(Promise.all([candidateWrite, bindingWrite, requestWrite]), absoluteDeadline, [false, false, false]);
+
+  if (cleanup === 'bounded-attempt-deadline') return { failure: 'settlement-timeout', diagnostic: null, cleanup };
+  if (first === 'error' || !child.pid) return { failure: 'launch-failed', diagnostic: null, cleanup };
+  if (first === 'timeout') return { failure: 'timeout', diagnostic: null, cleanup };
+  if (stdout.length > bounds.responseBytes || first === 'oversized' || stderrBytes > bounds.stderrBytes) {
+    return { failure: 'response-too-large', diagnostic: null, cleanup };
+  }
+  if (stderrBytes !== 0 || streamFailure || writes.some((ok) => !ok && !responseSeen)) {
+    return { failure: 'malformed-response', diagnostic: null, cleanup };
+  }
+  const text = stdout.toString('utf8');
+  if (!text.endsWith('\n') || text.slice(0, -1).includes('\n')) {
+    return { failure: 'malformed-response', diagnostic: null, cleanup };
+  }
+  return { ...validateResponse(text.slice(0, -1), request.token, bounds), cleanup };
 }
 
 function requestFor(item, token) {
@@ -227,76 +339,118 @@ function requestFor(item, token) {
 function validateReport(report) {
   if (!ownKeysAre(report, ['schemaVersion', 'qualification', 'candidate', 'bindings', 'bounds', 'boundary', 'summary', 'invocations'])
       || !ownKeysAre(report.candidate, ['name', 'digest', 'artifact'])
-      || !ownKeysAre(report.bindings, ['suiteDigest', 'corpusDigest', 'oracleDigest', 'runnerDigest', 'candidateDigest', 'inputDigest', 'toolchainId', 'boundsId', 'replayId'])
-      || !ownKeysAre(report.boundary, ['adapter', 'internalPrototypeSemantics', 'filesystemSandbox', 'networkIsolation', 'runtimeBinaryAttestation', 'multiFileClosureAttestation'])
+      || !ownKeysAre(report.bindings, ['suiteDigest', 'corpusDigest', 'oracleObservedSourceDigest', 'runnerObservedSourceDigest', 'candidateDigest', 'inputDigest', 'toolchainId', 'boundsId', 'replayId'])
+      || !ownKeysAre(report.boundary, ['adapter', 'internalPrototypeSemantics', 'nodePermissionControls', 'networkIsolation', 'osProcessContainment', 'runtimeExecutionAttestation', 'multiFileClosureAttestation', 'sourceBindings'])
       || !ownKeysAre(report.summary, ['total', 'passed', 'failed', 'result'])
       || !ownKeysAre(report.bounds, Object.keys(DEFAULT_BOUNDS))
       || report.schemaVersion !== 'private-aas-conformance-report-v0'
       || report.qualification !== 'none-private-nonnormative'
       || Object.values(report.bindings).some((value) => typeof value !== 'string' || !DIGEST.test(value))
-      || Object.values(report.boundary).some((value) => typeof value !== 'string' || Buffer.byteLength(value) > 64)
+      || Object.values(report.boundary).some((value) => typeof value !== 'string' || Buffer.byteLength(value) > 96)
       || report.summary.total !== 18 || report.summary.passed + report.summary.failed !== 18
       || !['pass', 'fail'].includes(report.summary.result) || report.invocations.length !== 18) {
     throw new Error('internal-report-schema');
   }
   for (const item of report.invocations) {
-    if (!ownKeysAre(item, ['token', 'status', 'failure', 'observedDiagnostic', 'cleanup'])
-        || !TOKEN.test(item.token) || !['pass', 'fail'].includes(item.status)
+    if (!ownKeysAre(item, ['status', 'failure', 'observedDiagnostic', 'cleanup'])
+        || !['pass', 'fail'].includes(item.status)
         || !FAILURE_CODES.has(item.failure) || !(item.observedDiagnostic === null || DIAGNOSTICS.has(item.observedDiagnostic))
-        || !['not-needed', 'confirmed', 'unconfirmed'].includes(item.cleanup)) throw new Error('internal-report-schema');
+        || !CLEANUP.has(item.cleanup)) throw new Error('internal-report-schema');
   }
   return report;
+}
+
+async function admitCandidate(candidatePath, bounds) {
+  if (typeof constants.O_NOFOLLOW !== 'number') throw new Error('candidate-nofollow-unavailable');
+  let handle;
+  try {
+    handle = await open(candidatePath, constants.O_RDONLY | constants.O_NOFOLLOW);
+    const before = await handle.stat({ bigint: true });
+    if (!before.isFile() || before.size < 1n) throw new Error('invalid-candidate-artifact');
+    const buffer = Buffer.allocUnsafe(bounds.candidateBytes + 1);
+    let length = 0;
+    while (length < buffer.length) {
+      const { bytesRead } = await handle.read(buffer, length, buffer.length - length, length);
+      if (bytesRead === 0) break;
+      length += bytesRead;
+    }
+    if (length < 1 || length > bounds.candidateBytes) throw new Error('invalid-candidate-artifact');
+    const after = await handle.stat({ bigint: true });
+    if (!after.isFile() || before.dev !== after.dev || before.ino !== after.ino
+        || before.size !== after.size || after.size !== BigInt(length)
+        || before.mtimeNs !== after.mtimeNs || before.ctimeNs !== after.ctimeNs) {
+      throw new Error('candidate-artifact-race');
+    }
+    return Buffer.from(buffer.subarray(0, length));
+  } catch (error) {
+    if (error?.code === 'ELOOP') throw new Error('invalid-candidate-artifact');
+    throw error;
+  } finally {
+    await handle?.close();
+  }
+}
+
+export function createTransportPlan(length) {
+  if (!Number.isSafeInteger(length) || length < 1 || length > 1024) throw new Error('invalid-transport-length');
+  const indexes = Array.from({ length }, (_, index) => index);
+  for (let index = indexes.length - 1; index > 0; index -= 1) {
+    const other = randomInt(index + 1);
+    [indexes[index], indexes[other]] = [indexes[other], indexes[index]];
+  }
+  return Object.freeze(indexes.map((caseIndex) => Object.freeze({
+    caseIndex,
+    token: randomBytes(16).toString('hex'),
+  })));
 }
 
 export async function runSuite({ candidatePath, candidateName, bounds: suppliedBounds = DEFAULT_BOUNDS }) {
   const bounds = validateBounds(suppliedBounds);
   const name = boundedCandidateName(candidateName, bounds);
-  const stat = await lstat(candidatePath);
-  if (!stat.isFile() || stat.isSymbolicLink() || stat.size < 1 || stat.size > bounds.candidateBytes) throw new Error('invalid-candidate-artifact');
-  const candidateBytes = await readFile(candidatePath);
-  if (candidateBytes.length !== stat.size) throw new Error('candidate-artifact-race');
+  if (!(await verifyNodePermissionContract())) throw new Error('unsupported-node-permission-contract');
+  const candidateBytes = await admitCandidate(candidatePath, bounds);
   const candidateDigest = sha256(candidateBytes);
   const oracle = await loadOracleCases();
-  const oracleBytes = await readFile(new URL('./oracle.mjs', import.meta.url));
-  const runnerBytes = await readFile(fileURLToPath(import.meta.url));
+  const oracleObservedBytes = await readFile(new URL('./oracle.mjs', import.meta.url));
+  const runnerObservedBytes = await readFile(fileURLToPath(import.meta.url));
   const suiteDescriptor = Buffer.from(`${PROTOCOL}\nstrict-json-corpus-18\nprivate-nonnormative\n`);
   const suiteDigest = sha256(suiteDescriptor);
-  const oracleDigest = sha256(oracleBytes);
-  const runnerDigest = sha256(runnerBytes);
+  const oracleObservedSourceDigest = sha256(oracleObservedBytes);
+  const runnerObservedSourceDigest = sha256(runnerObservedBytes);
   const inputDigest = sha256(Buffer.concat(oracle.cases.flatMap((item) => [
     Buffer.from(`${item.form}\0${item.limits.maxBytes}\0${item.limits.maxDepth}\0${item.bytes.length}\0`), item.bytes,
   ])));
   const toolchainId = sha256(Buffer.from(`node:${process.version}\0${process.platform}\0${process.arch}`));
   const boundsId = sha256(Buffer.from(JSON.stringify(bounds)));
-  const replayId = sha256(Buffer.from([suiteDigest, oracle.corpusDigest, oracleDigest, runnerDigest, candidateDigest, inputDigest, toolchainId, boundsId].join('\n')));
-  const invocations = [];
-  for (let index = 0; index < oracle.cases.length; index += 1) {
+  const replayId = sha256(Buffer.from([suiteDigest, oracle.corpusDigest, oracleObservedSourceDigest, runnerObservedSourceDigest, candidateDigest, inputDigest, toolchainId, boundsId].join('\n')));
+  const invocations = Array(oracle.cases.length);
+  for (const transport of createTransportPlan(oracle.cases.length)) {
+    const { caseIndex: index, token } = transport;
     const item = oracle.cases[index];
-    const token = createHash('sha256').update(`${replayId}\0${index}`).digest('hex').slice(0, 32);
     const observed = await executeOne(candidateBytes, candidateDigest, requestFor(item, token), bounds);
     const matched = observed.failure === 'none' && observed.diagnostic === item.diagnostic && observed.valueDigest === item.valueDigest;
-    invocations.push({
-      token,
+    invocations[index] = {
       status: matched ? 'pass' : 'fail',
       failure: matched ? 'none' : (observed.failure === 'none' ? 'oracle-mismatch' : observed.failure),
       observedDiagnostic: observed.diagnostic ?? null,
       cleanup: observed.cleanup,
-    });
+    };
   }
   const passed = invocations.filter((item) => item.status === 'pass').length;
   return validateReport({
     schemaVersion: 'private-aas-conformance-report-v0',
     qualification: 'none-private-nonnormative',
-    candidate: { name, digest: candidateDigest, artifact: 'hash-verified-single-file-node-esm' },
-    bindings: { suiteDigest, corpusDigest: oracle.corpusDigest, oracleDigest, runnerDigest, candidateDigest, inputDigest, toolchainId, boundsId, replayId },
+    candidate: { name, digest: candidateDigest, artifact: 'admitted-handle-bytes-data-url-node-esm' },
+    bindings: { suiteDigest, corpusDigest: oracle.corpusDigest, oracleObservedSourceDigest, runnerObservedSourceDigest, candidateDigest, inputDigest, toolchainId, boundsId, replayId },
     bounds,
     boundary: {
       adapter: 'private-nonnormative-no-public-v0-transport',
       internalPrototypeSemantics: 'omitted-unobservable',
-      filesystemSandbox: 'not-provided',
-      networkIsolation: 'not-provided',
-      runtimeBinaryAttestation: 'not-provided',
-      multiFileClosureAttestation: 'not-provided',
+      nodePermissionControls: 'fs-child-worker-addon-denied',
+      networkIsolation: 'not-controlled-by-node24-permissions',
+      osProcessContainment: 'absent-bounded-group-or-taskkill-attempt-only',
+      runtimeExecutionAttestation: 'not-provided',
+      multiFileClosureAttestation: 'not-provided-node-fs-denied',
+      sourceBindings: 'post-load-observed-sources-not-executed-byte-attestation',
     },
     summary: { total: 18, passed, failed: 18 - passed, result: passed === 18 ? 'pass' : 'fail' },
     invocations,

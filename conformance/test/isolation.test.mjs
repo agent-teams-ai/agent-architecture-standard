@@ -16,6 +16,10 @@ test('private slice does not import repository, generated, reference, or Foundat
     const source = await readFile(file, 'utf8');
     assert.doesNotMatch(source, /(?:from\s*|import\s*\()['"](?:\.\.\/)+(?:lib|generated|reference|foundation)(?:\/|['"])/i, file);
   }
-  const good = await readFile(path.join(root, 'candidates/good-strict-json.mjs'), 'utf8');
-  for (const specifier of good.matchAll(/from\s+['"]([^'"]+)['"]/g)) assert.match(specifier[1], /^node:/);
+  for (const entry of await readdir(path.join(root, 'candidates'))) {
+    if (!entry.endsWith('.mjs')) continue;
+    const source = await readFile(path.join(root, 'candidates', entry), 'utf8');
+    for (const specifier of source.matchAll(/from\s+['"]([^'"]+)['"]/g)) assert.match(specifier[1], /^node:/, entry);
+    for (const specifier of source.matchAll(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g)) assert.match(specifier[1], /^node:/, entry);
+  }
 });
