@@ -4,24 +4,24 @@
   "cases": [
     {
       "inputOrder": ["binding-z", "binding-a"],
-      "bindingSetAasIdentity": "aas:v0:sha256:c2512986942a2c63eddc0df83c9c82a75626de9df0e57b96a37ada59c9b0e9d9",
-      "candidateOrder": ["binding-z", "binding-a"],
-      "selectedBindingId": "binding-z",
-      "requestAasIdentity": "aas:v0:sha256:ba7470c49c266dfd31d1011eb41180c6176d32ec30a09190e5e7b65337252f33"
+      "bindingSetAasIdentity": "aas:v0:sha256:5e487058f19e1097f1c142c797474b0a0886c91603eb10613c21dc0846049a3a",
+      "candidateOrder": ["binding-a", "binding-z"],
+      "selectedBindingId": "binding-a",
+      "requestAasIdentity": "aas:v0:sha256:e7bfb861f74604a791a7fa1fc38efa2a958098e3a51b9c05ce187b9d7a163f40"
     },
     {
       "inputOrder": ["binding-a", "binding-z"],
-      "bindingSetAasIdentity": "aas:v0:sha256:8700ef3a754b9f7f46d5bfbd4054e9c9afdad04666cf3d391e38f6c7de2387f2",
-      "candidateOrder": ["binding-z", "binding-a"],
-      "selectedBindingId": "binding-z",
-      "requestAasIdentity": "aas:v0:sha256:ba7470c49c266dfd31d1011eb41180c6176d32ec30a09190e5e7b65337252f33"
+      "bindingSetAasIdentity": "aas:v0:sha256:b504eedc810c521ce83f5bf54e31496c4edb5fa78cd0381eeb46f55b9ebf126b",
+      "candidateOrder": ["binding-a", "binding-z"],
+      "selectedBindingId": "binding-a",
+      "requestAasIdentity": "aas:v0:sha256:e7bfb861f74604a791a7fa1fc38efa2a958098e3a51b9c05ce187b9d7a163f40"
     }
   ],
   "negativeCases": [
     {
       "name": "equal-rank-different-path-profile",
       "difference": "pathProfile.aasIdentity",
-      "expectedProblem": "aas.problem.binding-set-conflict"
+      "expectedProblem": "binding-profile-not-applicable"
     }
   ]
 }

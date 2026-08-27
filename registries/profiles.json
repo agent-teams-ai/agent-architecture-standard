@@ -4,10 +4,83 @@
   "previousEdition": null,
   "status": "provisional",
   "entries": [
-    { "id": "agent-architecture-canonical-json-rfc8785@0", "kind": "profile", "role": "canonicalization", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/identity.md", "introducedEdition": "1", "vectors": ["vectors/phase-0-remediation-v1.md"], "collisionReview": "Provisional private identifier; public collision review remains blocked by D1." },
-    { "id": "agent-architecture-snapshot-portable-bounded@0", "kind": "profile", "role": "snapshot-capture", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/security-and-conformance.md", "introducedEdition": "1", "vectors": ["vectors/phase-0-remediation-v1.md"], "collisionReview": "Provisional private identifier; public collision review remains blocked by D1." },
-    { "id": "agent-architecture-portable-path-unicode17@1", "kind": "profile", "role": "portable-path", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/security-and-conformance.md#3-portable-path-requirements", "introducedEdition": "1", "vectors": [], "collisionReview": "Provisional private identifier; public collision review remains blocked by D1." },
-    { "id": "agent-architecture-resource-accounting-v0@1", "kind": "profile", "role": "accounting", "profileAasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249", "definitionArtifact": "profiles/resource-accounting-v0-1.json", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "spec/security-and-conformance.md#stable-v0-resource-accounting-profile", "introducedEdition": "1", "vectors": ["vectors/phase-1-remediation-v1.md"], "collisionReview": "Provisional private identifier; public collision review remains blocked by D1." }
+    {
+      "id": "agent-architecture-canonical-json-rfc8785@0",
+      "kind": "profile",
+      "role": "canonicalization",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/identity.md",
+      "introducedEdition": "1",
+      "vectors": [
+        "vectors/phase-0-remediation-v1.md"
+      ],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    },
+    {
+      "id": "agent-architecture-snapshot-portable-bounded@0",
+      "kind": "profile",
+      "role": "snapshot-capture",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/security-and-conformance.md",
+      "introducedEdition": "1",
+      "vectors": [
+        "vectors/phase-0-remediation-v1.md"
+      ],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    },
+    {
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "kind": "profile",
+      "role": "portable-path",
+      "profileAasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9",
+      "definitionArtifact": "profiles/portable-path-unicode17-v1.json",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/security-and-conformance.md#3-portable-path-requirements",
+      "introducedEdition": "1",
+      "vectors": [],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    },
+    {
+      "id": "agent-architecture-validate-overlay@1",
+      "kind": "profile",
+      "role": "operation",
+      "profileAasIdentity": "aas:v0:sha256:f5b2a6bd7c93204b2aee18d7b5983fa0514dff36adc3a7e5a292a7c97d613f27",
+      "definitionArtifact": "profiles/validate-overlay-operation-v1.json",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/policy-and-enforcement.md",
+      "introducedEdition": "1",
+      "vectors": [
+        "vectors/phase-1-remediation-v1.md"
+      ],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    },
+    {
+      "id": "agent-architecture-resource-accounting-v0@1",
+      "kind": "profile",
+      "role": "accounting",
+      "profileAasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300",
+      "definitionArtifact": "profiles/resource-accounting-v0-1.json",
+      "owner": "AAS normative maintainers",
+      "contact": "GOVERNANCE.md",
+      "status": "provisional",
+      "semanticAuthority": "spec/security-and-conformance.md#stable-v0-resource-accounting-profile",
+      "introducedEdition": "1",
+      "vectors": [
+        "vectors/phase-1-remediation-v1.md"
+      ],
+      "collisionReview": "Provisional private identifier; public collision review remains blocked by D1."
+    }
   ],
-  "changes": ["Initial provisional profile reservations.", "The resource-accounting v0@1 profile has one immutable definition artifact and exact profile identity; this remains an unpublished Phase-1 boundary."]
+  "changes": [
+    "Initial provisional profile reservations.",
+    "The resource-accounting v0@1 profile has one immutable definition artifact and exact profile identity; this remains an unpublished Phase-1 boundary."
+  ]
 }

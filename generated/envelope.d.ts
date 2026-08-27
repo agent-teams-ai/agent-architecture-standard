@@ -7,6 +7,7 @@ export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonV
 export type target = {
   "id": import("./common.js").identifier;
   "input": import("./overlay.js").overlay;
+  "targetSelectionAasIdentity": import("./common.js").aasIdentity;
   "bindingSelection": bindingSelection;
   "extensions": import("./common.js").extensionMap;
   "criticalExtensions": import("./common.js").extensionMap;
@@ -72,7 +73,7 @@ export type diagnosticHeader = ({
   "bindingState": ("selected" | "absent") & ("selected");
   "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
   "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -97,7 +98,7 @@ export type diagnosticHeader = ({
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided")) & ("decided");
   "bindingState": ("selected" | "absent") & ("absent");
   "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
@@ -120,7 +121,7 @@ export type diagnosticHeader = ({
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input")) & ("needs-input");
   "bindingState": ("selected" | "absent") & ("selected");
   "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -144,7 +145,7 @@ export type diagnosticHeader = ({
   "targetId": import("./common.js").identifier;
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input")) & ("needs-input");
   "bindingState": ("selected" | "absent") & ("absent");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
@@ -167,7 +168,7 @@ export type diagnosticHeader = ({
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate")) & ("indeterminate");
   "bindingState": ("selected" | "absent") & ("selected");
   "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -191,7 +192,7 @@ export type diagnosticHeader = ({
   "targetId": import("./common.js").identifier;
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate")) & ("indeterminate");
   "bindingState": ("selected" | "absent") & ("absent");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
@@ -214,7 +215,7 @@ export type diagnosticHeader = ({
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported")) & ("unsupported");
   "bindingState": ("selected" | "absent") & ("selected");
   "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -238,7 +239,7 @@ export type diagnosticHeader = ({
   "targetId": import("./common.js").identifier;
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported")) & ("unsupported");
   "bindingState": ("selected" | "absent") & ("absent");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
@@ -261,7 +262,7 @@ export type diagnosticHeader = ({
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale")) & ("stale");
   "bindingState": ("selected" | "absent") & ("selected");
   "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
@@ -285,7 +286,7 @@ export type diagnosticHeader = ({
   "targetId": import("./common.js").identifier;
   "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale")) & ("stale");
   "bindingState": ("selected" | "absent") & ("absent");
-  "rolloutDisposition": import("./common.js").identifier;
+  "rolloutDisposition": "included" | "excluded" | "not-applicable";
   "snapshotAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;

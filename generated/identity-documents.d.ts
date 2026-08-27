@@ -115,6 +115,7 @@ export type targetSelection = {
   "targetId": import("./common.js").identifier;
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "subjectId"?: import("./common.js").identifier;
   "path": import("./common.js").portablePath;
   "ruleId"?: import("./common.js").identifier;

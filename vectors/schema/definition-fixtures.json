@@ -113,7 +113,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
     },
     "entries": [
       {
@@ -182,7 +182,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
     },
     "owner": "owner",
     "reasonCode": "reason-1",
@@ -197,7 +197,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
     },
     "profiles": [
       {
@@ -256,7 +256,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
     },
     "rolloutScope": "all",
     "mode": "required",
@@ -271,7 +271,7 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
+      "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300"
     },
     "budgets": {
       "maxInputBytes": 100,
@@ -309,7 +309,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
     },
     "rolloutScope": "all",
     "mode": "required",
@@ -324,7 +324,7 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
+      "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300"
     },
     "budgets": {
       "maxInputBytes": 100,
@@ -353,7 +353,7 @@
     "revisionSystemProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
+      "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300"
     },
     "nativeRevision": "abc",
     "treeAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
@@ -488,7 +488,7 @@
     "responseSla": "one hour"
   },
   "analysis-key-positive": {
-    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "aasIdentity": "aas:v0:sha256:3d2ac8be16fd94742cea4c294a57cad6b1d79268b49aef96d90ef1a5ff2f075a",
     "operationProfile": {
       "version": "1",
       "id": "profile@1",
@@ -525,35 +525,114 @@
     "accountingProfile": {
       "version": "1",
       "id": "agent-architecture-resource-accounting-v0@1",
-      "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249"
+      "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300"
     },
     "semanticExtensions": {
-      "request": { "com.example.semantic": true },
+      "request": {
+        "com.example.semantic": true
+      },
       "criticalRequest": {},
-      "targets": [{ "id": "target-1", "extensions": {}, "criticalExtensions": {} }]
+      "targets": [
+        {
+          "id": "target-1",
+          "extensions": {},
+          "criticalExtensions": {}
+        }
+      ]
     },
-    "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
+    "requestAasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
     "operation": "validate-overlay@1",
     "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
     "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
     "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
   },
+  "binding-set-positive": {
+    "aasIdentity": "aas:v0:sha256:a51e64cb1b5bdd78e589f19bebc7414e4900d34c04cca4b39f47f9f569421ee6",
+    "bindings": [
+      {
+        "schemaVersion": "0.1",
+        "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "id": "binding-1",
+        "consumer": "consumer-1",
+        "repository": "repo-1",
+        "scope": {
+          "repositoryRoot": "src",
+          "subjectId": "subject-1",
+          "ruleId": "rule-1"
+        },
+        "pathProfile": {
+          "version": "1",
+          "id": "agent-architecture-portable-path-unicode17@1",
+          "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+        },
+        "rolloutScope": "all",
+        "mode": "required",
+        "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "profiles": [
+          {
+            "version": "1",
+            "id": "profile@1",
+            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "accountingProfile": {
+          "version": "1",
+          "id": "agent-architecture-resource-accounting-v0@1",
+          "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300"
+        },
+        "budgets": {
+          "maxInputBytes": 100,
+          "maxDepth": 8,
+          "maxPathSegments": 8,
+          "maxPathBytes": 128,
+          "maxEntries": 10,
+          "maxLogicalBytes": 1000,
+          "maxReadBytes": 1000,
+          "maxPerEntryBytes": 100,
+          "maxOverlayOperations": 10,
+          "maxTargets": 10,
+          "maxEvidenceReferences": 10,
+          "maxExtensionBytes": 100,
+          "maxDiagnostics": 10,
+          "maxOutputBytes": 1000,
+          "maxConcurrency": 2,
+          "maxTotalWork": 1000
+        },
+        "exceptions": [],
+        "promotionRecordAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "owner": "owner"
+      }
+    ]
+  },
+  "target-selection-positive": {
+    "aasIdentity": "aas:v0:sha256:22c17cf987184e6ae4064077551eb074a76f5ca6448dbba09e78b9051814f260",
+    "targetId": "target-1",
+    "consumer": "consumer-1",
+    "repository": "repository-1",
+    "pathProfile": {
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
+      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+    },
+    "path": "src/a.ts",
+    "rolloutCohorts": []
+  },
   "request-positive": {
     "kind": "request",
     "envelopeVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
+    "aasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
     "standardVersion": "0.1.0-rc.1",
     "operation": "validate-overlay@1",
     "targets": [
       {
         "id": "target-1",
         "input": {
-          "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "aasIdentity": "aas:v0:sha256:11bfc1d401b41c4aec71f43642dce6014c70ad313aff152dc70758ac87e0fbe4",
           "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
           "pathProfile": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
           },
           "limits": {
             "maxInputBytes": 100,
@@ -581,6 +660,7 @@
             }
           ]
         },
+        "targetSelectionAasIdentity": "aas:v0:sha256:3dba732a7f1387e53bfd49e4ed6b4fa844a7419973935c29766e3dd6a4d20be5",
         "bindingSelection": {
           "state": "selected",
           "selectedBindingId": "binding-1",
@@ -601,7 +681,7 @@
     "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
     "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
     "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
-    "accountingProfileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "accountingProfileAasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300",
     "budgets": {
       "maxInputBytes": 4096,
       "maxDepth": 8,
@@ -640,7 +720,7 @@
           "pathProfile": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
           },
           "limits": {
             "maxInputBytes": 100,
@@ -668,12 +748,19 @@
             }
           ]
         },
+        "targetSelectionAasIdentity": "aas:v0:sha256:a4fb77df0ac6b6e8d045094a14a1d18d1c0ae2f93cb13ffb82d7a1be9af7aab7",
         "bindingSelection": {
           "state": "selected",
           "selectedBindingId": "binding-1",
           "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
           "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-          "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+          "candidateBindings": [
+            {
+              "id": "binding-1",
+              "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            }
+          ]
         },
         "extensions": {},
         "criticalExtensions": {}
@@ -728,7 +815,13 @@
       "selectedBindingId": "binding-1",
       "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
       "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-      "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+      "candidateBindings": [
+        {
+          "id": "binding-1",
+          "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ]
     },
     "coverageSummary": {
       "denominator": 1,
@@ -770,7 +863,13 @@
         "selectedBindingId": "binding-1",
         "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
         "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-        "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+        "candidateBindings": [
+          {
+            "id": "binding-1",
+            "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ]
       },
       "normalizedFacts": [
         true
@@ -826,7 +925,13 @@
             "selectedBindingId": "binding-1",
             "bindingAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
             "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-            "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+            "candidateBindings": [
+              {
+                "id": "binding-1",
+                "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+                "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
           },
           "coverageSummary": {
             "denominator": 1,

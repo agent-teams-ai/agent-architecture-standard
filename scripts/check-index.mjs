@@ -62,11 +62,14 @@ for (const relative of profileDefinitions) {
   if (computeProfileAasIdentity(definition) !== definition.aasIdentity) throw new Error(`profile definition identity mismatch: ${relative}`);
   const registration = (await readJson('registries/profiles.json')).entries.find(({ id }) => id === definition.id);
   if (!registration || registration.definitionArtifact !== relative || registration.profileAasIdentity !== definition.aasIdentity) throw new Error(`profile definition is not exactly anchored by registry: ${relative}`);
-  const anchoredSources = [
-    [definition.schemas[0], 'schemas/common.schema.json'],
-    [definition.semanticsArtifacts[0], 'profiles/resource-accounting-v0-1-semantics.md'],
-    [definition.definitionVectorSuites[0], 'vectors/phase-1-remediation-v1.md']
-  ];
+  const sourcesByProfile = {
+    'agent-architecture-resource-accounting-v0@1': ['schemas/common.schema.json', 'profiles/resource-accounting-v0-1-semantics.md', 'vectors/phase-1-remediation-v1.md'],
+    'agent-architecture-portable-path-unicode17@1': ['schemas/common.schema.json', 'spec/security-and-conformance.md', 'vectors/phase-0-remediation-v1.md'],
+    'agent-architecture-validate-overlay@1': ['schemas/overlay.schema.json', 'spec/policy-and-enforcement.md', 'vectors/phase-1-remediation-v1.md']
+  };
+  const sources = sourcesByProfile[definition.id];
+  if (!sources) throw new Error(`profile definition has no exact source map: ${relative}`);
+  const anchoredSources = [[definition.schemas[0], sources[0]], [definition.semanticsArtifacts[0], sources[1]], [definition.definitionVectorSuites[0], sources[2]]];
   for (const [reference, source] of anchoredSources) {
     const bytes = await readFile(path.join(root, source));
     if (reference.contentDigest !== sha256(bytes) || reference.byteLength !== bytes.byteLength) throw new Error(`profile definition source pin mismatch: ${relative} -> ${source}`);

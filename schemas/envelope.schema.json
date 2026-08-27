@@ -6,10 +6,11 @@
   "$defs": {
     "target": {
       "type": "object", "additionalProperties": false,
-      "required": ["id", "input", "bindingSelection", "extensions", "criticalExtensions"],
+      "required": ["id", "input", "targetSelectionAasIdentity", "bindingSelection", "extensions", "criticalExtensions"],
       "properties": {
         "id": { "$ref": "common.schema.json#/$defs/identifier" },
         "input": { "$ref": "overlay.schema.json#/$defs/overlay" },
+        "targetSelectionAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "bindingSelection": { "$ref": "#/$defs/bindingSelection" },
         "extensions": { "$ref": "common.schema.json#/$defs/extensionMap" },
         "criticalExtensions": { "$ref": "common.schema.json#/$defs/extensionMap" }
@@ -102,7 +103,7 @@
         "bindingState": { "enum": ["selected", "absent"] },
         "verdict": { "enum": ["pass", "fail", "not-applicable"] },
         "mode": { "enum": ["shadow", "advisory", "required"] },
-        "rolloutDisposition": { "$ref": "common.schema.json#/$defs/identifier" },
+        "rolloutDisposition": { "enum": ["included", "excluded", "not-applicable"] },
         "bindingAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "snapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },

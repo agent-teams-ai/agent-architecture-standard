@@ -1,8 +1,8 @@
 {
   "kind": "result",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:7057bfe6a678bd02f80fd10fb0fd3c09e6e3b5b0ef42316fcb9b9c70a071f6df",
-  "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
+  "aasIdentity": "aas:v0:sha256:b4a5f02eb4ef9d86b4aba73fdc474ed38edd6bab31e9df1d76d7d5cd7f4127dd",
+  "requestAasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
   "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
   "resolutions": [
     {
@@ -47,17 +47,23 @@
         "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
         "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
         "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
-        "overlayAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
+        "overlayAasIdentity": "aas:v0:sha256:11bfc1d401b41c4aec71f43642dce6014c70ad313aff152dc70758ac87e0fbe4",
+        "requestAasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
         "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
-        "resultAasIdentity": "aas:v0:sha256:7057bfe6a678bd02f80fd10fb0fd3c09e6e3b5b0ef42316fcb9b9c70a071f6df",
+        "resultAasIdentity": "aas:v0:sha256:b4a5f02eb4ef9d86b4aba73fdc474ed38edd6bab31e9df1d76d7d5cd7f4127dd",
         "freshness": "fresh",
         "decisionTrace": {
           "state": "selected",
           "selectedBindingId": "binding-1",
           "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
           "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-          "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+          "candidateBindings": [
+            {
+              "id": "binding-1",
+              "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            }
+          ]
         },
         "coverageSummary": {
           "denominator": 1,
@@ -109,7 +115,7 @@
   "evidence": [],
   "omissions": [],
   "realizedCounters": {
-    "inputBytes": 3209,
+    "inputBytes": 3327,
     "depth": 1,
     "pathSegments": 1,
     "pathBytes": 1,

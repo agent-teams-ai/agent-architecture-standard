@@ -25,13 +25,13 @@ export type snapshotCaptureProfile = ({
 export type portablePathProfile = ({
   "version": "1";
   "id": "agent-architecture-portable-path-unicode17@1";
-  "aasIdentity": import("./common.js").aasIdentity;
+  "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9";
 });
 
 export type accountingProfile = ({
   "version": "1";
   "id": "agent-architecture-resource-accounting-v0@1";
-  "aasIdentity": "aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249";
+  "aasIdentity": "aas:v0:sha256:aba07c457684cf217a74215a47e252aab23df9ed9242342a90167d6255365300";
 });
 
 export type GeneratedAASClosedRegistryWireValues = Record<PropertyKey, never>;

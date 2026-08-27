@@ -194,100 +194,32 @@ prose MUST NOT become remediation commands or instructions.
 
 ### Stable v0 resource-accounting profile
 
-The sole normative owner of deterministic byte accounting is the provisional
-`agent-architecture-resource-accounting-v0@1` profile registered with the
-`accounting` role. Bindings MUST carry the exact closed profile reference (ID,
-definition version `1`, and profile `aasIdentity`), and requests and analysis
-keys MUST bind that same profile identity. Implementations MUST NOT substitute
-an unregistered profile or locally redefine these units.
+The sole normative owner of every counter unit, byte basis, retry/revisit rule,
+aggregation boundary, sum/peak rule, componentwise-minimum rule, output
+fixed-point rule, preflight lower bound, and `totalWork` formula is
+[`profiles/resource-accounting-v0-1-semantics.md`](../profiles/resource-accounting-v0-1-semantics.md).
+Bindings, requests, analysis keys, and operator-authorized profile documents
+MUST name that identity-bound accounting definition. This specification does
+not independently redefine those mutable semantics.
 
-Before evaluation, preflight MUST receive the request, analysis key, complete
-binding-set artifact, one target-selection coordinate per request target, and
-every target overlay. It recomputes all of their normative framed identities,
-derives applicability and precedence internally, and derives componentwise
-ceilings before evaluator work. An applicable list, if supplied, is only an
-exact checked projection. There is no missing-document fallback. The accounting-profile
-`aasIdentity` MUST be exactly equal in the request, analysis key, and every
-selected or applicable binding. The analysis-key identity MUST equal the result
-and all result headers. Candidate lists MUST form exact ordered ID, binding
-identity, and policy-identity bijections with the derived applicable bindings.
+### Operator-authority boundary
 
-Post-result reconciliation MUST reuse the completed preflight derivation. It
-checks the result and realized counters, selected binding mode, and deterministic
-rollout disposition without accepting caller-mutated authority inputs.
+Before evaluation, the private reference kernel receives trusted local
+`operatorAuthority`: a namespaced complete enabled binding catalog and exact
+allowlists with supplied effective-policy, profile, and analyzer documents.
+It recomputes every artifact identity in its normative domain and derives
+applicability only from that catalog. Repository/request data, a caller-selected
+binding subset, and hash integrity are never authorization. `operatorAuthority`
+and artifact bytes MUST NOT appear in public envelopes or AAS identity content.
 
-Budget resolution uses one rule only: for each named `max*` field, the effective
-invocation ceiling is the componentwise minimum of the request budget, analysis
-key budget, every selected binding budget, and every target overlay `limits`
-budget. Every source MUST contain every budget field; omission is invalid and
-never means infinity or a default. Realized aggregate counters MUST be at or
-below those effective ceilings. Thus a larger re-signed request cannot weaken a
-binding, analysis-key, or overlay ceiling, while a smaller ceiling tightens the
-invocation deterministically.
-
-The exact accounting-profile identity is
-`aas:v0:sha256:2a9d4536b7e074431ae08e604fd7dcc3c790f3bebe42ffa511567b7196077249`.
-It is the `aas.profile.v0` identity of the immutable
-`profiles/resource-accounting-v0-1.json` definition. The
-registry-generated accounting profile schema admits only this identity;
-agreement on arbitrary bytes is invalid.
-
-The v0 byte counters have exactly these units:
-
-- `inputBytes` is the byte length of the exact strict-JSON request
-  representation received before decoding, including all permitted whitespace.
-  It is not the canonical request identity-projection length. The ingestion
-  boundary MUST pass this raw length into request and joint request/result
-  validation. Validation MUST fail closed when it is unavailable, not a safe
-  nonnegative integer, or inconsistent with the realized counter, and MUST
-  reject it before evaluation when it exceeds `maxInputBytes`.
-- `outputBytes` is the canonical JSON UTF-8 byte length of the complete final
-  result envelope, including top-level and copied self-identity fields and the
-  final `outputBytes` integer itself. Starting with any safe nonnegative seed,
-  an implementation MUST repeatedly canonicalize the complete envelope with
-  the candidate counter, replace the candidate with that byte length, and stop
-  only when two consecutive candidates are equal. It MUST bound this process
-  to 32 iterations and fail closed on non-convergence or an unsafe integer. It
-  MUST NOT zero or omit the counter for this calculation.
-- `extensionBytes` is the canonical JSON UTF-8 byte length of exactly
-  `{ "request": { "extensions": request.extensions,
-  "criticalExtensions": request.criticalExtensions }, "targets": [...] }`,
-  where `targets` preserves request target order and each member contains
-  exactly `id`, `extensions`, and `criticalExtensions` from that target in
-  those named fields. Canonical JSON supplies object-member ordering; target
-  order remains identity-bearing. No envelope fields outside this scoped
-  projection are charged to `extensionBytes`.
-
-Every realized counter in `agent-architecture-resource-accounting-v0@1` has the
-following exact unit and aggregation rule. “Attempt” means an initial operation
-or retry; retries are charged again unless a row explicitly says “distinct”.
-All sums are checked safe-integer sums and overflow fails closed.
-
-| counter | exact realized unit and aggregation |
-| --- | --- |
-| `inputBytes` | Exact received request bytes, once per invocation, as defined above. |
-| `depth` | Maximum JSON/container or traversed-directory nesting depth reached by any target or attempt; each root is depth `0` and each child edge adds `1`. |
-| `pathSegments` | Maximum number of portable-path segments in any path examined by any target or attempt, inclusive of policy-excluded and rejected paths. |
-| `pathBytes` | Maximum UTF-8 byte length of any normalized portable path examined by any target or attempt, inclusive of policy-excluded and rejected paths. |
-| `entries` | Sum of directory entries examined across targets and attempts, including excluded, unreadable, unsupported, unstable, and duplicate encounters. |
-| `logicalBytes` | Sum of declared logical lengths of entries examined across targets and attempts; sparse holes count toward logical length and repeated target/retry encounters are charged again. |
-| `readBytes` | Sum of bytes actually returned by all metadata and content reads across targets and attempts; short reads count their returned length and retried reads are charged again. |
-| `peakEntryBytes` | Maximum bytes returned for one entry within one attempt; it is a peak, not a sum. |
-| `overlayOperations` | Sum of overlay operation records in all requested targets, each record once; provider retries do not recount the immutable request record. |
-| `targets` | Number of request target records, including targets that resolve absent, stale, unsupported, or otherwise non-decided. |
-| `evidenceReferences` | Sum of all detailed-diagnostic `evidenceIds` array lengths; repeated IDs in different diagnostics are charged again. |
-| `extensionBytes` | Canonical scoped extension projection bytes, once per invocation, as defined above. |
-| `diagnostics` | Number of detailed diagnostic records; mandatory per-target headers are excluded. |
-| `outputBytes` | Canonical final result bytes, once per invocation, as defined above. |
-| `peakConcurrency` | Maximum simultaneously active target/entry evaluation attempts; queued work and completed work are excluded. It is a peak, not a sum. |
-| `totalWork` | Exact checked sum `entries + logicalBytes + readBytes + overlayOperations + targets + evidenceReferences + extensionBytes + diagnostics`. Peaks and `inputBytes`/`outputBytes` are not added again. |
-
-These counters aggregate across the complete invocation. Aggregate budgets MUST
-NOT reset per target, extension, retry, or page. Every retry is included by the
-row above, and the target semantics are identical for decided and non-decided
-targets. Any future change to a projection, unit, aggregation boundary, retry
-rule, target rule, or peak/sum rule requires a new accounting profile ID and
-`aasIdentity`; it MUST NOT revise `@1` in place.
+Each target-selection path profile MUST equal its overlay path profile before
+path comparison; only same-profile bindings apply. The selected policy,
+operation/evaluator profiles, analyzer support, and componentwise budgets are
+verified before evaluator work. Post-result reconciliation accepts only the
+deeply frozen branded preflight capability and uses its stored exact raw request
+byte count. Operator revocation affects current authorization, not cached result
+identity: relevant target/binding changes alter request/analysis identity,
+whereas unrelated catalog changes do not.
 
 Implementations MUST validate before allocation and MUST detect integer
 overflow, sparse-file amplification, repeated-reference amplification, and

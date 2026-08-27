@@ -32,7 +32,8 @@ test('positive and negative schema corpus has exact expected dispositions', asyn
       const member = segments.pop();
       let parent = instance;
       for (const segment of segments) parent = parent[segment];
-      parent[member] = item.input.mutation.value;
+      if (item.input.mutation.delete === true) delete parent[member];
+      else parent[member] = item.input.mutation.value;
     }
     realizedCases.set(item.caseId, instance);
     const validate = ajv.getSchema(item.expected.schema);

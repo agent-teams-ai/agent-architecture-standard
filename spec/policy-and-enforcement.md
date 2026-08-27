@@ -151,13 +151,15 @@ selection algorithm:
    promotion-record identity; otherwise the entire binding set is invalid and produces
    `aas.problem.binding-set-conflict` with no result envelope.
 
-The applicability authority is one complete identity-bound `aas.binding-set.v0`
-artifact plus one identity-bearing `aas.target-selection.v0` coordinate for
-each request target. Validators MUST recompute the set, member binding, and
-coordinate identities and derive applicability internally. A caller-supplied
-applicable map is only an exact checked projection, never a completeness
-authority. Target keys close exactly and candidates form a complete bijection
-with all derived applicable members.
+Applicability authority is private trusted local `operatorAuthority`: the
+complete enabled binding catalog for the relevant namespace, never a request or
+repository binding set. Validators recompute every member binding and each
+request-bound `aas.target-selection.v0` coordinate. A target coordinate carries
+the exact path profile and MUST equal the target overlay profile; bindings from
+other profile namespaces are inapplicable, with no fallback. Target keys close
+exactly and candidates form a complete bijection with the derived same-profile
+applicable members. Every applicable equal-rank class is checked for semantic
+conflict before selection, including classes below the winning rank.
 
 After semantic rank is computed, the wire candidate array is ordered by
 descending rank and then ascending binding `aasIdentity`. Equivalent top-rank
@@ -288,6 +290,10 @@ cohort is still `required` with a narrow rollout scope.
 Rollout selection MUST be deterministic from identity-bearing inputs and MUST
 be recorded in the receipt. Random runtime sampling, mutable feature flags, or
 server-side cohort changes MUST NOT support a required result.
+The exact target-selection identity is bound into the request and, through the
+request identity, the analysis key before evaluation. An evaluator or cache
+MUST NOT reuse applicability or rollout derived for a different target-selection
+identity.
 
 Mode promotion MUST create a new binding and MUST cite an immutable promotion
 record whose qualifying approval is in a later external sidecar. Promotion MUST
@@ -310,7 +316,7 @@ boundary. Agent invocation and prompts are conveniences, not enforcement.
 A result becomes stale when any identity-bearing input relevant to its decision
 changes. This includes base revision, snapshot content or declared observation
 coverage, integration state, policy, binding (including its complete rollout
-scope), profile, analyzer, bound promotion/evidence artifacts, exception or
+scope), target selection (including rollout cohorts), profile, analyzer, bound promotion/evidence artifacts, exception or
 `validForRevision`, overlay, request, declared budget, or accounting profile.
 Realized counters are result outputs and are compared through result
 `aasIdentity`; they are not pre-evaluation freshness inputs.

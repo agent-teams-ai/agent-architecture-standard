@@ -145,12 +145,13 @@
     },
     "targetSelection": {
       "type": "object", "additionalProperties": false,
-      "required": ["aasIdentity", "targetId", "consumer", "repository", "path", "rolloutCohorts"],
+      "required": ["aasIdentity", "targetId", "consumer", "repository", "pathProfile", "path", "rolloutCohorts"],
       "properties": {
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
         "consumer": { "$ref": "common.schema.json#/$defs/identifier" },
         "repository": { "$ref": "common.schema.json#/$defs/identifier" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
         "subjectId": { "$ref": "common.schema.json#/$defs/identifier" },
         "path": { "$ref": "common.schema.json#/$defs/portablePath" },
         "ruleId": { "$ref": "common.schema.json#/$defs/identifier" },

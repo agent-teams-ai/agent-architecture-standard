@@ -38,6 +38,8 @@
       "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analyzer",
       "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/promotionRecord",
       "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analysisKey",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/bindingSet",
+      "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/targetSelection",
       "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/operation",
       "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay",
       "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/receipt",
@@ -616,6 +618,90 @@
       "rationale": "Definition contract is exercised."
     },
     {
+      "caseId": "bindingSet-positive",
+      "requirement": "spec/security-and-conformance.md#operator-authority-boundary",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/binding-set-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/bindingSet",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "The legacy identity document remains materially schema-covered even though it is not request authority."
+    },
+    {
+      "caseId": "bindingSet-object-negative",
+      "requirement": "spec/security-and-conformance.md#operator-authority-boundary",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/binding-set-positive",
+        "mutation": {
+          "pointer": "/bindings",
+          "delete": true
+        }
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/bindingSet",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "An object-shaped binding-set document cannot omit its members."
+    },
+    {
+      "caseId": "targetSelection-positive",
+      "requirement": "spec/identity.md#5-normative-identity-table",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/target-selection-positive"
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/targetSelection",
+        "valid": true,
+        "diagnostic": "none",
+        "version": "0.1"
+      },
+      "rationale": "A target-selection coordinate explicitly binds its portable-path namespace."
+    },
+    {
+      "caseId": "targetSelection-object-negative",
+      "requirement": "spec/identity.md#5-normative-identity-table",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/target-selection-positive",
+        "mutation": {
+          "pointer": "/pathProfile",
+          "delete": true
+        }
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/targetSelection",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "An object-shaped selection cannot omit the namespace needed for safe path comparison."
+    },
+    {
       "caseId": "identity-root-positive",
       "requirement": "schemas/readme.md#schema-index",
       "input": {
@@ -652,6 +738,52 @@
         "version": "0.1"
       },
       "rationale": "Definition contract is exercised."
+    },
+    {
+      "caseId": "request-target-selection-identity-required",
+      "requirement": "spec/identity.md#5-normative-identity-table",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/request-positive",
+        "mutation": {
+          "pointer": "/targets/0/targetSelectionAasIdentity",
+          "delete": true
+        }
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/request",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Every request target requires an explicit target-selection identity binding."
+    },
+    {
+      "caseId": "diagnostic-header-rollout-closed",
+      "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/diagnostic-header-positive",
+        "mutation": {
+          "pointer": "/rolloutDisposition",
+          "value": "unknown"
+        }
+      },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "Rollout disposition is closed to included, excluded, and not-applicable."
     },
     {
       "caseId": "diagnosticHeader-positive",
@@ -2042,7 +2174,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
           }
         }
       },
@@ -2354,7 +2486,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+                "aasIdentity": "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2371,7 +2503,7 @@
       "expected": {
         "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy",
         "valid": false,
-        "diagnostic": "portable-path-validation-failed",
+        "diagnostic": "schema-validation-failed",
         "version": "0.1"
       },
       "rationale": "An effective policy and its exception must bind the same path profile."
@@ -2392,7 +2524,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2406,7 +2538,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2444,7 +2576,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2458,7 +2590,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2518,7 +2650,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
           }
         }
       },
@@ -2545,7 +2677,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
           }
         }
       },
@@ -2567,9 +2699,15 @@
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/diagnostic-header-positive",
-        "mutation": { "pointer": "/freshness", "value": "stale" }
+        "mutation": {
+          "pointer": "/freshness",
+          "value": "stale"
+        }
       },
-      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
       "expected": {
         "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
         "valid": false,
@@ -2584,9 +2722,15 @@
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/diagnostic-header-positive",
-        "mutation": { "pointer": "/bindingState", "value": "absent" }
+        "mutation": {
+          "pointer": "/bindingState",
+          "value": "absent"
+        }
       },
-      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "limits": {
+        "maxInputBytes": 1048576,
+        "maxDepth": 64
+      },
       "expected": {
         "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
         "valid": false,

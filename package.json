@@ -40,7 +40,7 @@
     "generate": "node scripts/generate.mjs",
     "check:index": "node scripts/check-index.mjs",
     "check:schemas": "node scripts/check-schemas.mjs",
-    "check:corpus": "node --test test/corpus.test.mjs test/strict-json.test.mjs test/package-paths.test.mjs test/registry.test.mjs test/result-vector.test.mjs test/release-manifest.test.mjs test/version-matrix.test.mjs",
+    "check:corpus": "node --test test/corpus.test.mjs test/operator-authority.test.mjs test/strict-json.test.mjs test/package-paths.test.mjs test/registry.test.mjs test/result-vector.test.mjs test/release-manifest.test.mjs test/version-matrix.test.mjs",
     "check:generated": "node scripts/check-clean-generation.mjs",
     "check:package": "node scripts/check-package.mjs",
     "check:conformance": "node --test conformance/test/*.test.mjs",
