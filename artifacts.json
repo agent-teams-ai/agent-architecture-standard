@@ -557,17 +557,17 @@
     {
       "path": "vectors/schema/positive/release-manifest-numeric.json",
       "class": "vector",
-      "contentDigest": "sha256:362e291d394496e394d2a2dcfe889ddaa459dc86b3c85bf4e4fef7abe04eab31",
+      "contentDigest": "sha256:28e41070b9a07b3b5cabff8f208e6dcfdc811af01481e1942d9896c7b38fb2a6",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 4795,
+      "byteLength": 4794,
       "mediaType": "application/json"
     },
     {
       "path": "vectors/schema/positive/release-manifest-rc.json",
       "class": "vector",
-      "contentDigest": "sha256:14f17c0c654bc52c8406c42274d992ad213c59ad6aff60a3bbb6ae68fe3af498",
+      "contentDigest": "sha256:7a8dfc18477781b03d96d12d56bbfbbd696cf3a362feec7c321f8209f5de6500",
       "aasIdentityStatus": "not-computed-phase-1",
-      "byteLength": 4800,
+      "byteLength": 4799,
       "mediaType": "application/json"
     },
     {
