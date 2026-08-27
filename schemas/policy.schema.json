@@ -29,12 +29,13 @@
     },
     "effectivePolicy": {
       "type": "object", "additionalProperties": false,
-      "required": ["schemaVersion", "aasIdentity", "consumer", "scope", "profiles", "rules", "exceptions", "provenance"],
+      "required": ["schemaVersion", "aasIdentity", "consumer", "scope", "pathProfile", "profiles", "rules", "exceptions", "provenance"],
       "properties": {
         "schemaVersion": { "const": "0.1" },
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "consumer": { "$ref": "common.schema.json#/$defs/identifier" },
         "scope": { "$ref": "common.schema.json#/$defs/portablePath" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
         "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "common.schema.json#/$defs/profileRef" } },
         "rules": { "type": "array", "maxItems": 10000, "items": { "type": "object", "additionalProperties": false, "required": ["id", "parameters"], "properties": { "id": { "$ref": "common.schema.json#/$defs/identifier" }, "parameters": { "type": "object", "maxProperties": 64, "additionalProperties": true } } } },
         "exceptions": { "type": "array", "maxItems": 10000, "items": { "$ref": "#/$defs/exception" } },
@@ -61,7 +62,7 @@
     },
     "binding": {
       "type": "object", "additionalProperties": false,
-      "required": ["schemaVersion", "aasIdentity", "id", "consumer", "repository", "scope", "rolloutScope", "mode", "policyAasIdentity", "profiles", "accountingProfile", "budgets", "exceptions", "owner"],
+      "required": ["schemaVersion", "aasIdentity", "id", "consumer", "repository", "scope", "pathProfile", "rolloutScope", "mode", "policyAasIdentity", "profiles", "accountingProfile", "budgets", "exceptions", "owner"],
       "properties": {
         "schemaVersion": { "const": "0.1" },
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
@@ -69,6 +70,7 @@
         "consumer": { "$ref": "common.schema.json#/$defs/identifier" },
         "repository": { "$ref": "common.schema.json#/$defs/identifier" },
         "scope": { "$ref": "#/$defs/bindingScope" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
         "rolloutScope": { "type": "string", "minLength": 1, "maxLength": 1024 },
         "mode": { "enum": ["shadow", "advisory", "required"] },
         "policyAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },

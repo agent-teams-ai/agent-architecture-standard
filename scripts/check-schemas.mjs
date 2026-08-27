@@ -47,6 +47,7 @@ const resolutionRegistry = await readJson('registries/resolutions.json');
 const actionRegistry = await readJson('registries/actions.json');
 const problemRegistry = await readJson('registries/problems.json');
 const profileRegistry = await readJson('registries/profiles.json');
+const diagnosticRegistry = await readJson('registries/diagnostics.json');
 const envelopeValues = envelopeRegistry.entries.map((entry) => entry.id);
 const resolutionValues = resolutionRegistry.entries.map((entry) => entry.id);
 const envelopeSchema = schemaByName.get('envelope.schema.json');
@@ -57,9 +58,12 @@ for (const definition of ['diagnosticHeader', 'resolution']) {
 const registryValues = schemaByName.get('registry-values.schema.json').$defs;
 if (JSON.stringify(registryValues.actionId.enum) !== JSON.stringify(actionRegistry.entries.map(({ id }) => id))) throw new Error('generated action wire values drift from actions registry');
 if (JSON.stringify(registryValues.problemCode.enum) !== JSON.stringify(problemRegistry.entries.map(({ id }) => id))) throw new Error('generated problem wire values drift from problems registry');
-const generatedProfiles = registryValues.canonicalizationProfile.oneOf.map((branch) => ({ id: branch.properties.id.const, version: branch.properties.version.const }));
-const ownedProfiles = profileRegistry.entries.map(({ id }) => ({ id, version: id.slice(id.lastIndexOf('@') + 1) }));
-if (JSON.stringify(generatedProfiles) !== JSON.stringify(ownedProfiles)) throw new Error('generated canonicalization profile values drift from profiles registry');
+for (const [role, definition] of [['canonicalization', 'canonicalizationProfile'], ['snapshot-capture', 'snapshotCaptureProfile'], ['portable-path', 'portablePathProfile']]) {
+  const generatedProfiles = registryValues[definition].oneOf.map((branch) => ({ id: branch.properties.id.const, version: branch.properties.version.const }));
+  const ownedProfiles = profileRegistry.entries.filter((entry) => entry.role === role).map(({ id }) => ({ id, version: id.slice(id.lastIndexOf('@') + 1) }));
+  if (JSON.stringify(generatedProfiles) !== JSON.stringify(ownedProfiles)) throw new Error(`generated ${role} profile values drift from profiles registry`);
+}
+if (JSON.stringify(registryValues.diagnosticCode.enum) !== JSON.stringify(diagnosticRegistry.entries.map(({ id }) => id))) throw new Error('generated diagnostic wire values drift from diagnostics registry');
 const matrix = await readJson('version-matrix.json');
 const axes = new Map([
   ['schemaBundle', 'schemaBundleVersion'], ['registryEdition', 'registryEdition'],
@@ -69,6 +73,8 @@ if (JSON.stringify(matrix.supported.envelopeVersions) !== JSON.stringify(envelop
 for (const [matrixKey, definition] of axes) if (!commonDefinitions[definition].enum.includes(matrix.supported[matrixKey])) throw new Error(`version matrix ${matrixKey} is outside its axis-specific schema registry`);
 const manifestValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json');
 const manifest = await readJson('artifacts.json');
+const packageDocument = await readJson('package.json');
+if (packageDocument.version !== matrix.standardVersion || manifest.standardVersion !== matrix.standardVersion || JSON.stringify(matrix.supported.standardVersions) !== JSON.stringify([matrix.standardVersion])) throw new Error('standardVersion projection drift from version-matrix authority');
 if (!manifestValidator(manifest)) throw new Error(`artifacts.json: ${ajv.errorsText(manifestValidator.errors)}`);
 assertPortablePackageInventory(manifest.artifacts.map((entry) => entry.path), 'manifest');
 const registryCaseDocuments = new Map();

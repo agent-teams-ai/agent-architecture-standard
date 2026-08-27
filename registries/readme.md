@@ -24,11 +24,11 @@ The following is an index-entry checklist projected from
 [core §3](../spec/core.md#3-artifact-authority-and-conflicts) and
 [core §7](../spec/core.md#7-registry-lifecycle); it is
 not a second lifecycle authority. Every registry definition artifact records an
-edition, prior edition, and change record. Its own raw `contentDigest`, artifact
-`aasIdentity`, byte length, media type, approvals, and qualification evidence
-MUST be recorded only in a later external qualification sidecar that points to
-the finalized registry artifact. The registry artifact MUST NOT point back to
-that sidecar or contain its own digest or identity.
+edition, prior edition, and change record. `artifacts.json` records only its raw
+SHA-256 digest, byte length, and media type as an acyclic byte inventory.
+Artifact identity, approvals, and qualification evidence remain deferred to a
+later external qualification sidecar. The registry artifact MUST NOT point back
+to that sidecar or contain its own digest or identity.
 
 The checklist below applies to admission beyond `provisional`; it is not a
 claim that edition-1 placeholders have passed admission. A provisional

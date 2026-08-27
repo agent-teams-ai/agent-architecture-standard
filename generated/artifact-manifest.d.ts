@@ -17,7 +17,7 @@ export type AASNormativeArtifactManifest = {
 };
   "artifacts": Array<{
   "path": manifestPath;
-  "class": "schema" | "registry" | "vector" | "normative-prose" | "generated-declaration" | "version-matrix";
+  "class": "schema" | "registry" | "vector" | "normative-prose" | "decision-provenance" | "generated-declaration" | "version-matrix";
   "schemaId"?: ConstrainedString;
   "contentDigest": import("./common.js").contentDigest;
   "aasIdentityStatus": "not-computed-phase-1";

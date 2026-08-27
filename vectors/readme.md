@@ -11,8 +11,9 @@ authority.
 Phase 0 contains one provisional remediation suite. It supplies exact examples
 for specification review but has not received independent-oracle review and
 cannot support a conformance claim. Future suites MUST be immutable,
-language-neutral, and indexed exactly once here. Their own digest, artifact
-identity, and qualification belong in a later external sidecar, never in the
+language-neutral, and indexed exactly once here. `artifacts.json` inventories
+their raw SHA-256 digest, byte length, and media type. Artifact identity,
+approval, and qualification belong in a later external sidecar, never in the
 suite itself.
 
 A suite used in profile construction MUST declare exactly one of two classes. A

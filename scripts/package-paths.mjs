@@ -4,7 +4,7 @@ import { assertPortablePath, assertPortablePathCollection, portablePathCollision
 export const packageCollisionKey = portablePathCollisionKey;
 
 export function assertPortablePackageInventory(paths, label = 'package inventory') {
-  const conventionalRootFiles = new Set(['README.md', 'LICENSE', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'decisions/README.md']);
+  const conventionalRootFiles = new Set(['README.md', 'LICENSE', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'decisions/README.md', 'docs/decisions/README.md']);
   for (const relative of paths) {
     const conventionalRoot = conventionalRootFiles.has(relative);
     if (typeof relative !== 'string' || (!conventionalRoot && !/^[a-z0-9][a-z0-9._/-]*$/u.test(relative))) {

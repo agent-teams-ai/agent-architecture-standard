@@ -4,6 +4,9 @@ import { readFile } from 'node:fs/promises';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 const matrix = parseStrictJson(await readFile(new URL('../version-matrix.json', import.meta.url)));
 const versionRegistry = parseStrictJson(await readFile(new URL('../registries/envelope-versions.json', import.meta.url)));
+const packageDocument = parseStrictJson(await readFile(new URL('../package.json', import.meta.url)));
+const manifest = parseStrictJson(await readFile(new URL('../artifacts.json', import.meta.url)));
+const provider = parseStrictJson(await readFile(new URL('../vectors/schema/positive/provider.json', import.meta.url)));
 const ranks = new Map(versionRegistry.entries.map((entry) => [entry.id, entry.orderingRank]));
 const compare = (left, right) => ranks.get(left) - ranks.get(right);
 const select = ({ reader, writer, pin }) => {
@@ -21,6 +24,10 @@ test('checked-in private provisional negotiation matrix uses registry-owned orde
   assert.match(matrix.identityRules.historicalDecoding, /retain original schema/);
   assert.match(matrix.identityRules.withdrawnProfile, /historical interpretation retained/);
   assert.deepEqual(matrix.supported.envelopeVersions, versionRegistry.entries.map((entry) => entry.id));
+  assert.equal(packageDocument.version, matrix.standardVersion);
+  assert.equal(manifest.standardVersion, matrix.standardVersion);
+  assert.deepEqual(matrix.supported.standardVersions, [matrix.standardVersion]);
+  assert.deepEqual(provider.standardVersions, [matrix.standardVersion]);
   assert.equal(matrix.supported.schemaBundle, '0.1');
   assert.equal(matrix.supported.registryEdition, '1');
   assert.equal(matrix.supported.vectorSuite, '0.1');

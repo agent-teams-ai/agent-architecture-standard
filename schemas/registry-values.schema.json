@@ -15,6 +15,24 @@
         "aas.problem.no-common-envelope-version"
       ]
     },
+    "diagnosticCode": {
+      "enum": [
+        "aas.json.raw-bytes-required",
+        "aas.example.ok",
+        "aas.json.input-too-large",
+        "aas.json.depth-exceeded",
+        "aas.json.duplicate-key",
+        "aas.json.invalid-utf8",
+        "aas.json.invalid-syntax",
+        "aas.json.invalid-number",
+        "aas.schema.unknown-id",
+        "aas.schema.duplicate-id",
+        "aas.schema.alias-id",
+        "aas.schema.network-ref",
+        "aas.schema.ref-cycle",
+        "aas.schema.invalid"
+      ]
+    },
     "canonicalizationProfile": {
       "oneOf": [
         {
@@ -36,7 +54,11 @@
               "$ref": "common.schema.json#/$defs/aasIdentity"
             }
           }
-        },
+        }
+      ]
+    },
+    "snapshotCaptureProfile": {
+      "oneOf": [
         {
           "type": "object",
           "additionalProperties": false,
@@ -56,7 +78,11 @@
               "$ref": "common.schema.json#/$defs/aasIdentity"
             }
           }
-        },
+        }
+      ]
+    },
+    "portablePathProfile": {
+      "oneOf": [
         {
           "type": "object",
           "additionalProperties": false,

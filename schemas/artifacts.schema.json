@@ -48,8 +48,8 @@
       "properties": {
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" },
         "repositoryId": { "$ref": "common.schema.json#/$defs/identifier" },
-        "captureProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
-        "pathProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
+        "captureProfile": { "$ref": "registry-values.schema.json#/$defs/snapshotCaptureProfile" },
+        "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" },
         "entries": {
           "type": "array", "maxItems": 1000000,
           "items": { "type": "object", "additionalProperties": false, "required": ["path", "artifact"], "properties": { "path": { "$ref": "common.schema.json#/$defs/portablePath" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } } }

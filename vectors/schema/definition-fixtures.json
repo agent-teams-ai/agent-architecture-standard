@@ -53,6 +53,7 @@
     "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "derivation": {
       "method": {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       },
@@ -63,6 +64,7 @@
     "sensitivity": "internal",
     "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "applicableRuleOrProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
@@ -81,6 +83,7 @@
     "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "derivation": {
       "method": {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       },
@@ -91,6 +94,7 @@
     "sensitivity": "internal",
     "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "applicableRuleOrProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
@@ -102,11 +106,13 @@
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "repositoryId": "repo-1",
     "captureProfile": {
-      "id": "profile@1",
+      "version": "0",
+      "id": "agent-architecture-snapshot-portable-bounded@0",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
     "pathProfile": {
-      "id": "profile@1",
+      "version": "1",
+      "id": "agent-architecture-portable-path-unicode17@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
     "entries": [
@@ -183,8 +189,10 @@
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "consumer": "consumer-1",
     "scope": "src",
+    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
@@ -232,16 +240,18 @@
     "consumer": "consumer-1",
     "repository": "repo-1",
     "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
+    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
-    "accountingProfile": { "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+    "accountingProfile": { "version": "1", "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -271,16 +281,18 @@
     "consumer": "consumer-1",
     "repository": "repo-1",
     "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
+    "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
-    "accountingProfile": { "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+    "accountingProfile": { "version": "1", "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -306,6 +318,7 @@
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "repositoryId": "repo-1",
     "revisionSystemProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
@@ -379,6 +392,7 @@
     ],
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
@@ -391,6 +405,7 @@
     "policy": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
@@ -442,11 +457,13 @@
   "analysis-key-positive": {
     "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "operationProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
     "evaluatorProfiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
@@ -473,6 +490,7 @@
       "maxTotalWork": 1000
     },
     "accountingProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
@@ -483,7 +501,7 @@
   "request-positive": {
     "kind": "request",
     "envelopeVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:ad9628279ba001533d359523010509384ea9b1bc7688a484159f0eb12e80f2e7",
+    "aasIdentity": "aas:v0:sha256:490c9b3a500b5f16d633aad70c5184221ed8eeda8ff56ed98968ef0620530cfe",
     "standardVersion": "0.1.0-rc.1",
     "operation": "validate-overlay@1",
     "targets": [
@@ -492,6 +510,7 @@
         "input": {
           "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
           "limits": {
             "maxInputBytes": 100,
             "maxDepth": 8,
@@ -529,7 +548,7 @@
     "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
     "accountingProfileAasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777",
     "budgets": {
-      "maxInputBytes": 100,
+      "maxInputBytes": 4096,
       "maxDepth": 8,
       "maxPathSegments": 8,
       "maxPathBytes": 128,
@@ -540,9 +559,9 @@
       "maxOverlayOperations": 10,
       "maxTargets": 10,
       "maxEvidenceReferences": 10,
-      "maxExtensionBytes": 100,
+      "maxExtensionBytes": 1024,
       "maxDiagnostics": 10,
-      "maxOutputBytes": 1000,
+      "maxOutputBytes": 4096,
       "maxConcurrency": 2,
       "maxTotalWork": 1000
     },
@@ -563,6 +582,7 @@
         "input": {
           "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "pathProfile": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
           "limits": {
             "maxInputBytes": 100,
             "maxDepth": 8,
@@ -664,6 +684,7 @@
     "severity": "info",
     "targetId": "target-1",
     "ruleOrProfile": {
+      "version": "1",
       "id": "profile@1",
       "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
@@ -773,6 +794,7 @@
         "producerAasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
         "derivation": {
           "method": {
+            "version": "1",
             "id": "profile@1",
             "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
           },
@@ -783,6 +805,7 @@
         "sensitivity": "internal",
         "inputContentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         "applicableRuleOrProfile": {
+          "version": "1",
           "id": "profile@1",
           "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
         },
@@ -896,6 +919,7 @@
     "profiles": [
       {
         "kind": "operation",
+        "version": "1",
         "id": "validate-overlay@1",
         "aasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
       }
@@ -990,6 +1014,7 @@
     },
     "profiles": [
       {
+        "version": "1",
         "id": "profile@1",
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
@@ -1149,6 +1174,7 @@
     "profiles": [
       {
         "kind": "operation",
+        "version": "1",
         "id": "validate-overlay@1",
         "aasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
       }

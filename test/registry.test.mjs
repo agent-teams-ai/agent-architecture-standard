@@ -5,7 +5,7 @@ import { DiagnosticCode } from '../lib/diagnostics.mjs';
 import { OfflineSchemaRegistry } from '../lib/schema-registry.mjs';
 import { assertAcyclicSchemaGraph } from '../lib/schema-graph.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
-import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
+import { assertRegistryEvolution, assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
 
 const schema = (name, refs = []) => ({ $id: `https://schemas.aas.invalid/private/v0/${name}.schema.json`, $defs: Object.fromEntries(refs.map((ref, index) => [`r${index}`, { $ref: `${ref}.schema.json` }])) });
 test('offline registry rejects duplicate and unknown IDs with stable codes', () => {
@@ -113,6 +113,24 @@ test('registry corpus cases explicitly bind owned IDs to admission polarity', as
     assert.equal(recognized, item.expected.recognized, `${item.caseId}: registry ownership`);
     assert.equal(item.polarity, recognized ? 'positive' : 'negative', `${item.caseId}: polarity matches ownership`);
   }
+});
+test('adjacent registry editions retain meaning and order while evolving lifecycle', () => {
+  const previous = { registry: 'actions', edition: '1', previousEdition: null, status: 'provisional', changes: ['initial'], entries: [
+    { id: 'old', kind: 'action', status: 'active', semanticAuthority: 'authority#old', introducedEdition: '1', orderingRank: 1, vectors: ['v'] }
+  ] };
+  const current = { registry: 'actions', edition: '2', previousEdition: '1', status: 'provisional', changes: ['deprecate'], entries: [
+    { ...previous.entries[0], status: 'deprecated', replacement: 'new' },
+    { id: 'new', kind: 'action', status: 'active', semanticAuthority: 'authority#new', introducedEdition: '2', orderingRank: 2, vectors: ['v'] }
+  ] };
+  assert.doesNotThrow(() => assertRegistryEvolution(previous, current));
+  for (const [name, mutate, expected] of [
+    ['link', (value) => { value.previousEdition = null; }, /previousEdition/],
+    ['authority', (value) => { value.entries[0].semanticAuthority = 'reassigned'; }, /semanticAuthority/],
+    ['kind', (value) => { value.entries[0].kind = 'problem'; }, /kind/],
+    ['introduction', (value) => { value.entries[0].introducedEdition = '2'; }, /introducedEdition/],
+    ['order', (value) => { value.entries[0].orderingRank = 9; }, /orderingRank/],
+    ['removal', (value) => { value.entries.shift(); }, /existing id removed/]
+  ]) { const value = structuredClone(current); mutate(value); assert.throws(() => assertRegistryEvolution(previous, value), expected, name); }
 });
 test('packaged catalog case records drive all declared adversarial dispositions', async () => {
   const corpus = parseStrictJson(await readFile(new URL('../vectors/schema/catalog-corpus.json', import.meta.url)));

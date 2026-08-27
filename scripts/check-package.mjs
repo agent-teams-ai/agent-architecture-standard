@@ -15,6 +15,7 @@ try {
   const rootPackageFiles = ['LICENSE', 'README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'package.json', 'artifacts.json'];
   const expectedInventory = [...rootPackageFiles, ...manifest.artifacts.map((entry) => entry.path)].sort();
   if (JSON.stringify(inventory) !== JSON.stringify(expectedInventory)) throw new Error(`packed inventory drift\nexpected: ${expectedInventory.join('\n')}\nactual: ${inventory.join('\n')}`);
+  if (inventory.some((item) => /^(?:lib|test|scripts)\//u.test(item))) throw new Error('Phase 1 helper/constructor code leaked into package files');
   assertPortablePackageInventory(inventory);
   for (let pass = 0; pass < 2; pass++) run(['pack', '--pack-destination', temporary]);
   const tarballs = (await readdir(temporary)).filter((item) => item.endsWith('.tgz'));
@@ -62,6 +63,7 @@ try {
     './generated/*': { types: './generated/*.d.ts' }
   };
   if (JSON.stringify(installedPackage.exports) !== JSON.stringify(expectedExports)) throw new Error('package export surface is not the closed expected projection');
+  if (Object.keys(installedPackage.exports).some((item) => /(?:kernel|result|release|identity)/u.test(item))) throw new Error('PR2 production kernel leaked into Phase 1 exports');
   for (const target of ['./artifacts.json', './version-matrix.json']) {
     if (!installedInventory.includes(target.slice(2))) throw new Error(`export target is absent: ${target}`);
   }

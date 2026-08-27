@@ -58,6 +58,7 @@ export type budgets = {
 };
 
 export type profileRef = {
+  "version": definitionVersion;
   "id": identifier;
   "aasIdentity": aasIdentity;
 };

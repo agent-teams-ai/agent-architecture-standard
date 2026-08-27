@@ -10,10 +10,11 @@ slice. They do not activate a public namespace or conformance claim.
 Each row MUST be added exactly once and MUST include an immutable local
 path, provisional or active schema ID, owned claim family, referenced registry
 edition, definition vector suites, and lifecycle status. A schema artifact's
-own `aasIdentity`, `contentDigest`, byte length, media type, approvals, and
-qualification evidence MUST appear only in a later external qualification
-sidecar. The schema and this definition index MUST NOT point forward to that
-sidecar.
+own identity, approvals, and qualification evidence MUST appear only in a later
+external qualification sidecar. `artifacts.json` is instead an acyclic raw-byte
+inventory: it records the SHA-256 digest, byte length, and media type of the
+checked-in schema without asserting identity, approval, or qualification. The
+schema and this definition index MUST NOT point forward to a sidecar.
 
 | Local path | Schema ID | Owns | Registry edition | Definition vectors | Status |
 | --- | --- | --- | --- | --- | --- |

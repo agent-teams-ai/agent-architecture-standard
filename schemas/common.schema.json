@@ -63,8 +63,9 @@
     "profileRef": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "aasIdentity"],
+      "required": ["version", "id", "aasIdentity"],
       "properties": {
+        "version": { "$ref": "#/$defs/definitionVersion" },
         "id": { "$ref": "#/$defs/identifier" },
         "aasIdentity": { "$ref": "#/$defs/aasIdentity" }
       }

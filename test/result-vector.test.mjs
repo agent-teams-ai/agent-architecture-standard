@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { assertRequestResultInvariants, assertResultInvariants, computeRequestAasIdentity, computeResultAasIdentity, requestIdentityProjection } from '../lib/result-validation.mjs';
+import { assertRequestResultInvariants, assertResultInvariants, canonicalRequestExtensionBytes, canonicalRequestInputBytes, canonicalResultOutputBytes, computeRequestAasIdentity, computeResultAasIdentity, requestIdentityProjection } from '../lib/result-validation.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const canonicalize = (value) => {
@@ -17,14 +17,14 @@ test('request self-identity vector includes every substantive request field', as
   const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
   const request = fixtures['request-positive'];
   const payload = Buffer.from(canonicalize(requestIdentityProjection(request)));
-  assert.equal(payload.byteLength, 1905);
-  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:f3da1a4ca03ccf4b8cd17cafbe3abc1fcb7baed940e212ce205e218e88777509');
+  assert.equal(payload.byteLength, 2084);
+  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:372784c5a6badf0773198d6ba0e2cb5fd7cebbe08f8dab38da3a1f5303712bde');
   const magic = Buffer.from('AAS-ID');
   const domain = Buffer.from('aas.request.v0');
   const profile = Buffer.from('agent-architecture-canonical-json-rfc8785@0');
   const frame = Buffer.concat([u32be(magic.length), magic, u32be(domain.length), domain, u32be(profile.length), profile, u64be(payload.length), payload]);
-  assert.equal(frame.byteLength, 1988);
-  assert.equal(request.aasIdentity, 'aas:v0:sha256:ad9628279ba001533d359523010509384ea9b1bc7688a484159f0eb12e80f2e7');
+  assert.equal(frame.byteLength, 2167);
+  assert.equal(request.aasIdentity, 'aas:v0:sha256:490c9b3a500b5f16d633aad70c5184221ed8eeda8ff56ed98968ef0620530cfe');
   assert.equal(computeRequestAasIdentity(request), request.aasIdentity);
   assert.equal(`aas:v0:sha256:${createHash('sha256').update(frame).digest('hex')}`, request.aasIdentity);
 });
@@ -68,19 +68,20 @@ test('result self-identity vector includes the complete closed result projection
   delete result.aasIdentity;
   for (const resolution of result.resolutions) delete resolution.diagnostic.resultAasIdentity;
   const payload = Buffer.from(canonicalize(result));
-  assert.equal(payload.byteLength, 2449);
-  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:dd82e78743100960021cb6997b84afba41890f98b392066e7023b943f8fdb21a');
+  assert.equal(payload.byteLength, 2774);
+  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:73252b7d3555b14e1a06cb83e83cb4b957a1dae4b9ec95049d198137104863bb');
   const magic = Buffer.from('AAS-ID');
   const domain = Buffer.from('aas.result.v0');
   const profile = Buffer.from('agent-architecture-canonical-json-rfc8785@0');
   const frame = Buffer.concat([u32be(magic.length), magic, u32be(domain.length), domain, u32be(profile.length), profile, u64be(payload.length), payload]);
-  assert.equal(frame.byteLength, 2531);
+  assert.equal(frame.byteLength, 2856);
   assert.equal(expected, `aas:v0:sha256:${createHash('sha256').update(frame).digest('hex')}`);
 });
 
 test('result cross-field invariants reject identity, coverage, and count inconsistencies', async () => {
   const original = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
   const resign = (value) => {
+    value.realizedCounters.outputBytes = canonicalResultOutputBytes(value);
     const identity = computeResultAasIdentity(value);
     value.aasIdentity = identity;
     for (const resolution of value.resolutions) resolution.diagnostic.resultAasIdentity = identity;
@@ -104,6 +105,7 @@ test('request/result joint validation closes ordered targets and duplicated deci
   const original = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
   assert.doesNotThrow(() => assertRequestResultInvariants(fixtures['request-positive'], original));
   const resign = (value) => {
+    value.realizedCounters.outputBytes = canonicalResultOutputBytes(value);
     const identity = computeResultAasIdentity(value);
     value.aasIdentity = identity;
     for (const resolution of value.resolutions) resolution.diagnostic.resultAasIdentity = identity;
@@ -121,7 +123,7 @@ test('request/result joint validation closes ordered targets and duplicated deci
     ['analyzer pin', (request, result) => { result.resolutions[0].diagnostic.analyzerAasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64); }, /analyzer identity mismatch/],
     ['overlay pin', (request, result) => { result.resolutions[0].diagnostic.overlayAasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64); }, /overlay identity mismatch/],
     ['base snapshot pin', (request) => { request.targets[0].input.baseSnapshotAasIdentity = 'aas:v0:sha256:' + 'f'.repeat(64); }, /baseSnapshot\/request snapshot mismatch/],
-    ['coverage completeness', (request, result) => { result.coverage[0].included = 0; result.coverage[0].unknown = 1; result.resolutions[0].diagnostic.coverageSummary = { ...result.resolutions[0].diagnostic.coverageSummary, included: 0, unknown: 1 }; }, /complete evaluation coverage/],
+    ['coverage completeness', (request, result) => { for (const coverage of [result.coverage[0], result.resolutions[0].coverage[0]]) { coverage.included = 0; coverage.unknown = 1; } result.resolutions[0].diagnostic.coverageSummary = { ...result.resolutions[0].diagnostic.coverageSummary, included: 0, unknown: 1 }; }, /complete evaluation coverage/],
     ['budget accounting', (request, result) => { result.realizedCounters.readBytes = request.budgets.maxReadBytes + 1; }, /readBytes exceeds request maxReadBytes/],
     ['invented extension', (request, result) => { result.extensionDispositions.push({ extensionId: 'com.example.invented', location: 'request', disposition: 'ignored', requestBound: true, affectsCoreSemantics: false }); }, /invented or incorrectly scoped/],
     ['missing extension', (request, result) => { result.extensionDispositions = []; }, /exact request\/target\/location\/extension bijection/],
@@ -133,9 +135,44 @@ test('request/result joint validation closes ordered targets and duplicated deci
     const result = structuredClone(original);
     mutate(request, result);
     request.aasIdentity = computeRequestAasIdentity(request);
+    result.realizedCounters.inputBytes = canonicalRequestInputBytes(request);
+    result.realizedCounters.extensionBytes = canonicalRequestExtensionBytes(request);
     result.requestAasIdentity = request.aasIdentity;
     for (const resolution of result.resolutions) resolution.diagnostic.requestAasIdentity = request.aasIdentity;
     resign(result);
     assert.throws(() => assertResultInvariants(result, request), invariant, name);
   }
+});
+
+test('realized byte counters are derived exactly and request extension demand is bounded', async () => {
+  const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const request = fixtures['request-positive'];
+  const result = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
+  for (const counter of ['inputBytes', 'extensionBytes']) {
+    const bad = structuredClone(result); bad.realizedCounters[counter] += 1;
+    bad.realizedCounters.outputBytes = canonicalResultOutputBytes(bad);
+    const id = computeResultAasIdentity(bad); bad.aasIdentity = id; bad.resolutions[0].diagnostic.resultAasIdentity = id;
+    assert.throws(() => assertResultInvariants(bad, request), new RegExp(`realized ${counter} does not match`));
+  }
+  const badOutput = structuredClone(result); badOutput.realizedCounters.outputBytes += 1;
+  const outputId = computeResultAasIdentity(badOutput); badOutput.aasIdentity = outputId; badOutput.resolutions[0].diagnostic.resultAasIdentity = outputId;
+  assert.throws(() => assertResultInvariants(badOutput), /outputBytes does not match/);
+  const oversized = structuredClone(request);
+  oversized.extensions = Object.fromEntries(Array.from({ length: 64 }, (_, index) => [`com.example.request-${index}`, true]));
+  oversized.criticalExtensions = Object.fromEntries(Array.from({ length: 64 }, (_, index) => [`com.example.critical-${index}`, true]));
+  oversized.targets[0].extensions = { 'com.example.target-129': true };
+  oversized.budgets.maxInputBytes = 1_000_000;
+  oversized.budgets.maxExtensionBytes = 1_000_000;
+  oversized.aasIdentity = computeRequestAasIdentity(oversized);
+  assert.throws(() => assertRequestResultInvariants(oversized, result), /disposition demand exceeds 128/);
+});
+
+test('two-target decided plus indeterminate evidence has exact per-target and global coverage', async () => {
+  const request = parseStrictJson(await readFile(new URL('../vectors/schema/positive/mixed-request.json', import.meta.url)));
+  const result = parseStrictJson(await readFile(new URL('../vectors/schema/positive/mixed-result.json', import.meta.url)));
+  assert.doesNotThrow(() => assertResultInvariants(result, request));
+  assert.deepEqual(result.resolutions.map(({ resolution }) => resolution), ['decided', 'indeterminate']);
+  assert.equal(result.coverage[0].denominator, 2);
+  assert.equal(result.coverage[0].included, 1);
+  assert.equal(result.coverage[0].unknown, 1);
 });

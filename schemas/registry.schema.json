@@ -22,6 +22,7 @@
         "properties": {
           "id": { "anyOf": [{ "$ref": "common.schema.json#/$defs/identifier" }, { "$ref": "#/$defs/envelopeVersionIdentifier" }] },
           "kind": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z][a-z0-9-]*$" },
+          "role": { "enum": ["canonicalization", "snapshot-capture", "portable-path", "operation", "vocabulary", "evaluator", "security", "diagnostic", "accounting"] },
           "owner": { "type": "string", "minLength": 1, "maxLength": 255 },
           "contact": { "type": "string", "minLength": 1, "maxLength": 255 },
           "status": { "enum": ["provisional", "active", "deprecated", "withdrawn", "reserved"] },

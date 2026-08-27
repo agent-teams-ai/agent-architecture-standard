@@ -39,9 +39,10 @@
     },
     "claimedProfile": {
       "type": "object", "additionalProperties": false,
-      "required": ["kind", "id", "aasIdentity"],
+      "required": ["kind", "version", "id", "aasIdentity"],
       "properties": {
         "kind": { "enum": ["operation", "evaluator", "vocabulary", "security", "diagnostic"] },
+        "version": { "$ref": "common.schema.json#/$defs/definitionVersion" },
         "id": { "$ref": "common.schema.json#/$defs/identifier" },
         "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
       }

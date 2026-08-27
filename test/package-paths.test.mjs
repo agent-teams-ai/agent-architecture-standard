@@ -99,9 +99,17 @@ test('post-schema document validation closes every identity-bearing path collect
   const artifact = { aasIdentity: 'aas:v0:sha256:' + 'a'.repeat(64), contentDigest: 'sha256:' + 'b'.repeat(64), byteLength: 1, mediaType: 'application/json' };
   const snapshot = { pathProfile: {}, entries: [{ path: 'src/STRASSE', artifact }, { path: 'src/straße', artifact }] };
   const overlay = { baseSnapshotAasIdentity: 'aas:v0:sha256:' + 'c'.repeat(64), operations: [{ op: 'add', path: 'src/K', contentAasIdentity: artifact.aasIdentity }, { op: 'delete', path: 'src/K' }] };
-  const policy = { scope: 'src/FF', rules: [], exceptions: [{ scope: 'src/ﬀ' }], provenance: [] };
+  const policy = { scope: 'src/FF', rules: [], exceptions: [{ scope: `src/${String.fromCharCode(0xd800)}` }], provenance: [] };
   const binding = { scope: { repositoryRoot: 'src', path: 'src/' + String.fromCharCode(0xd800) }, rolloutScope: 'all' };
   for (const value of [snapshot, overlay, policy, binding]) assert.throws(() => assertIdentityDocumentPathInvariants(value), /portable path|colliding/);
+});
+
+test('semantic path references may repeat across different rules', () => {
+  const policy = {
+    scope: 'src', rules: [{ id: 'rule-1' }, { id: 'rule-2' }], provenance: [],
+    exceptions: [{ ruleId: 'rule-1', scope: 'src/shared' }, { ruleId: 'rule-2', scope: 'src/shared' }]
+  };
+  assert.doesNotThrow(() => assertIdentityDocumentPathInvariants(policy));
 });
 
 test('vendored Unicode 17 C+F case-fold data has pinned provenance and derived bytes', async () => {
@@ -110,4 +118,12 @@ test('vendored Unicode 17 C+F case-fold data has pinned provenance and derived b
   assert.match(bytes.toString('utf8'), /Source SHA-256: ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183/);
   assert.equal(portablePathCollisionKey('İ'), 'i\u0307');
   assert.notEqual(portablePathCollisionKey('I'), portablePathCollisionKey('ı'), 'Turkic T fold must be excluded');
+});
+
+test('vendored Unicode 17 NFC is host-independent, version-sensitive, and includes Hangul', async () => {
+  const bytes = await readFile(new URL('../lib/unicode-normalization-17.mjs', import.meta.url));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '48dec21f49f02b2672a0308dafe3a591b5c9fcb7f8a5377c08b4b75d75a34ab4');
+  assert.throws(() => assertPortablePath('src/a\u0315\u{1e6e3}'), /Unicode 17 NFC/);
+  assert.doesNotThrow(() => assertPortablePath('src/a\u{1e6e3}\u0315'));
+  assert.equal(portablePathCollisionKey('\u1100\u1161\u11a8'), '\uac01');
 });

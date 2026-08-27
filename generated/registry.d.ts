@@ -14,6 +14,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -39,6 +40,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -62,6 +64,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -85,6 +88,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -108,6 +112,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -131,6 +136,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -154,6 +160,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
@@ -177,6 +184,7 @@ export type AASRegistryEdition = ({
   "entries": (Array<{
   "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
   "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
   "owner": ConstrainedString;
   "contact": ConstrainedString;
   "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";

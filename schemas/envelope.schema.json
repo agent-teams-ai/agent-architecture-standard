@@ -64,7 +64,7 @@
       "required": ["version", "code", "targetId", "resolution", "mode", "rolloutDisposition", "bindingAasIdentity", "snapshotAasIdentity", "policyAasIdentity", "profileAasIdentity", "analyzerAasIdentity", "overlayAasIdentity", "requestAasIdentity", "analysisKeyAasIdentity", "resultAasIdentity", "freshness", "coverageSummary", "severityCounts", "highestSeverity", "omissionCount", "omissionReasons", "nextAction"],
       "properties": {
         "version": { "const": "0.1" },
-        "code": { "$ref": "common.schema.json#/$defs/identifier" },
+        "code": { "$ref": "registry-values.schema.json#/$defs/diagnosticCode" },
         "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
         "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] },
         "verdict": { "enum": ["pass", "fail", "not-applicable"] },
@@ -129,7 +129,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["code", "severity", "targetId", "ruleOrProfile", "evidenceIds", "terminalReason", "decisionTrace", "remediationActions"],
       "properties": {
-        "code": { "$ref": "common.schema.json#/$defs/identifier" },
+        "code": { "$ref": "registry-values.schema.json#/$defs/diagnosticCode" },
         "severity": { "enum": ["info", "warning", "error", "critical"] },
         "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
         "ruleOrProfile": { "$ref": "common.schema.json#/$defs/profileRef" },
@@ -188,12 +188,13 @@
     },
     "resolution": {
       "type": "object", "additionalProperties": false,
-      "required": ["targetId", "resolution", "diagnostic"],
+      "required": ["targetId", "resolution", "coverage", "diagnostic"],
       "properties": {
         "targetId": { "$ref": "common.schema.json#/$defs/identifier" },
         "resolution": { "enum": ["decided", "needs-input", "indeterminate", "unsupported", "stale"] },
         "verdict": { "enum": ["pass", "fail", "not-applicable"] },
         "reason": { "$ref": "common.schema.json#/$defs/identifier" },
+        "coverage": { "type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": { "$ref": "artifacts.schema.json#/$defs/coverage" } },
         "diagnostic": { "$ref": "#/$defs/diagnosticHeader" }
       },
       "allOf": [

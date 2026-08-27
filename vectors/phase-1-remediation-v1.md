@@ -40,3 +40,23 @@ historical `phase-0-remediation-v1.md` bytes. Machine-readable instances live in
   registry, vector, profile, claim, traceability, qualification, governance,
   provenance, SBOM, and release-evidence identities. The numeric cohort is a
   distinct artifact and cannot reuse a bare `1`, `1.2`, or relabeled RC version.
+
+## MIXED-COVERAGE-P1-001: target-specific completeness
+
+- Requirement: `../spec/core.md` §5.
+- Inputs: `schema/positive/mixed-request.json` and
+  `schema/positive/mixed-result.json`.
+- Expected: target 1 is decided with complete coverage; target 2 is
+  indeterminate with an explicit unknown terminal. Each header copies its own
+  target evaluation coverage and the global ledger is their exact aggregate.
+
+## ACCOUNTING-P1-001: canonical executable counters
+
+- Requirement: `../spec/security-and-conformance.md` §6.
+- Inputs: `schema/definition-fixtures.json` `/request-positive` and
+  `schema/positive/result.json`.
+- Expected: `inputBytes` is the UTF-8 length of the canonical request identity
+  projection; `outputBytes` is the canonical result identity projection with
+  its own `outputBytes` value replaced by zero; `extensionBytes` is the
+  canonical scoped extension-map projection. Reported counters must equal
+  these derivations and remain within request budgets.

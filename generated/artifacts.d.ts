@@ -45,8 +45,8 @@ export type evidence = {
 export type snapshot = {
   "aasIdentity": import("./common.js").aasIdentity;
   "repositoryId": import("./common.js").identifier;
-  "captureProfile": import("./common.js").profileRef;
-  "pathProfile": import("./common.js").profileRef;
+  "captureProfile": import("./registry-values.js").snapshotCaptureProfile;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "entries": Array<{
   "path": import("./common.js").portablePath;
   "artifact": import("./common.js").artifactRef;

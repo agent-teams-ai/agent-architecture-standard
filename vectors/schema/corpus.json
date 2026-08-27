@@ -64,7 +64,7 @@
   "cases": [
     {
       "caseId": "artifact-manifest-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "artifacts.json"
       },
@@ -82,7 +82,7 @@
     },
     {
       "caseId": "artifact-manifest-bare-version",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/artifact-manifest-bare-version"
@@ -101,7 +101,7 @@
     },
     {
       "caseId": "common-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/common-root-positive"
@@ -120,7 +120,7 @@
     },
     {
       "caseId": "common-root-closed",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/common-root-closed-negative"
@@ -139,7 +139,7 @@
     },
     {
       "caseId": "artifact-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/artifact-positive"
@@ -158,7 +158,7 @@
     },
     {
       "caseId": "coverage-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/coverage-positive"
@@ -177,7 +177,7 @@
     },
     {
       "caseId": "evidence-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/evidence-positive"
@@ -196,7 +196,7 @@
     },
     {
       "caseId": "snapshot-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/snapshot-positive"
@@ -215,7 +215,7 @@
     },
     {
       "caseId": "artifact-closed",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/artifact-closed-negative"
@@ -234,7 +234,7 @@
     },
     {
       "caseId": "coverage-required",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/coverage-required-negative"
@@ -253,7 +253,7 @@
     },
     {
       "caseId": "evidence-required",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/evidence-required-negative"
@@ -272,7 +272,7 @@
     },
     {
       "caseId": "provider-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/positive/provider.json"
       },
@@ -290,7 +290,7 @@
     },
     {
       "caseId": "provider-unknown-field",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/negative/provider-unknown-field.json"
       },
@@ -308,7 +308,7 @@
     },
     {
       "caseId": "provider-leading-zero",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/negative/provider-leading-zero-version.json"
       },
@@ -326,7 +326,7 @@
     },
     {
       "caseId": "overlay-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/positive/overlay.json"
       },
@@ -344,7 +344,7 @@
     },
     {
       "caseId": "overlay-unknown-field",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/negative/overlay-unknown-field.json"
       },
@@ -362,7 +362,7 @@
     },
     {
       "caseId": "overlay-windows-drive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/negative/windows-drive-path.json"
       },
@@ -380,7 +380,7 @@
     },
     {
       "caseId": "receipt-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/receipt-positive"
@@ -399,7 +399,7 @@
     },
     {
       "caseId": "receipt-required",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/receipt-required-negative"
@@ -418,7 +418,7 @@
     },
     {
       "caseId": "exception-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/exception-positive"
@@ -437,7 +437,7 @@
     },
     {
       "caseId": "effectivePolicy-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/effective-policy-positive"
@@ -456,7 +456,7 @@
     },
     {
       "caseId": "binding-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/binding-required-positive"
@@ -475,7 +475,7 @@
     },
     {
       "caseId": "binding-promotion-conditional",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/binding-required-missing-promotion"
@@ -494,7 +494,7 @@
     },
     {
       "caseId": "repositoryRevision-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/repository-revision-positive"
@@ -513,7 +513,7 @@
     },
     {
       "caseId": "profile-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/profile-positive"
@@ -532,7 +532,7 @@
     },
     {
       "caseId": "analyzer-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/analyzer-positive"
@@ -551,7 +551,7 @@
     },
     {
       "caseId": "promotionRecord-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/promotion-positive"
@@ -570,7 +570,7 @@
     },
     {
       "caseId": "analysisKey-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/analysis-key-positive"
@@ -589,7 +589,7 @@
     },
     {
       "caseId": "identity-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/profile-positive"
@@ -608,7 +608,7 @@
     },
     {
       "caseId": "request-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/request-positive"
@@ -627,7 +627,7 @@
     },
     {
       "caseId": "diagnosticHeader-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/diagnostic-header-positive"
@@ -646,7 +646,7 @@
     },
     {
       "caseId": "diagnostic-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/diagnostic-positive"
@@ -665,7 +665,7 @@
     },
     {
       "caseId": "problem-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/problem-positive"
@@ -684,7 +684,7 @@
     },
     {
       "caseId": "envelope-root-result-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/positive/result.json"
       },
@@ -702,7 +702,7 @@
     },
     {
       "caseId": "request-unregistered-envelope-version",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/request-unregistered-version"
@@ -721,7 +721,7 @@
     },
     {
       "caseId": "result-extension-disposition-conditional",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/result-extension-semantic-effect"
@@ -740,7 +740,7 @@
     },
     {
       "caseId": "claim-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/claim-positive"
@@ -759,7 +759,7 @@
     },
     {
       "caseId": "report-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/report-positive"
@@ -778,7 +778,7 @@
     },
     {
       "caseId": "qualificationSidecar-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/qualification-sidecar-positive"
@@ -797,7 +797,7 @@
     },
     {
       "caseId": "conformance-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/claim-positive"
@@ -816,7 +816,7 @@
     },
     {
       "caseId": "claim-bare-standard-version",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/claim-bare-standard-version"
@@ -835,7 +835,7 @@
     },
     {
       "caseId": "release-manifest-rc",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/positive/release-manifest-rc.json"
       },
@@ -853,7 +853,7 @@
     },
     {
       "caseId": "release-manifest-numeric",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/positive/release-manifest-numeric.json"
       },
@@ -887,7 +887,7 @@
     },
     {
       "caseId": "registry-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/registry-positive"
@@ -906,7 +906,7 @@
     },
     {
       "caseId": "registry-closed",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/registry-closed-negative"
@@ -925,7 +925,7 @@
     },
     {
       "caseId": "artifacts-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/artifact-positive"
@@ -944,7 +944,7 @@
     },
     {
       "caseId": "artifacts-root-negative",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/artifact-closed-negative"
@@ -963,7 +963,7 @@
     },
     {
       "caseId": "overlay-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/receipt-positive"
@@ -982,7 +982,7 @@
     },
     {
       "caseId": "policy-root-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/exception-positive"
@@ -1001,7 +1001,7 @@
     },
     {
       "caseId": "policy-root-negative",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/binding-required-missing-promotion"
@@ -1020,7 +1020,7 @@
     },
     {
       "caseId": "identity-root-negative",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/common-root-closed-negative"
@@ -1039,7 +1039,7 @@
     },
     {
       "caseId": "envelope-root-negative",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/request-unregistered-version"
@@ -1058,7 +1058,7 @@
     },
     {
       "caseId": "conformance-root-negative",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/claim-bare-standard-version"
@@ -1077,7 +1077,7 @@
     },
     {
       "caseId": "operation-positive",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/operation-positive"
@@ -1096,7 +1096,7 @@
     },
     {
       "caseId": "operation-conditional",
-      "requirement": "schemas/readme.md#schema-catalog",
+      "requirement": "schemas/readme.md#schema-index",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/operation-conditional-negative"
@@ -1145,26 +1145,26 @@
       "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/bindingScope", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" },
       "rationale": "A path selector without the required repository root cannot select scope precedence."
     },
-    { "caseId": "result-positive-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/positive/result.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/result", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The exact result definition accepts the complete result vector." },
-    { "caseId": "snapshot-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/snapshot-positive", "mutation": { "pointer": "/entries", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A snapshot rejects a non-array entry ledger." },
-    { "caseId": "report-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/report-positive", "mutation": { "pointer": "/results", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/report", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A report rejects a non-array result ledger." },
-    { "caseId": "qualification-sidecar-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/qualification-sidecar-positive", "mutation": { "pointer": "/approvalEvidence", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/qualificationSidecar", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A qualification sidecar requires an approval-evidence array." },
-    { "caseId": "diagnostic-header-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-header-positive", "mutation": { "pointer": "/coverageSummary", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A diagnostic header requires a structured terminal coverage ledger." },
-    { "caseId": "diagnostic-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-positive", "mutation": { "pointer": "/decisionTrace", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A diagnostic requires a structured decision trace." },
-    { "caseId": "problem-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/problem-positive", "mutation": { "pointer": "/code", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/problem", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A problem rejects a non-identifier code." },
-    { "caseId": "repository-revision-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/repository-revision-positive", "mutation": { "pointer": "/treeAasIdentity", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/repositoryRevision", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A revision requires an identity-bearing tree." },
-    { "caseId": "profile-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/profile-positive", "mutation": { "pointer": "/semanticsArtifacts", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/profile", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A profile requires a semantics-artifact array." },
-    { "caseId": "analyzer-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/analyzer-positive", "mutation": { "pointer": "/implementationArtifacts", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analyzer", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An analyzer requires immutable implementation artifacts." },
-    { "caseId": "promotion-record-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/promotion-positive", "mutation": { "pointer": "/thresholds", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/promotionRecord", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A promotion record requires its threshold ledger." },
-    { "caseId": "analysis-key-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/analysis-key-positive", "mutation": { "pointer": "/budgets", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analysisKey", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An analysis key requires the exact structured budgets." },
-    { "caseId": "exception-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/exception-positive", "mutation": { "pointer": "/validForRevision", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/exception", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An exception requires its revision freshness pin." },
-    { "caseId": "effective-policy-negative-exact-definition", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/effective-policy-positive", "mutation": { "pointer": "/provenance", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An effective policy requires structured provenance closure." },
+    { "caseId": "result-positive-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/positive/result.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/result", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The exact result definition accepts the complete result vector." },
+    { "caseId": "snapshot-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/snapshot-positive", "mutation": { "pointer": "/entries", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A snapshot rejects a non-array entry ledger." },
+    { "caseId": "report-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/report-positive", "mutation": { "pointer": "/results", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/report", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A report rejects a non-array result ledger." },
+    { "caseId": "qualification-sidecar-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/qualification-sidecar-positive", "mutation": { "pointer": "/approvalEvidence", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/qualificationSidecar", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A qualification sidecar requires an approval-evidence array." },
+    { "caseId": "diagnostic-header-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-header-positive", "mutation": { "pointer": "/coverageSummary", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A diagnostic header requires a structured terminal coverage ledger." },
+    { "caseId": "diagnostic-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-positive", "mutation": { "pointer": "/decisionTrace", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A diagnostic requires a structured decision trace." },
+    { "caseId": "problem-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/problem-positive", "mutation": { "pointer": "/code", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/problem", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A problem rejects a non-identifier code." },
+    { "caseId": "repository-revision-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/repository-revision-positive", "mutation": { "pointer": "/treeAasIdentity", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/repositoryRevision", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A revision requires an identity-bearing tree." },
+    { "caseId": "profile-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/profile-positive", "mutation": { "pointer": "/semanticsArtifacts", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/profile", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A profile requires a semantics-artifact array." },
+    { "caseId": "analyzer-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/analyzer-positive", "mutation": { "pointer": "/implementationArtifacts", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analyzer", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An analyzer requires immutable implementation artifacts." },
+    { "caseId": "promotion-record-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/promotion-positive", "mutation": { "pointer": "/thresholds", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/promotionRecord", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A promotion record requires its threshold ledger." },
+    { "caseId": "analysis-key-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/analysis-key-positive", "mutation": { "pointer": "/budgets", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/identity-documents.schema.json#/$defs/analysisKey", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An analysis key requires the exact structured budgets." },
+    { "caseId": "exception-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/exception-positive", "mutation": { "pointer": "/validForRevision", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/exception", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An exception requires its revision freshness pin." },
+    { "caseId": "effective-policy-negative-exact-definition", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/effective-policy-positive", "mutation": { "pointer": "/provenance", "value": null } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "An effective policy requires structured provenance closure." },
     { "caseId": "diagnostic-header-verdict-conditional", "requirement": "spec/core.md#4-core-result-invariants", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-header-positive", "mutation": { "pointer": "/resolution", "value": "unsupported" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A non-decided header forbids a verdict." },
-    { "caseId": "extension-disposition-understood-positive", "requirement": "spec/core.md#6-extension-model", "input": { "reference": "vectors/schema/positive/result.json", "pointer": "/extensionDispositions/0" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "An understood extension may affect core semantics." },
-    { "caseId": "extension-disposition-preserved-negative", "requirement": "spec/core.md#6-extension-model", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/result-extension-semantic-effect/extensionDispositions/0" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A preserved extension cannot affect core semantics." },
-    { "caseId": "extension-disposition-target-positive", "requirement": "spec/core.md#6-extension-model", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-target-positive" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A target extension disposition binds its exact target identifier." },
-    { "caseId": "extension-disposition-target-missing", "requirement": "spec/core.md#6-extension-model", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-target-missing" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A target disposition cannot omit its target identity." },
-    { "caseId": "extension-disposition-request-target-invented", "requirement": "spec/core.md#6-extension-model", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-request-target-invented" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A request disposition cannot invent a target identity." },
+    { "caseId": "extension-disposition-understood-positive", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/positive/result.json", "pointer": "/extensionDispositions/0" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "An understood extension may affect core semantics." },
+    { "caseId": "extension-disposition-preserved-negative", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/result-extension-semantic-effect/extensionDispositions/0" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A preserved extension cannot affect core semantics." },
+    { "caseId": "extension-disposition-target-positive", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-target-positive" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A target extension disposition binds its exact target identifier." },
+    { "caseId": "extension-disposition-target-missing", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-target-missing" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A target disposition cannot omit its target identity." },
+    { "caseId": "extension-disposition-request-target-invented", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/extension-disposition-request-target-invented" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A request disposition cannot invent a target identity." },
     { "caseId": "resolution-decided-positive", "requirement": "spec/core.md#4-core-result-invariants", "input": { "reference": "vectors/schema/positive/result.json", "pointer": "/resolutions/0" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/resolution", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A decided resolution carries a verdict." },
     { "caseId": "resolution-nondecided-verdict-negative", "requirement": "spec/core.md#4-core-result-invariants", "input": { "reference": "vectors/schema/positive/result.json", "pointer": "/resolutions/0", "mutation": { "pointer": "/resolution", "value": "unsupported" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/resolution", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "A non-decided resolution forbids a verdict." },
     { "caseId": "registry-envelope-version-positive", "requirement": "spec/core.md#7-registry-lifecycle", "input": { "reference": "registries/envelope-versions.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "Envelope registries require ranked envelope-version entries." },
@@ -1172,16 +1172,25 @@
     { "caseId": "overlay-windows-backslash", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/negative/windows-backslash-path.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Windows backslash spelling cannot alias a portable POSIX path." },
     { "caseId": "snapshot-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/snapshot-positive", "mutation": { "pointer": "/entries/1", "value": { "path": "SRC/A.TS", "artifact": { "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "byteLength": 1, "mediaType": "application/json" } } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot", "valid": false, "diagnostic": "portable-path-validation-failed", "version": "0.1" }, "rationale": "A schema-valid snapshot is rejected after validation when two entries have the same Unicode 17 case-fold key." },
     { "caseId": "overlay-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/positive/overlay.json", "mutation": { "pointer": "/operations/1", "value": { "op": "delete", "path": "SRC/NEW-FILE.TS" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay", "valid": false, "diagnostic": "portable-path-validation-failed", "version": "0.1" }, "rationale": "A schema-valid overlay cannot contain case-fold aliases in its operation path collection." },
-    { "caseId": "policy-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/effective-policy-positive", "mutation": { "pointer": "/exceptions/0", "value": { "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ruleId": "rule-1", "scope": "SRC", "owner": "owner", "reasonCode": "reason-1", "creationPolicyAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "validForRevision": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy", "valid": false, "diagnostic": "portable-path-validation-failed", "version": "0.1" }, "rationale": "A schema-valid policy cannot contain a scope and exception scope with the same case-fold key." },
-    { "caseId": "binding-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/binding-required-positive", "mutation": { "pointer": "/scope/path", "value": "SRC" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding", "valid": false, "diagnostic": "portable-path-validation-failed", "version": "0.1" }, "rationale": "A schema-valid binding cannot alias its repository root through a case-fold-equivalent path selector." },
-    { "caseId": "registry-values-root-positive", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/common-root-positive" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry-values.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The generated registry-value fragment document has a closed empty root." },
-    { "caseId": "registry-values-root-closed", "requirement": "schemas/readme.md#schema-catalog", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/common-root-closed-negative" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry-values.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "The generated registry-value fragment document rejects invented root fields." },
+    { "caseId": "policy-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/effective-policy-positive", "mutation": { "pointer": "/exceptions/0", "value": { "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ruleId": "rule-1", "scope": "SRC", "owner": "owner", "reasonCode": "reason-1", "creationPolicyAasIdentity": "aas:v0:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "validForRevision": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "Repeated semantic path references are validated individually and do not create distinct path identities." },
+    { "caseId": "binding-post-schema-casefold-collision", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/binding-required-positive", "mutation": { "pointer": "/scope/path", "value": "SRC" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "Binding selectors are references, not a distinct path-identity collection." },
+    { "caseId": "registry-values-root-positive", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/common-root-positive" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry-values.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The generated registry-value fragment document has a closed empty root." },
+    { "caseId": "registry-values-root-closed", "requirement": "schemas/readme.md#schema-index", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/common-root-closed-negative" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry-values.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "The generated registry-value fragment document rejects invented root fields." },
     { "caseId": "registry-envelope-nonself-numeric-replacement", "requirement": "spec/core.md#7-registry-lifecycle", "input": { "reference": "vectors/schema/positive/registry-envelope-replacement.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry.schema.json", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The envelope-version discriminator owns numeric ID and replacement typing, so a non-self future replacement is structurally possible." },
     { "caseId": "registry-ordinary-numeric-replacement", "requirement": "spec/core.md#7-registry-lifecycle", "input": { "reference": "vectors/schema/negative/registry-ordinary-numeric-replacement.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/registry.schema.json", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Discriminator-owned envelope typing does not weaken ordinary registry IDs or replacements to numeric versions." },
     { "caseId": "problem-unregistered-code", "requirement": "spec/core.md#6-compatibility-axes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/problem-positive", "mutation": { "pointer": "/code", "value": "aas.problem.no-common-envelope-versoin" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/problem", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Problem codes are closed to the problems registry and reject an identifier-shaped typo." },
     { "caseId": "diagnostic-header-unregistered-next-action", "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-header-positive", "mutation": { "pointer": "/nextAction", "value": "delete-everything" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Diagnostic next actions are closed to the actions registry." },
     { "caseId": "diagnostic-unregistered-remediation-action", "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-positive", "mutation": { "pointer": "/remediationActions", "value": [{ "id": "delete-everything", "preconditions": [] }] } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Remediation action IDs are closed to the actions registry." },
     { "caseId": "claim-unregistered-canonicalization-profile", "requirement": "spec/identity.md#3-canonical-bytes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/claim-positive", "mutation": { "pointer": "/canonicalizationProfile/id", "value": "canonical@0" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Conformance claims bind a registered canonicalization profile ID." },
-    { "caseId": "claim-canonicalization-profile-version-mismatch", "requirement": "spec/identity.md#3-canonical-bytes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/claim-positive", "mutation": { "pointer": "/canonicalizationProfile/version", "value": "1" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "The canonicalization profile version must equal the registered ID's @version suffix." }
+    { "caseId": "claim-canonicalization-profile-version-mismatch", "requirement": "spec/identity.md#3-canonical-bytes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/claim-positive", "mutation": { "pointer": "/canonicalizationProfile/version", "value": "1" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "The canonicalization profile version must equal the registered ID's @version suffix." },
+    { "caseId": "claim-cross-role-path-profile", "requirement": "spec/identity.md#3-canonical-bytes", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/claim-positive", "mutation": { "pointer": "/canonicalizationProfile", "value": { "version": "1", "id": "agent-architecture-portable-path-unicode17@1", "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/conformance.schema.json#/$defs/claim", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Canonicalization claims cannot substitute a registered profile from another role." },
+    { "caseId": "diagnostic-header-unregistered-code", "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-header-positive", "mutation": { "pointer": "/code", "value": "aas.example.unregistered" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Diagnostic header wire codes are closed to the diagnostics registry." },
+    { "caseId": "diagnostic-detail-unregistered-code", "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/diagnostic-positive", "mutation": { "pointer": "/code", "value": "aas.example.unregistered" } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnostic", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Detailed diagnostic wire codes are closed to the same diagnostics registry." },
+    { "caseId": "mixed-two-target-request-positive", "requirement": "spec/core.md#5-coverage-and-evidence", "input": { "reference": "vectors/schema/positive/mixed-request.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/request", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "The mixed-batch evidence binds two exact target inputs." },
+    { "caseId": "mixed-two-target-result-positive", "requirement": "spec/core.md#5-coverage-and-evidence", "input": { "reference": "vectors/schema/positive/mixed-result.json" }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/result", "valid": true, "diagnostic": "none", "version": "0.1" }, "rationale": "A decided and indeterminate target coexist with per-target coverage and one exact aggregate." },
+    { "caseId": "snapshot-cross-role-path-profile", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/snapshot-positive", "mutation": { "pointer": "/pathProfile", "value": { "version": "0", "id": "agent-architecture-canonical-json-rfc8785@0", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/artifacts.schema.json#/$defs/snapshot", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Snapshot paths require the exact versioned portable-path profile role." },
+    { "caseId": "overlay-cross-role-path-profile", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/positive/overlay.json", "mutation": { "pointer": "/pathProfile", "value": { "version": "0", "id": "agent-architecture-canonical-json-rfc8785@0", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/overlay.schema.json#/$defs/overlay", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Overlay identities reject a canonicalization profile substituted for the path profile." },
+    { "caseId": "policy-cross-role-path-profile", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/effective-policy-positive", "mutation": { "pointer": "/pathProfile", "value": { "version": "0", "id": "agent-architecture-canonical-json-rfc8785@0", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/effectivePolicy", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Effective-policy path surfaces are bound to the portable-path profile role." },
+    { "caseId": "binding-cross-role-path-profile", "requirement": "spec/security-and-conformance.md#3-portable-path-requirements", "input": { "reference": "vectors/schema/definition-fixtures.json", "pointer": "/binding-required-positive", "mutation": { "pointer": "/pathProfile", "value": { "version": "0", "id": "agent-architecture-canonical-json-rfc8785@0", "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" } } }, "limits": { "maxInputBytes": 1048576, "maxDepth": 64 }, "expected": { "schema": "https://schemas.aas.invalid/private/v0/policy.schema.json#/$defs/binding", "valid": false, "diagnostic": "schema-validation-failed", "version": "0.1" }, "rationale": "Binding path selectors carry the exact versioned portable-path profile reference." }
   ]
 }

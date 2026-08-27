@@ -36,6 +36,7 @@ export type conformanceSuiteVersionedArtifact = {
 
 export type claimedProfile = {
   "kind": "operation" | "evaluator" | "vocabulary" | "security" | "diagnostic";
+  "version": import("./common.js").definitionVersion;
   "id": import("./common.js").identifier;
   "aasIdentity": import("./common.js").aasIdentity;
 };

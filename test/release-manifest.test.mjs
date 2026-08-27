@@ -67,3 +67,14 @@ test('cohort comparison independently rejects identity, byte, traceability, and 
     assert.throws(() => assertReleaseCohortsNonReuse(rc, numeric), invariant, name);
   }
 });
+
+test('release comparator rejects unrelated but individually valid cohorts', async () => {
+  const rc = await load('release-manifest-rc.json');
+  const numericOriginal = await load('release-manifest-numeric.json');
+  const renamed = structuredClone(numericOriginal);
+  renamed.members[0].name = 'unrelated-package'; renamed.publicationOrder = ['unrelated-package']; resign(renamed);
+  assert.throws(() => assertReleaseCohortsNonReuse(rc, renamed), /identical member names/);
+  const wrongBase = structuredClone(numericOriginal);
+  wrongBase.members[0].version = '0.9.1'; wrongBase.supportedVersions = ['0.9.1']; resign(wrongBase);
+  assert.throws(() => assertReleaseCohortsNonReuse(rc, wrongBase), /base version does not correspond/);
+});

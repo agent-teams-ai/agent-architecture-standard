@@ -26,6 +26,7 @@ export type effectivePolicy = {
   "aasIdentity": import("./common.js").aasIdentity;
   "consumer": import("./common.js").identifier;
   "scope": import("./common.js").portablePath;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "profiles": Array<import("./common.js").profileRef>;
   "rules": Array<{
   "id": import("./common.js").identifier;
@@ -51,6 +52,7 @@ export type binding = ({
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("advisory");
   "policyAasIdentity": import("./common.js").aasIdentity;
@@ -67,6 +69,7 @@ export type binding = ({
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("required");
   "policyAasIdentity": import("./common.js").aasIdentity;
@@ -83,6 +86,7 @@ export type binding = ({
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
   "scope": bindingScope;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("shadow");
   "policyAasIdentity": import("./common.js").aasIdentity;

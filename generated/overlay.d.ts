@@ -18,6 +18,7 @@ export type operation = ({
 export type overlay = {
   "aasIdentity": import("./common.js").aasIdentity;
   "baseSnapshotAasIdentity": import("./common.js").aasIdentity;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
   "limits": import("./common.js").budgets;
   "operations": Array<operation>;
 };

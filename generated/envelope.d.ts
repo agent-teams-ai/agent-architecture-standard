@@ -49,7 +49,7 @@ export type severityCounts = {
 
 export type diagnosticHeader = ({
   "version": "0.1";
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided");
   "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
@@ -73,7 +73,7 @@ export type diagnosticHeader = ({
   "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input");
   "mode": "shadow" | "advisory" | "required";
@@ -96,7 +96,7 @@ export type diagnosticHeader = ({
   "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate");
   "mode": "shadow" | "advisory" | "required";
@@ -119,7 +119,7 @@ export type diagnosticHeader = ({
   "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported");
   "mode": "shadow" | "advisory" | "required";
@@ -142,7 +142,7 @@ export type diagnosticHeader = ({
   "nextAction": import("./registry-values.js").actionId;
 }) | ({
   "version": "0.1";
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale");
   "mode": "shadow" | "advisory" | "required";
@@ -194,7 +194,7 @@ export type paginationCursor = {
 };
 
 export type diagnostic = {
-  "code": import("./common.js").identifier;
+  "code": import("./registry-values.js").diagnosticCode;
   "severity": "info" | "warning" | "error" | "critical";
   "targetId": import("./common.js").identifier;
   "ruleOrProfile": import("./common.js").profileRef;
@@ -275,26 +275,31 @@ export type resolution = ({
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided");
   "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
   "reason"?: import("./common.js").identifier;
+  "coverage": Array<import("./artifacts.js").coverage>;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input");
   "reason"?: import("./common.js").identifier;
+  "coverage": Array<import("./artifacts.js").coverage>;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate");
   "reason"?: import("./common.js").identifier;
+  "coverage": Array<import("./artifacts.js").coverage>;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported");
   "reason"?: import("./common.js").identifier;
+  "coverage": Array<import("./artifacts.js").coverage>;
   "diagnostic": diagnosticHeader;
 }) | ({
   "targetId": import("./common.js").identifier;
   "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale");
   "reason"?: import("./common.js").identifier;
+  "coverage": Array<import("./artifacts.js").coverage>;
   "diagnostic": diagnosticHeader;
 });
 

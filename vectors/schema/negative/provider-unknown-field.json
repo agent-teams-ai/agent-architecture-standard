@@ -3,7 +3,7 @@
   "status": "private-provisional-unpublished",
   "standardVersions": ["0.1.0-rc.1"],
   "envelopeVersions": ["0.1"],
-  "operations": [{ "id": "validate-overlay@1", "aasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777" }],
+  "operations": [{ "version": "1", "id": "validate-overlay@1", "aasIdentity": "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777" }],
   "profiles": [],
   "limits": { "maxInputBytes": 1, "maxDepth": 1, "maxPathSegments": 1, "maxPathBytes": 1, "maxEntries": 1, "maxLogicalBytes": 1, "maxReadBytes": 1, "maxPerEntryBytes": 1, "maxOverlayOperations": 1, "maxTargets": 1, "maxEvidenceReferences": 1, "maxExtensionBytes": 1, "maxDiagnostics": 1, "maxOutputBytes": 1, "maxConcurrency": 1, "maxTotalWork": 1 },
   "extensions": {},
