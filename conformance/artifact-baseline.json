@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "private-conformance-artifact-baseline-v0",
+  "artifacts": {
+    "vectors/json/corpus.json": "sha256:d4cf39a72df13b025b77d4dbf0633cc2cb083684c9d3c178af802d37cfccbb21",
+    "conformance/private/oracle.mjs": "sha256:90648dc61fe92802bbdbb0e9708bafc6667c1468c5d90b4b47e979cb90a8a51e",
+    "conformance/private/runner.mjs": "sha256:b5a9e601a112db8e02371e86360dde7f22a3c2a39c1802d5569c24e060103161",
+    "conformance/private/candidate-admission.mjs": "sha256:3d767514d10aac6296c092bb186fa3091f741472dd53b15d420e2275a1a28076",
+    "conformance/private/candidate-frame.mjs": "sha256:bb07b5ccf1bc97820f94e0b1721a4373613511a162b5d069b6d619a8584e26a4",
+    "conformance/candidates/good-strict-json.mjs": "sha256:0a59217e3e7b9a79ad3aaef86e6b4811ad92b0ee7e46c7d3637b587812208c22"
+  }
+}

@@ -86,6 +86,43 @@ test('result self-identity vector includes the complete closed result projection
   assert.equal(expected, `aas:v0:sha256:${createHash('sha256').update(frame).digest('hex')}`);
 });
 
+test('result validation retains the base global evaluation lookup access trace', async () => {
+  const result = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
+  result.coverage.reverse();
+  result.aasIdentity = computeResultAasIdentity(result);
+  for (const resolution of result.resolutions) resolution.diagnostic.resultAasIdentity = result.aasIdentity;
+  assert.equal(assertResultInvariants(result), result);
+
+  const trace = [];
+  const coverage = result.coverage;
+  for (const [index, item] of coverage.entries()) {
+    const stage = item.stage;
+    Object.defineProperty(item, 'stage', { enumerable: true, get() { trace.push(`stage:${index}`); return stage; } });
+  }
+  let resolutionReads = 0;
+  const resolutions = result.resolutions;
+  Object.defineProperty(result, 'resolutions', {
+    enumerable: true,
+    get() {
+      resolutionReads += 1;
+      trace.push('resolutions');
+      if (resolutionReads === 3) throw new Error('stop-after-evaluation-lookup');
+      return resolutions;
+    },
+  });
+  Object.defineProperty(result, 'coverage', { enumerable: true, get() { trace.push('coverage'); return coverage; } });
+  const identity = result.aasIdentity;
+  Object.defineProperty(result, 'aasIdentity', {
+    enumerable: true,
+    get() { trace.length = 0; return identity; },
+  });
+  assert.throws(() => assertResultInvariants(result), /stop-after-evaluation-lookup/);
+  assert.deepEqual(trace, [
+    'coverage', 'stage:0', 'stage:0', 'stage:1', 'stage:1',
+    'resolutions', 'coverage', 'stage:0', 'stage:1', 'resolutions',
+  ]);
+});
+
 test('result cross-field invariants reject identity, coverage, and count inconsistencies', async () => {
   const original = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
   const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
@@ -304,6 +341,38 @@ test('binding-missing is represented per target without an invented policy or bi
   missingCoordinate.aasIdentity = computeTargetSelectionAasIdentity(missingCoordinate);
   const oneSet = { aasIdentity: '', bindings: [first] }; oneSet.aasIdentity = computeBindingSetAasIdentity(oneSet);
   assert.deepEqual(deriveBindingSelection(oneSet, missingCoordinate).decision, { state: 'absent', reason: 'binding-missing', candidateBindings: [] });
+});
+
+test('two-candidate binding selection caches the base top rank and exact accessor trace', async () => {
+  const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const first = structuredClone(fixtures['binding-required-positive']);
+  first.id = 'binding-z'; first.aasIdentity = computeBindingAasIdentity(first);
+  const second = structuredClone(first); second.id = 'binding-a'; second.aasIdentity = computeBindingAasIdentity(second);
+  const coordinate = { aasIdentity: '', targetId: 'target-1', consumer: first.consumer, repository: first.repository,
+    subjectId: first.scope.subjectId, pathProfile: first.pathProfile, path: 'src/a.ts', ruleId: first.scope.ruleId, rolloutCohorts: [] };
+  coordinate.aasIdentity = computeTargetSelectionAasIdentity(coordinate);
+  const set = { aasIdentity: '', bindings: [first, second] };
+  set.aasIdentity = computeBindingSetAasIdentity(set);
+  const trace = [];
+  for (const [index, binding] of set.bindings.entries()) for (const key of ['subjectId', 'ruleId']) {
+    const value = binding.scope[key];
+    Object.defineProperty(binding.scope, key, { enumerable: true, get() { trace.push(`${index}:${key}`); return value; } });
+  }
+  const selection = deriveBindingSelection(set, coordinate);
+  assert.deepEqual(selection.decision.candidateBindings.map(({ id }) => id), ['binding-z', 'binding-a']);
+  assert.equal(selection.decision.selectedBindingId, 'binding-z');
+  assert.deepEqual(trace, [
+    '0:subjectId', '0:ruleId', '1:subjectId', '1:ruleId',
+    '0:subjectId', '0:ruleId', '1:subjectId', '1:ruleId',
+    '0:subjectId', '0:subjectId', '0:ruleId', '0:ruleId',
+    '1:subjectId', '1:subjectId', '1:ruleId', '1:ruleId',
+    '1:subjectId', '1:ruleId', '0:subjectId', '0:ruleId',
+    '0:subjectId', '0:ruleId', '0:subjectId', '0:ruleId',
+    '1:subjectId', '1:ruleId', '0:ruleId', '0:subjectId',
+    '0:ruleId', '0:subjectId', '1:ruleId', '1:subjectId',
+    '0:ruleId', '0:subjectId', '0:subjectId', '0:ruleId',
+    '0:subjectId', '0:ruleId', '1:subjectId', '1:ruleId',
+  ]);
 });
 
 test('componentwise minimum iterates safely across the maximum 100000-target source count', async () => {

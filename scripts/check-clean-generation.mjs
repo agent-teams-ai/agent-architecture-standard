@@ -3,6 +3,10 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { root, walk } from './files.mjs';
+import { computeProfileAasIdentity } from '../lib/identity-framing.mjs';
+import { assertProfileSourceClosure, createProfileSourceBoundary } from './profile-source-closure.mjs';
+
+await assertProfileSourceClosure(createProfileSourceBoundary(root), computeProfileAasIdentity);
 const temporary = await mkdtemp(path.join(tmpdir(), 'aas-generation-'));
 try {
   const result = spawnSync(process.execPath, [path.join(root, 'scripts/generate.mjs')], { cwd: root, env: { ...process.env, AAS_GENERATE_ROOT: temporary }, encoding: 'utf8' });
