@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assertPortablePackageInventory } from '../scripts/package-paths.mjs';
+import { assertPortablePath, assertPortablePathCollection } from '../lib/portable-path.mjs';
 import { runNpmSync } from '../scripts/run-npm.mjs';
 
 test('npm runs its JavaScript CLI directly on Windows without a command shell', () => {
@@ -71,11 +72,21 @@ test('manifest/package paths are lowercase ASCII POSIX and Windows-safe', () => 
   assert.throws(() => assertPortablePackageInventory(['schemas/con.json']), /non-portable/);
   assert.throws(() => assertPortablePackageInventory(['schemas/lpt9.fixture']), /non-portable/);
   assert.throws(() => assertPortablePackageInventory(['schemas/trailing.']), /non-portable/);
-  assert.doesNotThrow(() => assertPortablePackageInventory(['README.md', 'LICENSE', 'schemas/readme.md']));
+  assert.doesNotThrow(() => assertPortablePackageInventory(['README.md', 'LICENSE', 'GOVERNANCE.md', 'schemas/readme.md']));
 });
 
 test('package paths enforce byte and segment bounds', () => {
   assert.throws(() => assertPortablePackageInventory([`${'a'.repeat(256)}.json`]), /bounded/);
   assert.throws(() => assertPortablePackageInventory([Array(65).fill('a').join('/')]), /bounded/);
   assert.throws(() => assertPortablePackageInventory([`${'a'.repeat(250)}/${'b'.repeat(250)}/`.repeat(9) + 'x']), /bounded/);
+});
+
+test('shared portable-path profile enforces Unicode, UTF-8, Windows, and collection rules', () => {
+  assert.doesNotThrow(() => assertPortablePath('src/café/file.json'));
+  for (const invalid of [
+    'src/cafe\u0301.json', 'src/con.txt', 'src/file. ', 'src/a\u0001b',
+    'src/a\u202eb', String.raw`src\file.json`, 'C:/file.json', '/absolute/file.json'
+  ]) assert.throws(() => assertPortablePath(invalid), /invalid portable path/, invalid);
+  assert.throws(() => assertPortablePath(`src/${'é'.repeat(128)}`), /255 UTF-8 bytes/);
+  assert.throws(() => assertPortablePathCollection(['src/STRASSE', 'src/straße']), /colliding/);
 });

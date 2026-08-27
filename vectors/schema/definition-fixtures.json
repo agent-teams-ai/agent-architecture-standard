@@ -231,7 +231,7 @@
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
-    "scope": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+    "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -241,6 +241,7 @@
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
+    "accountingProfile": { "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -269,7 +270,7 @@
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
-    "scope": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+    "scope": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
     "rolloutScope": "all",
     "mode": "required",
     "policyAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
@@ -279,6 +280,7 @@
         "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     ],
+    "accountingProfile": { "id": "accounting@1", "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
     "budgets": {
       "maxInputBytes": 100,
       "maxDepth": 8,
@@ -845,7 +847,7 @@
       "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
     },
     "envelope": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -854,7 +856,7 @@
       }
     },
     "schemaBundle": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -863,7 +865,7 @@
       }
     },
     "registryEdition": {
-      "version": "0.1.0-rc.1",
+      "version": "1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -872,7 +874,7 @@
       }
     },
     "vectorSuite": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -881,7 +883,7 @@
       }
     },
     "conformanceSuite": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1098,7 +1100,7 @@
       "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111"
     },
     "envelope": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1107,7 +1109,7 @@
       }
     },
     "schemaBundle": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1116,7 +1118,7 @@
       }
     },
     "registryEdition": {
-      "version": "0.1.0-rc.1",
+      "version": "1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1125,7 +1127,7 @@
       }
     },
     "vectorSuite": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1134,7 +1136,7 @@
       }
     },
     "conformanceSuite": {
-      "version": "0.1.0-rc.1",
+      "version": "0.1",
       "artifact": {
         "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -1242,7 +1244,7 @@
     ],
     "unexpected": true
   },
-  "binding-scope-positive": { "kind": "rule", "root": "src", "ruleId": "rule-1" },
+  "binding-scope-positive": { "repositoryRoot": "src", "subjectId": "subject-1", "ruleId": "rule-1" },
   "binding-scope-negative": "src",
   "pagination-cursor-positive": {
     "kind": "pagination-cursor",

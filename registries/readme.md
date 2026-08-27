@@ -11,9 +11,11 @@ NOT support a public claim.
 
 | Registry file | Owns | Edition | Status |
 | --- | --- | --- | --- |
+| [`actions.json`](actions.json) | closed remediation action identifiers | 1 | provisional |
 | [`operations.json`](operations.json) | operation identifiers and profile association | 1 | provisional |
-| [`resolutions.json`](resolutions.json) | closed core resolution and problem reason identifiers | 1 | provisional |
-| [`diagnostics.json`](diagnostics.json) | stable diagnostic and remediation action codes | 1 | provisional |
+| [`problems.json`](problems.json) | closed envelope negotiation problem codes | 1 | provisional |
+| [`resolutions.json`](resolutions.json) | closed core resolution identifiers | 1 | provisional |
+| [`diagnostics.json`](diagnostics.json) | stable diagnostic codes | 1 | provisional |
 | [`profiles.json`](profiles.json) | core canonicalization, path, security, and conformance profile IDs | 1 | provisional |
 | [`extensions.json`](extensions.json) | centrally reserved extension IDs and allowed locations | 1 | provisional |
 | [`envelope-versions.json`](envelope-versions.json) | immutable envelope versions and deterministic ordering | 1 | provisional |
@@ -26,7 +28,14 @@ edition, prior edition, and change record. Its own raw `contentDigest`, artifact
 `aasIdentity`, byte length, media type, approvals, and qualification evidence
 MUST be recorded only in a later external qualification sidecar that points to
 the finalized registry artifact. The registry artifact MUST NOT point back to
-that sidecar or contain its own digest or identity. Every entry records:
+that sidecar or contain its own digest or identity.
+
+The checklist below applies to admission beyond `provisional`; it is not a
+claim that edition-1 placeholders have passed admission. A provisional
+pre-admission entry may retain an empty `vectors` array, but MUST remain
+provisional, MUST NOT support a conformance or publication claim, and MUST gain
+language-neutral positive and negative vectors before activation. An admitted
+entry records:
 
 - exact identifier and kind;
 - `provisional`, `active`, `deprecated`, `withdrawn`, or `reserved` status;

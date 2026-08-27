@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "0.1",
+  "status": "private-provisional-unqualified",
+  "cases": [
+    {
+      "caseId": "problem-no-common-envelope-version-positive",
+      "registry": "problems",
+      "id": "aas.problem.no-common-envelope-version",
+      "input": { "reader": ["0.1"], "writer": [] },
+      "expected": { "recognized": true, "outcome": "problem" }
+    },
+    {
+      "caseId": "problem-no-common-envelope-version-negative-alias",
+      "registry": "problems",
+      "id": "AAS.PROBLEM.NO-COMMON-ENVELOPE-VERSION",
+      "input": { "reader": ["0.1"], "writer": [] },
+      "expected": { "recognized": false, "outcome": "unknown-identifier" }
+    }
+  ]
+}

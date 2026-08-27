@@ -1,0 +1,10 @@
+{
+  "registry": "problems",
+  "edition": "1",
+  "previousEdition": null,
+  "status": "provisional",
+  "entries": [
+    { "id": "aas.problem.no-common-envelope-version", "kind": "problem", "owner": "AAS normative maintainers", "contact": "GOVERNANCE.md", "status": "provisional", "semanticAuthority": "version-matrix.json", "introducedEdition": "1", "vectors": ["vectors/registry/corpus.json"], "collisionReview": "Closed private provisional negotiation problem code." }
+  ],
+  "changes": ["Initial closed provisional problem-code registry."]
+}

@@ -86,7 +86,10 @@
         "omissionCount": { "$ref": "common.schema.json#/$defs/nonnegativeInteger" },
         "omissionReasons": { "type": "array", "maxItems": 1024, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/identifier" } },
         "nextAction": { "$ref": "common.schema.json#/$defs/identifier" }
-      }
+      },
+      "allOf": [
+        { "if": { "properties": { "resolution": { "const": "decided" } }, "required": ["resolution"] }, "then": { "properties": { "verdict": { "enum": ["pass", "fail", "not-applicable"] } }, "required": ["verdict"] }, "else": { "properties": { "verdict": false } } }
+      ]
     },
     "remediationAction": {
       "type": "object", "additionalProperties": false,
@@ -190,7 +193,10 @@
         "verdict": { "enum": ["pass", "fail", "not-applicable"] },
         "reason": { "$ref": "common.schema.json#/$defs/identifier" },
         "diagnostic": { "$ref": "#/$defs/diagnosticHeader" }
-      }
+      },
+      "allOf": [
+        { "if": { "properties": { "resolution": { "const": "decided" } }, "required": ["resolution"] }, "then": { "properties": { "verdict": { "enum": ["pass", "fail", "not-applicable"] } }, "required": ["verdict"] }, "else": { "properties": { "verdict": false } } }
+      ]
     },
     "result": {
       "type": "object", "additionalProperties": false,

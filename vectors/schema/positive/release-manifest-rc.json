@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "aasIdentity": "aas:v0:sha256:64512caa34609fdd79b65ee73cc3fa1bce56ad72a16dd7897284443272a1223f",
   "cohort": "aas-rc-cohort",
   "maturity": "experimental",
   "members": [

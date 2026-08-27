@@ -20,6 +20,14 @@ export type canonicalSemVer = ConstrainedString;
 
 export type envelopeVersion = "0.1";
 
+export type schemaBundleVersion = "0.1";
+
+export type registryEdition = "1";
+
+export type vectorSuiteVersion = "0.1";
+
+export type conformanceSuiteVersion = "0.1";
+
 export type portablePath = ConstrainedString;
 
 export type extensionMap = {

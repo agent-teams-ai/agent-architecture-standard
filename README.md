@@ -78,7 +78,7 @@ incubation, and security responder for private incubation. The independent
 conformance maintainer and release maintainer are unassigned, and no namespace
 custodian is assigned or recorded. See [GOVERNANCE.md](GOVERNANCE.md),
 [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
-[repository decision index](docs/decisions/README.md).
+[current decision packet](decisions/phase-0-d0-d11-v2.md).
 
 ## Research provenance
 

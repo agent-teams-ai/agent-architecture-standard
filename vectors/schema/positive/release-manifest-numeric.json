@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "aasIdentity": "aas:v0:sha256:420f91d79236a06d95cfadc8271998505461bd4df0b1af30d5b3b55b51d8021e",
   "cohort": "aas-numeric-cohort",
   "maturity": "experimental",
   "members": [
@@ -8,20 +8,20 @@
       "name": "aas-core",
       "version": "0.1.0",
       "artifact": {
-        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "byteLength": 1,
         "mediaType": "application/json"
       },
       "provenance": {
-        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "byteLength": 1,
         "mediaType": "application/json"
       },
       "sbom": {
-        "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "byteLength": 1,
         "mediaType": "application/json"
       }
@@ -41,7 +41,7 @@
     "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444"
   ],
   "claims": [
-    "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555"
+    "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   ],
   "traceabilityMatrices": [
     "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666"
@@ -54,48 +54,48 @@
   "sourceCommit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "releaseCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "qualificationSidecars": [
-    "aas:v0:sha256:7777777777777777777777777777777777777777777777777777777777777777"
+    "aas:v0:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
   ],
   "releaseEvidence": {
     "registryInstallation": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "packageInventory": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "upgrade": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "downgrade": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "publicApi": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "rollback": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     },
     "consumerCanary": {
-      "aasIdentity": "aas:v0:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "aasIdentity": "aas:v0:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "byteLength": 1,
       "mediaType": "application/json"
     }
@@ -105,9 +105,9 @@
   ],
   "completionStatus": "complete",
   "approvalSidecars": {
-    "normative": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
-    "conformance": "aas:v0:sha256:9999999999999999999999999999999999999999999999999999999999999999",
-    "release": "aas:v0:sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    "normative": "aas:v0:sha256:1212121212121212121212121212121212121212121212121212121212121212",
+    "conformance": "aas:v0:sha256:3434343434343434343434343434343434343434343434343434343434343434",
+    "release": "aas:v0:sha256:5656565656565656565656565656565656565656565656565656565656565656"
   },
   "limitations": [],
   "supportedVersions": [

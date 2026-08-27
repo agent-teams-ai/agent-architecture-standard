@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { assertResultInvariants } from '../lib/result-validation.mjs';
+import { assertRequestResultInvariants, assertResultInvariants, computeResultAasIdentity } from '../lib/result-validation.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const canonicalize = (value) => {
@@ -43,5 +43,30 @@ test('result cross-field invariants reject identity, coverage, and count inconsi
   for (const mutate of mutations) {
     const value = structuredClone(original); mutate(value);
     assert.throws(() => assertResultInvariants(value), /invalid AAS result/);
+  }
+});
+
+test('request/result joint validation closes ordered targets and duplicated decisions', async () => {
+  const fixtures = parseStrictJson(await readFile(new URL('../vectors/schema/definition-fixtures.json', import.meta.url)));
+  const original = parseStrictJson(await readFile(new URL('../vectors/schema/positive/result.json', import.meta.url)));
+  assert.doesNotThrow(() => assertRequestResultInvariants(fixtures['request-positive'], original));
+  const resign = (value) => {
+    const identity = computeResultAasIdentity(value);
+    value.aasIdentity = identity;
+    for (const resolution of value.resolutions) resolution.diagnostic.resultAasIdentity = identity;
+  };
+  const mutations = [
+    (request) => { request.targets.push(structuredClone(request.targets[0])); },
+    (request, result) => { result.resolutions[0].targetId = 'other'; result.resolutions[0].diagnostic.targetId = 'other'; },
+    (request, result) => { result.resolutions[0].diagnostic.targetId = 'other'; },
+    (request, result) => { result.resolutions[0].diagnostic.resolution = 'unsupported'; },
+    (request, result) => { delete result.resolutions[0].verdict; },
+    (request, result) => { result.resolutions[0].resolution = 'unsupported'; result.resolutions[0].diagnostic.resolution = 'unsupported'; }
+  ];
+  for (const mutate of mutations) {
+    const request = structuredClone(fixtures['request-positive']);
+    const result = structuredClone(original);
+    mutate(request, result); resign(result);
+    assert.throws(() => assertResultInvariants(result, request), /invalid AAS (?:result|request|request\/result pair)/);
   }
 });

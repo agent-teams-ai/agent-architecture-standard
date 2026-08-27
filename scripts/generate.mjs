@@ -11,6 +11,47 @@ for (const schemaPath of schemaPaths) schemaMap.set(path.basename(schemaPath), p
 
 const literal = (value) => JSON.stringify(value);
 const typeName = (value) => value.replace(/[^A-Za-z0-9_$]/g, '_');
+function plainObjectType(schema, document) {
+  if ((schema.additionalProperties === false || schema.additionalProperties === undefined) && Object.keys(schema.properties ?? {}).length === 0 && schema.maxProperties === 0) {
+    return 'Record<PropertyKey, never>';
+  }
+  const required = new Set(schema.required ?? []);
+  const fields = Object.entries(schema.properties ?? {}).map(([key, value]) => `  ${JSON.stringify(key)}${required.has(key) ? '' : '?'}: ${typeFor(value, document)};`);
+  if (schema.additionalProperties && schema.additionalProperties !== false) fields.push(`  [key: string]: ${schema.additionalProperties === true ? 'JsonValue' : typeFor(schema.additionalProperties, document)};`);
+  return `{\n${fields.join('\n')}\n}`;
+}
+
+function conditionalObjectType(schema, document) {
+  if (!Array.isArray(schema.allOf) || schema.allOf.length !== 1) return undefined;
+  const conditional = schema.allOf[0];
+  const discriminators = Object.entries(conditional.if?.properties ?? {});
+  if (discriminators.length !== 1) return undefined;
+  const [key, selection] = discriminators[0];
+  const baseSelection = schema.properties?.[key];
+  const allValues = baseSelection?.enum ?? ('const' in (baseSelection ?? {}) ? [baseSelection.const] : undefined);
+  const selected = selection.enum ?? ('const' in selection ? [selection.const] : undefined);
+  if (!allValues || !selected || !conditional.then) return undefined;
+  const makeBranch = (values, effect = {}) => {
+    if (values.length === 0) return undefined;
+    const branch = { ...schema, properties: { ...schema.properties }, required: [...(schema.required ?? [])] };
+    delete branch.allOf;
+    branch.properties[key] = values.length === 1 ? { const: values[0] } : { enum: values };
+    const required = new Set(branch.required);
+    for (const [property, constraint] of Object.entries(effect.properties ?? {})) {
+      if (constraint === false) { delete branch.properties[property]; required.delete(property); }
+      else branch.properties[property] = constraint;
+    }
+    for (const property of effect.required ?? []) required.add(property);
+    branch.required = [...required];
+    return plainObjectType(branch, document);
+  };
+  const selectedSet = new Set(selected);
+  const branches = [
+    ...allValues.filter((value) => selectedSet.has(value)).map((value) => makeBranch([value], conditional.then)),
+    ...allValues.filter((value) => !selectedSet.has(value)).map((value) => makeBranch([value], conditional.else))
+  ];
+  return branches.filter(Boolean).map((branch) => `(${branch})`).join(' | ');
+}
 function typeFor(schema, document) {
   if (schema === true) return 'JsonValue';
   if (schema === false) return 'never';
@@ -36,13 +77,7 @@ function typeFor(schema, document) {
   if (schema.type === 'null') return 'null';
   if (schema.type === 'array') return `Array<${typeFor(schema.items ?? true, document)}>`;
   if (schema.type === 'object' || schema.properties || schema.additionalProperties) {
-    if ((schema.additionalProperties === false || schema.additionalProperties === undefined) && Object.keys(schema.properties ?? {}).length === 0 && schema.maxProperties === 0) {
-      return 'Record<PropertyKey, never>';
-    }
-    const required = new Set(schema.required ?? []);
-    const fields = Object.entries(schema.properties ?? {}).map(([key, value]) => `  ${JSON.stringify(key)}${required.has(key) ? '' : '?'}: ${typeFor(value, document)};`);
-    if (schema.additionalProperties && schema.additionalProperties !== false) fields.push(`  [key: string]: ${schema.additionalProperties === true ? 'JsonValue' : typeFor(schema.additionalProperties, document)};`);
-    return `{\n${fields.join('\n')}\n}`;
+    return conditionalObjectType(schema, document) ?? plainObjectType(schema, document);
   }
   throw new Error(`unsupported schema shape in ${document.$id ?? '<anonymous>'}`);
 }

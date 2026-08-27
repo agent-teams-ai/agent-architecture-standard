@@ -26,8 +26,8 @@ test('prototype-sensitive keys remain inert on null-prototype objects', async ()
   assert.equal({}.polluted, undefined);
 });
 test('valid JSON spellings that decode to safe integers are accepted', () => {
-  const parsed = parseStrictJson(Buffer.from('{"decimal":1.0,"exponent":1e0,"negative":-2.00e+1}'));
-  assert.deepEqual({ ...parsed }, { decimal: 1, exponent: 1, negative: -20 });
+  const parsed = parseStrictJson(Buffer.from('{"decimal":1.0,"exponent":1e0,"negative":-2.00e+1,"zeroPadded":1e000000000,"zeroPaddedNegative":10e-000000001}'));
+  assert.deepEqual({ ...parsed }, { decimal: 1, exponent: 1, negative: -20, zeroPadded: 1, zeroPaddedNegative: 1 });
 });
 test('non-integer and negative-zero numbers are rejected', async () => {
   await reject('fraction.json', 'aas.json.invalid-number');

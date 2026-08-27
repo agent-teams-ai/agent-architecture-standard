@@ -4,24 +4,86 @@ export type ConstrainedString = string & { readonly __aasConstrainedString: uniq
 export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
 export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
 
-export type AASRegistryEdition = {
-  "registry": "operations" | "resolutions" | "diagnostics" | "profiles" | "extensions" | "envelope-versions";
+export type AASRegistryEdition = ({
+  "registry": "envelope-versions";
   "edition": ConstrainedString;
   "previousEdition": ConstrainedString | null;
   "status": "provisional";
   "entries": Array<{
-  "id": (import("./common.js").identifier) | (import("./common.js").envelopeVersion);
-  "kind": ConstrainedString;
-  "owner": ConstrainedString;
-  "contact": ConstrainedString;
-  "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
-  "semanticAuthority": ConstrainedString;
-  "introducedEdition": ConstrainedString;
-  "replacement"?: import("./common.js").identifier;
-  "semanticsAasIdentity"?: import("./common.js").aasIdentity;
-  "orderingRank"?: JsonInteger;
-  "vectors": Array<ConstrainedString>;
-  "collisionReview": ConstrainedString;
+  "id"?: import("./common.js").envelopeVersion;
+  "kind"?: "envelope-version";
+  "orderingRank": JsonInteger;
+  "replacement"?: import("./common.js").envelopeVersion;
 }>;
   "changes": Array<ConstrainedString>;
-};
+}) | ({
+  "registry": "actions";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "operations";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "problems";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "resolutions";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "diagnostics";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "profiles";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": "extensions";
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": Array<{
+  "id"?: import("./common.js").identifier;
+  "replacement"?: import("./common.js").identifier;
+}>;
+  "changes": Array<ConstrainedString>;
+});

@@ -4,13 +4,38 @@
   "title": "AAS conformance claim, report, release manifest, and qualification sidecar",
   "x-aas-status": "private-provisional-unpublished",
   "$defs": {
-    "versionedArtifact": {
+    "standardVersionedArtifact": {
       "type": "object", "additionalProperties": false,
       "required": ["version", "artifact"],
       "properties": {
         "version": { "$ref": "common.schema.json#/$defs/canonicalSemVer" },
         "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" }
       }
+    },
+    "envelopeVersionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": { "version": { "$ref": "common.schema.json#/$defs/envelopeVersion" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+    },
+    "schemaBundleVersionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": { "version": { "$ref": "common.schema.json#/$defs/schemaBundleVersion" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+    },
+    "registryEditionVersionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": { "version": { "$ref": "common.schema.json#/$defs/registryEdition" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+    },
+    "vectorSuiteVersionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": { "version": { "$ref": "common.schema.json#/$defs/vectorSuiteVersion" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } }
+    },
+    "conformanceSuiteVersionedArtifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "artifact"],
+      "properties": { "version": { "$ref": "common.schema.json#/$defs/conformanceSuiteVersion" }, "artifact": { "$ref": "common.schema.json#/$defs/artifactRef" } }
     },
     "claimedProfile": {
       "type": "object", "additionalProperties": false,
@@ -61,13 +86,13 @@
         "qualification": { "const": "unqualified" },
         "claimant": { "type": "string", "minLength": 1, "maxLength": 255 },
         "providerArtifact": { "$ref": "common.schema.json#/$defs/artifactRef" },
-        "standard": { "$ref": "#/$defs/versionedArtifact" },
+        "standard": { "$ref": "#/$defs/standardVersionedArtifact" },
         "canonicalizationProfile": { "$ref": "#/$defs/versionedProfile" },
-        "envelope": { "$ref": "#/$defs/versionedArtifact" },
-        "schemaBundle": { "$ref": "#/$defs/versionedArtifact" },
-        "registryEdition": { "$ref": "#/$defs/versionedArtifact" },
-        "vectorSuite": { "$ref": "#/$defs/versionedArtifact" },
-        "conformanceSuite": { "$ref": "#/$defs/versionedArtifact" },
+        "envelope": { "$ref": "#/$defs/envelopeVersionedArtifact" },
+        "schemaBundle": { "$ref": "#/$defs/schemaBundleVersionedArtifact" },
+        "registryEdition": { "$ref": "#/$defs/registryEditionVersionedArtifact" },
+        "vectorSuite": { "$ref": "#/$defs/vectorSuiteVersionedArtifact" },
+        "conformanceSuite": { "$ref": "#/$defs/conformanceSuiteVersionedArtifact" },
         "profiles": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/claimedProfile" } },
         "supportedPlatforms": { "type": "array", "minItems": 1, "maxItems": 128, "items": { "$ref": "#/$defs/platform" } },
         "unsupportedAreas": { "type": "array", "maxItems": 1024, "items": { "type": "string", "minLength": 1, "maxLength": 1024 } },

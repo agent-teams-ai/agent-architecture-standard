@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["registry", "edition", "previousEdition", "status", "entries", "changes"],
   "properties": {
-    "registry": { "enum": ["operations", "resolutions", "diagnostics", "profiles", "extensions", "envelope-versions"] },
+    "registry": { "enum": ["actions", "operations", "problems", "resolutions", "diagnostics", "profiles", "extensions", "envelope-versions"] },
     "edition": { "type": "string", "pattern": "^[1-9][0-9]*$" },
     "previousEdition": { "type": ["string", "null"], "pattern": "^[1-9][0-9]*$" },
     "status": { "const": "provisional" },

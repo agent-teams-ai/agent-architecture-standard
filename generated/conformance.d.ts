@@ -4,8 +4,33 @@ export type ConstrainedString = string & { readonly __aasConstrainedString: uniq
 export type JsonInteger = number & { readonly __aasSafeInteger: unique symbol };
 export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonValue[] | { [key: string]: JsonValue };
 
-export type versionedArtifact = {
+export type standardVersionedArtifact = {
   "version": import("./common.js").canonicalSemVer;
+  "artifact": import("./common.js").artifactRef;
+};
+
+export type envelopeVersionedArtifact = {
+  "version": import("./common.js").envelopeVersion;
+  "artifact": import("./common.js").artifactRef;
+};
+
+export type schemaBundleVersionedArtifact = {
+  "version": import("./common.js").schemaBundleVersion;
+  "artifact": import("./common.js").artifactRef;
+};
+
+export type registryEditionVersionedArtifact = {
+  "version": import("./common.js").registryEdition;
+  "artifact": import("./common.js").artifactRef;
+};
+
+export type vectorSuiteVersionedArtifact = {
+  "version": import("./common.js").vectorSuiteVersion;
+  "artifact": import("./common.js").artifactRef;
+};
+
+export type conformanceSuiteVersionedArtifact = {
+  "version": import("./common.js").conformanceSuiteVersion;
   "artifact": import("./common.js").artifactRef;
 };
 
@@ -43,13 +68,13 @@ export type claim = {
   "qualification": "unqualified";
   "claimant": ConstrainedString;
   "providerArtifact": import("./common.js").artifactRef;
-  "standard": versionedArtifact;
+  "standard": standardVersionedArtifact;
   "canonicalizationProfile": versionedProfile;
-  "envelope": versionedArtifact;
-  "schemaBundle": versionedArtifact;
-  "registryEdition": versionedArtifact;
-  "vectorSuite": versionedArtifact;
-  "conformanceSuite": versionedArtifact;
+  "envelope": envelopeVersionedArtifact;
+  "schemaBundle": schemaBundleVersionedArtifact;
+  "registryEdition": registryEditionVersionedArtifact;
+  "vectorSuite": vectorSuiteVersionedArtifact;
+  "conformanceSuite": conformanceSuiteVersionedArtifact;
   "profiles": Array<claimedProfile>;
   "supportedPlatforms": Array<platform>;
   "unsupportedAreas": Array<ConstrainedString>;

@@ -5,6 +5,7 @@ import { root, walk, readJson } from './files.mjs';
 import { assertAcyclicSchemaGraph } from '../lib/schema-graph.mjs';
 import { OfflineSchemaRegistry } from '../lib/schema-registry.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
+import { assertRegistryInvariants, assertRegistryVectorInvariants } from '../lib/registry-validation.mjs';
 
 const schemaPaths = (await walk('schemas')).filter((item) => item.endsWith('.schema.json'));
 const schemas = await Promise.all(schemaPaths.map(readJson));
@@ -24,11 +25,14 @@ const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true, 
 ajv.addKeyword({ keyword: 'x-aas-status', schemaType: 'string', valid: true });
 for (const schema of schemas) ajv.addSchema(schema);
 for (const schema of schemas) ajv.getSchema(schema.$id);
+const schemaByName = new Map(schemaPaths.map((relative, index) => [path.basename(relative), schemas[index]]));
+const commonDefinitions = schemaByName.get('common.schema.json').$defs;
 const registryValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/registry.schema.json');
 const registryVectorPaths = new Set();
 for (const relative of (await walk('registries')).filter((item) => item.endsWith('.json'))) {
   const data = await readJson(relative);
   if (!registryValidator(data)) throw new Error(`${relative}: ${ajv.errorsText(registryValidator.errors)}`);
+  assertRegistryInvariants(data, relative);
   const entryIds = data.entries.map((entry) => entry.id);
   if (new Set(entryIds).size !== entryIds.length) throw new Error(`${relative}: duplicate registry identifier`);
   if (data.status !== 'provisional' || data.entries.some((entry) => entry.status !== 'provisional')) throw new Error(`${relative}: every Phase 1 identifier must be provisional`);
@@ -38,10 +42,27 @@ for (const relative of (await walk('registries')).filter((item) => item.endsWith
     if (ranks.some((rank) => !Number.isSafeInteger(rank)) || new Set(ranks).size !== ranks.length) throw new Error(`${relative}: envelope ordering ranks must be unique safe integers`);
   }
 }
+const envelopeRegistry = await readJson('registries/envelope-versions.json');
+const resolutionRegistry = await readJson('registries/resolutions.json');
+const envelopeValues = envelopeRegistry.entries.map((entry) => entry.id);
+const resolutionValues = resolutionRegistry.entries.map((entry) => entry.id);
+const envelopeSchema = schemaByName.get('envelope.schema.json');
+if (JSON.stringify(commonDefinitions.envelopeVersion.enum) !== JSON.stringify(envelopeValues)) throw new Error('envelope-version schema enum drift from registry');
+for (const definition of ['diagnosticHeader', 'resolution']) {
+  if (JSON.stringify(envelopeSchema.$defs[definition].properties.resolution.enum) !== JSON.stringify(resolutionValues)) throw new Error(`${definition} resolution enum drift from registry`);
+}
+const matrix = await readJson('version-matrix.json');
+const axes = new Map([
+  ['schemaBundle', 'schemaBundleVersion'], ['registryEdition', 'registryEdition'],
+  ['vectorSuite', 'vectorSuiteVersion'], ['conformanceSuite', 'conformanceSuiteVersion']
+]);
+if (JSON.stringify(matrix.supported.envelopeVersions) !== JSON.stringify(envelopeValues)) throw new Error('version matrix envelope versions drift from registry');
+for (const [matrixKey, definition] of axes) if (!commonDefinitions[definition].enum.includes(matrix.supported[matrixKey])) throw new Error(`version matrix ${matrixKey} is outside its axis-specific schema registry`);
 const manifestValidator = ajv.getSchema('https://schemas.aas.invalid/private/v0/artifact-manifest.schema.json');
 const manifest = await readJson('artifacts.json');
 if (!manifestValidator(manifest)) throw new Error(`artifacts.json: ${ajv.errorsText(manifestValidator.errors)}`);
 assertPortablePackageInventory(manifest.artifacts.map((entry) => entry.path), 'manifest');
+for (const relative of (await walk('registries')).filter((item) => item.endsWith('.json'))) assertRegistryVectorInvariants(await readJson(relative), manifest);
 const manifestPaths = new Set(manifest.artifacts.map((entry) => entry.path));
 for (const vector of registryVectorPaths) if (!manifestPaths.has(vector)) throw new Error(`registry vector is not manifest-owned: ${vector}`);
 for (const entry of manifest.artifacts) {

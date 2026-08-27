@@ -20,4 +20,9 @@ test('checked-in private provisional negotiation matrix uses registry-owned orde
   assert.equal(matrix.identityRules.constructorsPresent, false);
   assert.match(matrix.identityRules.historicalDecoding, /retain original schema/);
   assert.match(matrix.identityRules.withdrawnProfile, /historical interpretation retained/);
+  assert.deepEqual(matrix.supported.envelopeVersions, versionRegistry.entries.map((entry) => entry.id));
+  assert.equal(matrix.supported.schemaBundle, '0.1');
+  assert.equal(matrix.supported.registryEdition, '1');
+  assert.equal(matrix.supported.vectorSuite, '0.1');
+  assert.equal(matrix.supported.conformanceSuite, '0.1');
 });

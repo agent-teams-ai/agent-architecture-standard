@@ -12,7 +12,8 @@ const run = (args, cwd = root) => runNpmSync(args, { cwd, encoding: 'utf8', env:
 try {
   const inventory = JSON.parse(run(['pack', '--json', '--dry-run']))[0].files.map((entry) => entry.path).sort();
   const manifest = await readJson('artifacts.json');
-  const expectedInventory = ['LICENSE', 'README.md', 'package.json', 'artifacts.json', ...manifest.artifacts.map((entry) => entry.path)].sort();
+  const rootPackageFiles = ['LICENSE', 'README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'package.json', 'artifacts.json'];
+  const expectedInventory = [...rootPackageFiles, ...manifest.artifacts.map((entry) => entry.path)].sort();
   if (JSON.stringify(inventory) !== JSON.stringify(expectedInventory)) throw new Error(`packed inventory drift\nexpected: ${expectedInventory.join('\n')}\nactual: ${inventory.join('\n')}`);
   assertPortablePackageInventory(inventory);
   for (let pass = 0; pass < 2; pass++) run(['pack', '--pack-destination', temporary]);
@@ -47,7 +48,7 @@ try {
     if (bytes.byteLength !== entry.byteLength) throw new Error(`installed byte length drift: ${entry.path}`);
     if (sha256(bytes) !== entry.contentDigest) throw new Error(`installed artifact digest drift: ${entry.path}`);
   }
-  for (const relative of ['LICENSE', 'README.md', 'package.json', 'artifacts.json']) {
+  for (const relative of rootPackageFiles) {
     if (sha256(await readFile(path.join(installedRoot, relative))) !== sha256(await readFile(path.join(root, relative)))) throw new Error(`installed package root artifact drift: ${relative}`);
   }
   const sourcePackage = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
@@ -71,15 +72,25 @@ try {
     wildcardTargets.push(...exported);
   }
   const markdownLink = /\[[^\]]+\]\(([^)]+)\)/g;
-  for (const entry of manifest.artifacts.filter((item) => item.mediaType === 'text/markdown')) {
-    const source = await readFile(path.join(installedRoot, entry.path), 'utf8');
+  const markdownPaths = ['README.md', ...manifest.artifacts.filter((item) => item.mediaType === 'text/markdown').map((item) => item.path)];
+  for (const relative of new Set(markdownPaths)) {
+    const source = await readFile(path.join(installedRoot, relative), 'utf8');
     for (const match of source.matchAll(markdownLink)) {
       const rawTarget = match[1].split('#', 1)[0];
       if (!rawTarget || /^[a-z][a-z0-9+.-]*:/i.test(rawTarget)) continue;
-      const target = path.resolve(path.dirname(path.join(installedRoot, entry.path)), decodeURIComponent(rawTarget));
-      if (!target.startsWith(`${installedRoot}${path.sep}`)) throw new Error(`installed markdown link escapes package: ${entry.path} -> ${rawTarget}`);
+      const target = path.resolve(path.dirname(path.join(installedRoot, relative)), decodeURIComponent(rawTarget));
+      if (!target.startsWith(`${installedRoot}${path.sep}`)) throw new Error(`installed markdown link escapes package: ${relative} -> ${rawTarget}`);
       await access(target);
       await stat(target);
+    }
+  }
+  for (const entry of manifest.artifacts.filter((item) => item.class === 'registry')) {
+    const registry = JSON.parse(await readFile(path.join(installedRoot, entry.path), 'utf8'));
+    for (const record of registry.entries) {
+      const contact = record.contact.split('#', 1)[0];
+      if (!contact || /^[a-z][a-z0-9+.-]*:/i.test(contact)) throw new Error(`registry contact must be an installed package-relative reference: ${entry.path}/${record.id}`);
+      const target = path.resolve(installedRoot, decodeURIComponent(contact));
+      if (!target.startsWith(`${installedRoot}${path.sep}`) || !installedInventory.includes(path.relative(installedRoot, target).split(path.sep).join('/'))) throw new Error(`registry contact is absent from package: ${entry.path}/${record.id} -> ${record.contact}`);
     }
   }
 
