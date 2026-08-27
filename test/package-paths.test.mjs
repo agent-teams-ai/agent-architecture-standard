@@ -108,13 +108,16 @@ test('pnpm launcher cannot resolve from a malicious workspace or relative tool h
 });
 
 test('evidence toolchain pin and output path are fail-closed', () => {
+  const platformRoot = path.parse(process.cwd()).root;
+  const workspace = path.join(platformRoot, 'workspace', 'repo');
+  const outsideEvidencePath = path.join(platformRoot, 'runner', 'temp', 'evidence.json');
   assert.equal(parsePinnedPnpmVersion('pnpm@11.24.0'), '11.24.0');
   for (const value of ['', 'pnpm@latest', 'npm@11.24.0', 'pnpm@11.24']) assert.throws(() => parsePinnedPnpmVersion(value), /exact pnpm/);
   assert.equal(assertPnpmVersion('11.24.0', '11.24.0'), '11.24.0');
   for (const actual of ['', '11.23.0']) assert.throws(() => assertPnpmVersion(actual, '11.24.0'), /version mismatch/);
-  assert.throws(() => resolveEvidencePath('evidence.json', '/workspace/repo'), /absolute path/);
-  assert.throws(() => resolveEvidencePath('/workspace/repo/evidence.json', '/workspace/repo'), /outside the workspace/);
-  assert.equal(resolveEvidencePath('/runner/temp/evidence.json', '/workspace/repo'), '/runner/temp/evidence.json');
+  assert.throws(() => resolveEvidencePath('evidence.json', workspace), /absolute path/);
+  assert.throws(() => resolveEvidencePath(path.join(workspace, 'evidence.json'), workspace), /outside the workspace/);
+  assert.equal(resolveEvidencePath(outsideEvidencePath, workspace), path.resolve(outsideEvidencePath));
   assert.doesNotThrow(() => assertCleanGitStatus('', 'clean commit materialization'));
   assert.throws(() => assertCleanGitStatus(' M package.json\n', 'root tracked workspace'), /root tracked workspace is dirty/);
 });
