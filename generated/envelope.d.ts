@@ -7,6 +7,7 @@ export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonV
 export type target = {
   "id": import("./common.js").identifier;
   "input": import("./overlay.js").overlay;
+  "bindingSelection": bindingSelection;
   "extensions": import("./common.js").extensionMap;
   "criticalExtensions": import("./common.js").extensionMap;
 };
@@ -19,8 +20,6 @@ export type request = {
   "operation": import("./common.js").identifier;
   "targets": Array<target>;
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "accountingProfileAasIdentity": import("./common.js").aasIdentity;
@@ -28,6 +27,24 @@ export type request = {
   "extensions": import("./common.js").extensionMap;
   "criticalExtensions": import("./common.js").extensionMap;
 };
+
+export type bindingCandidate = {
+  "id": import("./common.js").identifier;
+  "aasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": import("./common.js").aasIdentity;
+};
+
+export type bindingSelection = ({
+  "state": "selected";
+  "selectedBindingId": import("./common.js").identifier;
+  "bindingAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": import("./common.js").aasIdentity;
+  "candidateBindings": Array<bindingCandidate>;
+}) | ({
+  "state": "absent";
+  "reason": "binding-missing";
+  "candidateBindings": Array<JsonValue>;
+});
 
 export type coverageSummary = {
   "denominator": import("./common.js").nonnegativeInteger;
@@ -51,20 +68,22 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
-  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided");
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided")) & ("decided");
+  "bindingState": ("selected" | "absent") & ("selected");
   "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
-  "mode": "shadow" | "advisory" | "required";
+  "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
   "rolloutDisposition": import("./common.js").identifier;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
+  "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "overlayAasIdentity": import("./common.js").aasIdentity;
   "requestAasIdentity": import("./common.js").aasIdentity;
   "analysisKeyAasIdentity": import("./common.js").aasIdentity;
   "resultAasIdentity": import("./common.js").aasIdentity;
-  "freshness": "fresh" | "stale";
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
   "coverageSummary": coverageSummary;
   "severityCounts": severityCounts;
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
@@ -75,19 +94,19 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
-  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input");
-  "mode": "shadow" | "advisory" | "required";
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("decided")) & ("decided");
+  "bindingState": ("selected" | "absent") & ("absent");
+  "verdict": ("pass" | "fail" | "not-applicable") & ("pass" | "fail" | "not-applicable");
   "rolloutDisposition": import("./common.js").identifier;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "overlayAasIdentity": import("./common.js").aasIdentity;
   "requestAasIdentity": import("./common.js").aasIdentity;
   "analysisKeyAasIdentity": import("./common.js").aasIdentity;
   "resultAasIdentity": import("./common.js").aasIdentity;
-  "freshness": "fresh" | "stale";
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
   "coverageSummary": coverageSummary;
   "severityCounts": severityCounts;
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
@@ -98,19 +117,21 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
-  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate");
-  "mode": "shadow" | "advisory" | "required";
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input")) & ("needs-input");
+  "bindingState": ("selected" | "absent") & ("selected");
+  "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
   "rolloutDisposition": import("./common.js").identifier;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
+  "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "overlayAasIdentity": import("./common.js").aasIdentity;
   "requestAasIdentity": import("./common.js").aasIdentity;
   "analysisKeyAasIdentity": import("./common.js").aasIdentity;
   "resultAasIdentity": import("./common.js").aasIdentity;
-  "freshness": "fresh" | "stale";
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
   "coverageSummary": coverageSummary;
   "severityCounts": severityCounts;
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
@@ -121,19 +142,18 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
-  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported");
-  "mode": "shadow" | "advisory" | "required";
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("needs-input")) & ("needs-input");
+  "bindingState": ("selected" | "absent") & ("absent");
   "rolloutDisposition": import("./common.js").identifier;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "overlayAasIdentity": import("./common.js").aasIdentity;
   "requestAasIdentity": import("./common.js").aasIdentity;
   "analysisKeyAasIdentity": import("./common.js").aasIdentity;
   "resultAasIdentity": import("./common.js").aasIdentity;
-  "freshness": "fresh" | "stale";
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
   "coverageSummary": coverageSummary;
   "severityCounts": severityCounts;
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
@@ -144,19 +164,137 @@ export type diagnosticHeader = ({
   "version": "0.1";
   "code": import("./registry-values.js").diagnosticCode;
   "targetId": import("./common.js").identifier;
-  "resolution": ("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale");
-  "mode": "shadow" | "advisory" | "required";
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate")) & ("indeterminate");
+  "bindingState": ("selected" | "absent") & ("selected");
+  "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
   "rolloutDisposition": import("./common.js").identifier;
-  "bindingAasIdentity": import("./common.js").aasIdentity;
+  "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "snapshotAasIdentity": import("./common.js").aasIdentity;
-  "policyAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
   "profileAasIdentity": import("./common.js").aasIdentity;
   "analyzerAasIdentity": import("./common.js").aasIdentity;
   "overlayAasIdentity": import("./common.js").aasIdentity;
   "requestAasIdentity": import("./common.js").aasIdentity;
   "analysisKeyAasIdentity": import("./common.js").aasIdentity;
   "resultAasIdentity": import("./common.js").aasIdentity;
-  "freshness": "fresh" | "stale";
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
+  "coverageSummary": coverageSummary;
+  "severityCounts": severityCounts;
+  "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
+  "omissionCount": import("./common.js").nonnegativeInteger;
+  "omissionReasons": Array<import("./common.js").identifier>;
+  "nextAction": import("./registry-values.js").actionId;
+}) | ({
+  "version": "0.1";
+  "code": import("./registry-values.js").diagnosticCode;
+  "targetId": import("./common.js").identifier;
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("indeterminate")) & ("indeterminate");
+  "bindingState": ("selected" | "absent") & ("absent");
+  "rolloutDisposition": import("./common.js").identifier;
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "overlayAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "analysisKeyAasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
+  "coverageSummary": coverageSummary;
+  "severityCounts": severityCounts;
+  "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
+  "omissionCount": import("./common.js").nonnegativeInteger;
+  "omissionReasons": Array<import("./common.js").identifier>;
+  "nextAction": import("./registry-values.js").actionId;
+}) | ({
+  "version": "0.1";
+  "code": import("./registry-values.js").diagnosticCode;
+  "targetId": import("./common.js").identifier;
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported")) & ("unsupported");
+  "bindingState": ("selected" | "absent") & ("selected");
+  "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
+  "rolloutDisposition": import("./common.js").identifier;
+  "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "overlayAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "analysisKeyAasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
+  "coverageSummary": coverageSummary;
+  "severityCounts": severityCounts;
+  "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
+  "omissionCount": import("./common.js").nonnegativeInteger;
+  "omissionReasons": Array<import("./common.js").identifier>;
+  "nextAction": import("./registry-values.js").actionId;
+}) | ({
+  "version": "0.1";
+  "code": import("./registry-values.js").diagnosticCode;
+  "targetId": import("./common.js").identifier;
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("unsupported")) & ("unsupported");
+  "bindingState": ("selected" | "absent") & ("absent");
+  "rolloutDisposition": import("./common.js").identifier;
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "overlayAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "analysisKeyAasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "freshness": ("fresh" | "stale") & ("fresh");
+  "decisionTrace": bindingDecisionTrace;
+  "coverageSummary": coverageSummary;
+  "severityCounts": severityCounts;
+  "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
+  "omissionCount": import("./common.js").nonnegativeInteger;
+  "omissionReasons": Array<import("./common.js").identifier>;
+  "nextAction": import("./registry-values.js").actionId;
+}) | ({
+  "version": "0.1";
+  "code": import("./registry-values.js").diagnosticCode;
+  "targetId": import("./common.js").identifier;
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale")) & ("stale");
+  "bindingState": ("selected" | "absent") & ("selected");
+  "mode": ("shadow" | "advisory" | "required") & ("shadow" | "advisory" | "required");
+  "rolloutDisposition": import("./common.js").identifier;
+  "bindingAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "overlayAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "analysisKeyAasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "freshness": ("fresh" | "stale") & ("stale");
+  "decisionTrace": bindingDecisionTrace;
+  "coverageSummary": coverageSummary;
+  "severityCounts": severityCounts;
+  "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
+  "omissionCount": import("./common.js").nonnegativeInteger;
+  "omissionReasons": Array<import("./common.js").identifier>;
+  "nextAction": import("./registry-values.js").actionId;
+}) | ({
+  "version": "0.1";
+  "code": import("./registry-values.js").diagnosticCode;
+  "targetId": import("./common.js").identifier;
+  "resolution": (("decided" | "needs-input" | "indeterminate" | "unsupported" | "stale") & ("stale")) & ("stale");
+  "bindingState": ("selected" | "absent") & ("absent");
+  "rolloutDisposition": import("./common.js").identifier;
+  "snapshotAasIdentity": import("./common.js").aasIdentity;
+  "profileAasIdentity": import("./common.js").aasIdentity;
+  "analyzerAasIdentity": import("./common.js").aasIdentity;
+  "overlayAasIdentity": import("./common.js").aasIdentity;
+  "requestAasIdentity": import("./common.js").aasIdentity;
+  "analysisKeyAasIdentity": import("./common.js").aasIdentity;
+  "resultAasIdentity": import("./common.js").aasIdentity;
+  "freshness": ("fresh" | "stale") & ("stale");
+  "decisionTrace": bindingDecisionTrace;
   "coverageSummary": coverageSummary;
   "severityCounts": severityCounts;
   "highestSeverity": "none" | "info" | "warning" | "error" | "critical";
@@ -170,13 +308,20 @@ export type remediationAction = {
   "preconditions": Array<import("./common.js").identifier>;
 };
 
-export type decisionTrace = {
-  "bindingAasIdentity": import("./common.js").aasIdentity;
+export type bindingDecisionTrace = ({
+  "state": "selected";
   "selectedBindingId": import("./common.js").identifier;
-  "candidateBindings": Array<{
-  "id": import("./common.js").identifier;
-  "aasIdentity": import("./common.js").aasIdentity;
-}>;
+  "bindingAasIdentity": import("./common.js").aasIdentity;
+  "policyAasIdentity": import("./common.js").aasIdentity;
+  "candidateBindings": Array<bindingCandidate>;
+}) | ({
+  "state": "absent";
+  "reason": "binding-missing";
+  "candidateBindings": Array<JsonValue>;
+});
+
+export type decisionTrace = {
+  "bindingDecision": bindingDecisionTrace;
   "normalizedFacts": Array<import("./common.js").jsonValue>;
   "evaluatedBranch": import("./common.js").identifier;
   "exceptionDisposition": import("./common.js").identifier;
@@ -231,22 +376,7 @@ export type realizedCounters = {
 
 export type extensionDisposition = ({
   "extensionId": import("./common.js").identifier;
-  "location": ("request" | "target") & ("target");
-  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
-  "disposition": ("understood" | "preserved" | "ignored") & ("preserved");
-  "requestBound": true;
-  "affectsCoreSemantics": (boolean) & (false);
-}) | ({
-  "extensionId": import("./common.js").identifier;
-  "location": ("request" | "target") & ("target");
-  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
-  "disposition": ("understood" | "preserved" | "ignored") & ("ignored");
-  "requestBound": true;
-  "affectsCoreSemantics": (boolean) & (false);
-}) | ({
-  "extensionId": import("./common.js").identifier;
-  "location": ("request" | "target") & ("target");
-  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "location": ("request" | "target") & ("request");
   "disposition": ("understood" | "preserved" | "ignored") & ("understood");
   "requestBound": true;
   "affectsCoreSemantics": boolean;
@@ -264,10 +394,25 @@ export type extensionDisposition = ({
   "affectsCoreSemantics": (boolean) & (false);
 }) | ({
   "extensionId": import("./common.js").identifier;
-  "location": ("request" | "target") & ("request");
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
   "disposition": ("understood" | "preserved" | "ignored") & ("understood");
   "requestBound": true;
   "affectsCoreSemantics": boolean;
+}) | ({
+  "extensionId": import("./common.js").identifier;
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "disposition": ("understood" | "preserved" | "ignored") & ("preserved");
+  "requestBound": true;
+  "affectsCoreSemantics": (boolean) & (false);
+}) | ({
+  "extensionId": import("./common.js").identifier;
+  "location": ("request" | "target") & ("target");
+  "targetId": (import("./common.js").identifier) & (import("./common.js").identifier);
+  "disposition": ("understood" | "preserved" | "ignored") & ("ignored");
+  "requestBound": true;
+  "affectsCoreSemantics": (boolean) & (false);
 });
 
 export type resolution = ({

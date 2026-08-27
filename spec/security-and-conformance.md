@@ -201,6 +201,24 @@ definition version `1`, and profile `aasIdentity`), and requests and analysis
 keys MUST bind that same profile identity. Implementations MUST NOT substitute
 an unregistered profile or locally redefine these units.
 
+Before evaluation, the cross-document invocation validator MUST receive the
+request, analysis key, every binding document named by any target candidate
+set, the exact applicable binding list for every target, and every target
+overlay. There is no missing-document fallback. The accounting-profile
+`aasIdentity` MUST be exactly equal in the request, analysis key, and every
+selected or applicable binding. The analysis-key identity MUST equal the result
+and all result headers. Candidate lists MUST form exact ordered ID, binding
+identity, and policy-identity bijections with those applicable binding lists.
+
+Budget resolution uses one rule only: for each named `max*` field, the effective
+invocation ceiling is the componentwise minimum of the request budget, analysis
+key budget, every selected binding budget, and every target overlay `limits`
+budget. Every source MUST contain every budget field; omission is invalid and
+never means infinity or a default. Realized aggregate counters MUST be at or
+below those effective ceilings. Thus a larger re-signed request cannot weaken a
+binding, analysis-key, or overlay ceiling, while a smaller ceiling tightens the
+invocation deterministically.
+
 The v0 byte counters have exactly these units:
 
 - `inputBytes` is the byte length of the exact strict-JSON request
@@ -227,18 +245,37 @@ The v0 byte counters have exactly these units:
   order remains identity-bearing. No envelope fields outside this scoped
   projection are charged to `extensionBytes`.
 
-All other counters retain the literal semantic units named by their budget
-fields and schemas. Any future change to one of these projections or units
-requires a new accounting profile ID and `aasIdentity`; it MUST NOT revise
-`@1` in place.
+Every realized counter in `agent-architecture-resource-accounting-v0@1` has the
+following exact unit and aggregation rule. “Attempt” means an initial operation
+or retry; retries are charged again unless a row explicitly says “distinct”.
+All sums are checked safe-integer sums and overflow fails closed.
 
-The profile MUST define deterministic ceilings and accounting units for encoded
-input bytes, nesting, path segments and bytes, entries, logical bytes, read
-bytes, per-entry bytes, overlay operations, requested targets, evidence
-references, extension bytes, diagnostics, output bytes, concurrency, and total
-work.
+| counter | exact realized unit and aggregation |
+| --- | --- |
+| `inputBytes` | Exact received request bytes, once per invocation, as defined above. |
+| `depth` | Maximum JSON/container or traversed-directory nesting depth reached by any target or attempt; each root is depth `0` and each child edge adds `1`. |
+| `pathSegments` | Maximum number of portable-path segments in any path examined by any target or attempt, inclusive of policy-excluded and rejected paths. |
+| `pathBytes` | Maximum UTF-8 byte length of any normalized portable path examined by any target or attempt, inclusive of policy-excluded and rejected paths. |
+| `entries` | Sum of directory entries examined across targets and attempts, including excluded, unreadable, unsupported, unstable, and duplicate encounters. |
+| `logicalBytes` | Sum of declared logical lengths of entries examined across targets and attempts; sparse holes count toward logical length and repeated target/retry encounters are charged again. |
+| `readBytes` | Sum of bytes actually returned by all metadata and content reads across targets and attempts; short reads count their returned length and retried reads are charged again. |
+| `peakEntryBytes` | Maximum bytes returned for one entry within one attempt; it is a peak, not a sum. |
+| `overlayOperations` | Sum of overlay operation records in all requested targets, each record once; provider retries do not recount the immutable request record. |
+| `targets` | Number of request target records, including targets that resolve absent, stale, unsupported, or otherwise non-decided. |
+| `evidenceReferences` | Sum of all detailed-diagnostic `evidenceIds` array lengths; repeated IDs in different diagnostics are charged again. |
+| `extensionBytes` | Canonical scoped extension projection bytes, once per invocation, as defined above. |
+| `diagnostics` | Number of detailed diagnostic records; mandatory per-target headers are excluded. |
+| `outputBytes` | Canonical final result bytes, once per invocation, as defined above. |
+| `peakConcurrency` | Maximum simultaneously active target/entry evaluation attempts; queued work and completed work are excluded. It is a peak, not a sum. |
+| `totalWork` | Exact checked sum `entries + logicalBytes + readBytes + overlayOperations + targets + evidenceReferences + extensionBytes + diagnostics`. Peaks and `inputBytes`/`outputBytes` are not added again. |
 
-Aggregate budgets MUST NOT reset per target, extension, retry, or page.
+These counters aggregate across the complete invocation. Aggregate budgets MUST
+NOT reset per target, extension, retry, or page. Every retry is included by the
+row above, and the target semantics are identical for decided and non-decided
+targets. Any future change to a projection, unit, aggregation boundary, retry
+rule, target rule, or peak/sum rule requires a new accounting profile ID and
+`aasIdentity`; it MUST NOT revise `@1` in place.
+
 Implementations MUST validate before allocation and MUST detect integer
 overflow, sparse-file amplification, repeated-reference amplification, and
 diagnostic amplification. Exhausting a valid per-target budget yields
@@ -415,7 +452,7 @@ dogfood of built artifacts and isolated qualification of packed artifacts.
 ## 13. Release channel sequence
 
 The accepted v0 publication sequence is a public release candidate whose
-immutable SemVer is exactly `X.Y.Z-rc.N`. `X`, `Y`, and `Z` are canonical SemVer
+immutable SemVer is exactly `0.Y.Z-rc.N`. `Y` and `Z` are canonical SemVer
 nonnegative decimal integers with no leading zeroes except `0`; `N` is a
 canonical positive decimal integer matching `[1-9][0-9]*`. Build metadata and
 additional prerelease identifiers are forbidden. The RC MUST use a non-`latest`

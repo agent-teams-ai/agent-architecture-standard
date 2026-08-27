@@ -131,6 +131,7 @@ test('adjacent registry editions retain meaning and order while evolving lifecyc
     ['kind', (value) => { value.entries[0].kind = 'problem'; }, /kind/],
     ['introduction', (value) => { value.entries[0].introducedEdition = '2'; }, /introducedEdition/],
     ['order', (value) => { value.entries[0].orderingRank = 9; }, /orderingRank/],
+    ['retroactive new introduction', (value) => { value.entries[1].introducedEdition = '1'; }, /new id introducedEdition must equal current edition/],
     ['removal', (value) => { value.entries.shift(); }, /existing id removed/]
   ]) { const value = structuredClone(current); mutate(value); assert.throws(() => assertRegistryEvolution(previous, value), expected, name); }
   const withoutSemantics = structuredClone(previous); delete withoutSemantics.entries[0].semanticsAasIdentity; withoutSemantics.entries[0].status = 'provisional';

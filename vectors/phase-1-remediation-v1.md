@@ -62,3 +62,56 @@ historical `phase-0-remediation-v1.md` bytes. Machine-readable instances live in
   projection. Reported counters must equal these derivations and remain within
   request budgets. Missing raw request length and an 8KB whitespace
   amplification fail closed.
+
+## BINDING-PROVENANCE-P1-002: every target binds its complete decision
+
+- Requirement: `../spec/policy-and-enforcement.md` §§5 and 10.
+- Positive inputs: the single-target and mixed request/result pairs under
+  `schema/positive/`. The mixed pair selects `binding-1`/policy `333…` for
+  target 1 and the disjoint `binding-2`/policy `aaa…` for target 2.
+- Positive absent case: replace one target selection and header trace with
+  `{ "state": "absent", "reason": "binding-missing",
+  "candidateBindings": [] }`, omit selected mode/binding/policy, and resolve
+  exactly `needs-input`/`binding-missing`.
+- Negative dispositions: an omitted header trace, duplicate candidate ID or
+  identity, selected candidate not present exactly once, candidate-set
+  substitution, or any request/header/detailed-trace difference fails joint
+  validation even when `diagnostics` is empty.
+
+## FRESHNESS-P1-002: stale if and only if stale
+
+- Requirement: `../spec/policy-and-enforcement.md` §10.
+- Positive inputs: checked-in non-stale results carry `fresh`; a stale result
+  carries a stale header and has no verdict.
+- Negative dispositions: `decided`/`freshness: stale` and
+  `resolution: stale`/`freshness: fresh` both fail schema and runtime
+  validation.
+
+## ACCOUNTING-P1-002: exact units, aggregation, and invocation agreement
+
+- Requirement: `../spec/security-and-conformance.md` §6.
+- Positive result: `schema/positive/result.json` has `totalWork = 155`, exactly
+  `1 + 1 + 1 + 1 + 1 + 0 + 150 + 0`; the mixed result has `totalWork = 215`.
+  Peak counters are not summed into `totalWork`.
+- Positive invocation: request, analysis key, and applicable binding use the
+  same accounting-profile identity; every effective ceiling is the
+  componentwise minimum of request, analysis key, selected bindings, and all
+  target overlay limits.
+- Negative dispositions: a re-signed accounting-profile substitution, an
+  inexact applicable-candidate list, a realized counter above a smaller binding
+  ceiling, or a `totalWork` value differing from the exact formula fails.
+
+## RELEASE-RC-P1-002: numeric-successor RC grammar
+
+- Requirement: `../spec/security-and-conformance.md` §13 and current mutable
+  decision v2.
+- Positive: `0.1.0-rc.1` pairs with separately built `0.1.0`.
+- Negative: `1.1.0-rc.1`, build metadata, additional prerelease identifiers,
+  zero/leading-zero RC numbers, and bare versions are rejected.
+
+## REGISTRY-EDITION-P1-002: truthful new-ID introduction
+
+- Requirement: `../spec/governance.md` registry evolution rules.
+- Positive: a new ID in edition `2` carries `introducedEdition: "2"`.
+- Negative: the same new ID carrying `introducedEdition: "1"` fails adjacent
+  edition validation as a retroactive allocation.

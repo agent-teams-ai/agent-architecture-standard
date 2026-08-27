@@ -1,8 +1,8 @@
 {
   "kind": "result",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:c651b0a4656686d089f54a81dcb403c1f9b0ead8e11a1aaf470a550b06db0007",
-  "requestAasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
+  "aasIdentity": "aas:v0:sha256:97b0347ef84e190ce4e9313cb608f828efa1b9652c68ca709c3c48cd84c7257c",
+  "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
   "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
   "resolutions": [
     {
@@ -39,6 +39,7 @@
         "targetId": "target-1",
         "resolution": "decided",
         "verdict": "pass",
+        "bindingState": "selected",
         "mode": "advisory",
         "rolloutDisposition": "included",
         "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
@@ -47,10 +48,17 @@
         "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
         "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
         "overlayAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "requestAasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
+        "requestAasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
         "analysisKeyAasIdentity": "aas:v0:sha256:8888888888888888888888888888888888888888888888888888888888888888",
-        "resultAasIdentity": "aas:v0:sha256:c651b0a4656686d089f54a81dcb403c1f9b0ead8e11a1aaf470a550b06db0007",
+        "resultAasIdentity": "aas:v0:sha256:97b0347ef84e190ce4e9313cb608f828efa1b9652c68ca709c3c48cd84c7257c",
         "freshness": "fresh",
+        "decisionTrace": {
+          "state": "selected",
+          "selectedBindingId": "binding-1",
+          "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "candidateBindings": [{ "id": "binding-1", "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444", "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333" }]
+        },
         "coverageSummary": {
           "denominator": 1,
           "included": 1,
@@ -101,7 +109,7 @@
   "evidence": [],
   "omissions": [],
   "realizedCounters": {
-    "inputBytes": 2770,
+    "inputBytes": 3209,
     "depth": 1,
     "pathSegments": 1,
     "pathBytes": 1,
@@ -114,9 +122,9 @@
     "evidenceReferences": 0,
     "extensionBytes": 150,
     "diagnostics": 0,
-    "outputBytes": 2970,
+    "outputBytes": 3507,
     "peakConcurrency": 1,
-    "totalWork": 1
+    "totalWork": 155
   },
   "diagnostics": [],
   "extensionDispositions": [

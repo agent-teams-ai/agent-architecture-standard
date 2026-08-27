@@ -7,32 +7,6 @@ export type JsonValue = null | boolean | ConstrainedString | JsonInteger | JsonV
 export type envelopeVersionIdentifier = ConstrainedString;
 
 export type AASRegistryEdition = ({
-  "registry": ("actions" | "operations" | "problems" | "resolutions" | "diagnostics" | "profiles" | "extensions" | "envelope-versions") & ("envelope-versions");
-  "edition": ConstrainedString;
-  "previousEdition": ConstrainedString | null;
-  "status": "provisional";
-  "entries": (Array<{
-  "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
-  "kind": ConstrainedString;
-  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
-  "owner": ConstrainedString;
-  "contact": ConstrainedString;
-  "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
-  "semanticAuthority": ConstrainedString;
-  "introducedEdition": ConstrainedString;
-  "replacement"?: (import("./common.js").identifier) | (envelopeVersionIdentifier);
-  "semanticsAasIdentity"?: import("./common.js").aasIdentity;
-  "orderingRank"?: JsonInteger;
-  "vectors": Array<ConstrainedString>;
-  "collisionReview": ConstrainedString;
-}>) & (Array<{
-  "id"?: envelopeVersionIdentifier;
-  "kind"?: "envelope-version";
-  "orderingRank": JsonInteger;
-  "replacement"?: envelopeVersionIdentifier;
-}>);
-  "changes": Array<ConstrainedString>;
-}) | ({
   "registry": ("actions" | "operations" | "problems" | "resolutions" | "diagnostics" | "profiles" | "extensions" | "envelope-versions") & ("actions");
   "edition": ConstrainedString;
   "previousEdition": ConstrainedString | null;
@@ -198,6 +172,32 @@ export type AASRegistryEdition = ({
 }>) & (Array<{
   "id"?: import("./common.js").identifier;
   "replacement"?: import("./common.js").identifier;
+}>);
+  "changes": Array<ConstrainedString>;
+}) | ({
+  "registry": ("actions" | "operations" | "problems" | "resolutions" | "diagnostics" | "profiles" | "extensions" | "envelope-versions") & ("envelope-versions");
+  "edition": ConstrainedString;
+  "previousEdition": ConstrainedString | null;
+  "status": "provisional";
+  "entries": (Array<{
+  "id": (import("./common.js").identifier) | (envelopeVersionIdentifier);
+  "kind": ConstrainedString;
+  "role"?: "canonicalization" | "snapshot-capture" | "portable-path" | "operation" | "vocabulary" | "evaluator" | "security" | "diagnostic" | "accounting";
+  "owner": ConstrainedString;
+  "contact": ConstrainedString;
+  "status": "provisional" | "active" | "deprecated" | "withdrawn" | "reserved";
+  "semanticAuthority": ConstrainedString;
+  "introducedEdition": ConstrainedString;
+  "replacement"?: (import("./common.js").identifier) | (envelopeVersionIdentifier);
+  "semanticsAasIdentity"?: import("./common.js").aasIdentity;
+  "orderingRank"?: JsonInteger;
+  "vectors": Array<ConstrainedString>;
+  "collisionReview": ConstrainedString;
+}>) & (Array<{
+  "id"?: envelopeVersionIdentifier;
+  "kind"?: "envelope-version";
+  "orderingRank": JsonInteger;
+  "replacement"?: envelopeVersionIdentifier;
 }>);
   "changes": Array<ConstrainedString>;
 });

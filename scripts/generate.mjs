@@ -86,7 +86,7 @@ function conditionalObjectType(schema, document) {
     branch.required = [...required];
     return branch;
   };
-  let branches = [base];
+  let branches = [{ schema: base, selections: new Map() }];
   for (const conditional of conditionals) {
     const [[key, selection]] = Object.entries(conditional.if.properties);
     const baseSelection = schema.properties?.[key];
@@ -94,12 +94,18 @@ function conditionalObjectType(schema, document) {
     const selected = selection.enum ?? ('const' in selection ? [selection.const] : undefined);
     if (!allValues || !selected) return undefined;
     const selectedSet = new Set(selected);
-    branches = branches.flatMap((branch) => [
-      ...allValues.filter((value) => selectedSet.has(value)).map((value) => makeBranch(branch, key, [value], conditional.then)),
-      ...allValues.filter((value) => !selectedSet.has(value)).map((value) => makeBranch(branch, key, [value], conditional.else))
-    ].filter(Boolean));
+    branches = branches.flatMap((branch) => {
+      const compatibleValues = branch.selections.has(key) ? [branch.selections.get(key)] : allValues;
+      return compatibleValues.map((value) => {
+        const effect = selectedSet.has(value) ? conditional.then : conditional.else;
+        const schemaBranch = makeBranch(branch.schema, key, [value], effect);
+        if (!schemaBranch) return undefined;
+        const selections = new Map(branch.selections); selections.set(key, value);
+        return { schema: schemaBranch, selections };
+      }).filter(Boolean);
+    });
   }
-  return branches.map((branch) => `(${plainObjectType(branch, document)})`).join(' | ');
+  return branches.map((branch) => `(${plainObjectType(branch.schema, document)})`).join(' | ');
 }
 function typeFor(schema, document) {
   if (schema === true) return 'JsonValue';
@@ -151,6 +157,7 @@ const candidates = [
   'decisions/README.md',
   'decisions/phase-0-d0-d11-v1.md',
   'decisions/phase-0-d0-d11-v2.md',
+  'decisions/phase-1-p1-remediation-v1.md',
   ...(await walk('docs/decisions')).filter((item) => item.endsWith('.md')),
   'templates/normative-traceability.md',
   ...(await walk('vectors')),

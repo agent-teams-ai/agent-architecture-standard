@@ -62,11 +62,11 @@ test('npm runs its JavaScript CLI directly on POSIX without PATH lookup', () => 
   assert.deepEqual(invocation, { command: '/opt/node/bin/node', args: ['/opt/node/lib/node_modules/npm/bin/npm-cli.js', 'pack'] });
 });
 
-test('pnpm version runs its Windows command shim through cmd.exe', () => {
+test('pnpm version runs the trusted Windows JavaScript entrypoint directly', () => {
   let invocation;
   const version = runPnpmVersionSync({ encoding: 'utf8' }, {
     platform: 'win32',
-    comSpec: String.raw`C:\Windows\System32\cmd.exe`,
+    execPath: String.raw`C:\hostedtoolcache\node\node.exe`,
     pnpmHome: String.raw`C:\hostedtoolcache\pnpm`,
     workspaceRoot: String.raw`D:\a\repo\repo`,
     spawnSync(command, args, options) {
@@ -76,8 +76,8 @@ test('pnpm version runs its Windows command shim through cmd.exe', () => {
   });
   assert.equal(version, '11.24.0');
   assert.deepEqual(invocation, {
-    command: String.raw`C:\Windows\System32\cmd.exe`,
-    args: ['/d', '/s', '/c', String.raw`"C:\hostedtoolcache\pnpm\pnpm.cmd" --version`],
+    command: String.raw`C:\hostedtoolcache\node\node.exe`,
+    args: [String.raw`C:\hostedtoolcache\pnpm\bin\pnpm.cjs`, '--version'],
     options: { encoding: 'utf8' }
   });
 });

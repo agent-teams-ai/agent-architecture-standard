@@ -57,6 +57,14 @@
         "diagnosticHeader-positive",
         "diagnostic-header-verdict-conditional"
       ],
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader/allOf/1": [
+        "diagnosticHeader-positive",
+        "diagnostic-header-stale-freshness-mismatch"
+      ],
+      "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader/allOf/2": [
+        "diagnosticHeader-positive",
+        "diagnostic-header-absent-binding-fields"
+      ],
       "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/extensionDisposition/allOf/0": [
         "extension-disposition-understood-positive",
         "extension-disposition-target-positive",
@@ -2552,6 +2560,40 @@
         "version": "0.1"
       },
       "rationale": "Analysis keys reject a profile from outside the accounting role."
+    },
+    {
+      "caseId": "diagnostic-header-stale-freshness-mismatch",
+      "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/diagnostic-header-positive",
+        "mutation": { "pointer": "/freshness", "value": "stale" }
+      },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "A non-stale resolution must carry fresh, never stale, header freshness."
+    },
+    {
+      "caseId": "diagnostic-header-absent-binding-fields",
+      "requirement": "spec/policy-and-enforcement.md#10-stable-agent-diagnostic-contract",
+      "input": {
+        "reference": "vectors/schema/definition-fixtures.json",
+        "pointer": "/diagnostic-header-positive",
+        "mutation": { "pointer": "/bindingState", "value": "absent" }
+      },
+      "limits": { "maxInputBytes": 1048576, "maxDepth": 64 },
+      "expected": {
+        "schema": "https://schemas.aas.invalid/private/v0/envelope.schema.json#/$defs/diagnosticHeader",
+        "valid": false,
+        "diagnostic": "schema-validation-failed",
+        "version": "0.1"
+      },
+      "rationale": "An absent binding header cannot retain invented selected mode, binding, or policy fields."
     }
   ]
 }

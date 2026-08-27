@@ -1,7 +1,7 @@
 {
   "kind": "request",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:800d417b209d08fdc06bac84bd84a189001e35be0dee90e4a60c24331cc3e804",
+  "aasIdentity": "aas:v0:sha256:aa39c113c82f3c01be4beeb37cc09de6ff648783c7886a3125a856d41f348042",
   "standardVersion": "0.1.0-rc.1",
   "operation": "validate-overlay@1",
   "targets": [
@@ -41,13 +41,24 @@
           }
         ]
       },
+      "bindingSelection": {
+        "state": "selected",
+        "selectedBindingId": "binding-1",
+        "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "candidateBindings": [
+          {
+            "id": "binding-1",
+            "aasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ]
+      },
       "extensions": {},
       "criticalExtensions": {}
     }
   ],
   "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
-  "policyAasIdentity": "aas:v0:sha256:3333333333333333333333333333333333333333333333333333333333333333",
-  "bindingAasIdentity": "aas:v0:sha256:4444444444444444444444444444444444444444444444444444444444444444",
   "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
   "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
   "accountingProfileAasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",

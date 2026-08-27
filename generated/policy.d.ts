@@ -55,6 +55,22 @@ export type binding = ({
   "scope": bindingScope;
   "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
+  "mode": ("shadow" | "advisory" | "required") & ("shadow");
+  "policyAasIdentity": import("./common.js").aasIdentity;
+  "profiles": Array<import("./common.js").profileRef>;
+  "accountingProfile": import("./registry-values.js").accountingProfile;
+  "budgets": import("./common.js").budgets;
+  "exceptions": Array<import("./common.js").aasIdentity>;
+  "owner": ConstrainedString;
+}) | ({
+  "schemaVersion": "0.1";
+  "aasIdentity": import("./common.js").aasIdentity;
+  "id": import("./common.js").identifier;
+  "consumer": import("./common.js").identifier;
+  "repository": import("./common.js").identifier;
+  "scope": bindingScope;
+  "pathProfile": import("./registry-values.js").portablePathProfile;
+  "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("advisory");
   "policyAasIdentity": import("./common.js").aasIdentity;
   "profiles": Array<import("./common.js").profileRef>;
@@ -79,22 +95,6 @@ export type binding = ({
   "budgets": import("./common.js").budgets;
   "exceptions": Array<import("./common.js").aasIdentity>;
   "promotionRecordAasIdentity": (import("./common.js").aasIdentity) & (import("./common.js").aasIdentity);
-  "owner": ConstrainedString;
-}) | ({
-  "schemaVersion": "0.1";
-  "aasIdentity": import("./common.js").aasIdentity;
-  "id": import("./common.js").identifier;
-  "consumer": import("./common.js").identifier;
-  "repository": import("./common.js").identifier;
-  "scope": bindingScope;
-  "pathProfile": import("./registry-values.js").portablePathProfile;
-  "rolloutScope": ConstrainedString;
-  "mode": ("shadow" | "advisory" | "required") & ("shadow");
-  "policyAasIdentity": import("./common.js").aasIdentity;
-  "profiles": Array<import("./common.js").profileRef>;
-  "accountingProfile": import("./registry-values.js").accountingProfile;
-  "budgets": import("./common.js").budgets;
-  "exceptions": Array<import("./common.js").aasIdentity>;
   "owner": ConstrainedString;
 });
 

@@ -64,7 +64,7 @@ The distinction is deterministic:
 | Valid rule whose required observed fact is absent from incomplete coverage | target `indeterminate` |
 | Valid rule outside the target's policy-defined applicability | target `decided/not-applicable` |
 | Valid rule and complete evidence support its condition | target `decided/pass` or `decided/fail` |
-| Expected shared policy `aasIdentity` differs from the supplied valid policy | every requested target `stale` in one complete result |
+| Every target's expected policy `aasIdentity` differs from its supplied valid policy | every requested target `stale` in one complete result |
 | Expected per-target policy `aasIdentity` differs from that target's supplied valid policy | only that target `stale`; other targets resolve normally |
 
 ## 3. Provenance
@@ -151,8 +151,13 @@ selection algorithm:
    result envelope.
 
 Declaration order, filename order, lexical binding ID, installation order, and
-last-write-wins MUST NOT resolve ambiguity. A provider MUST expose the selected
-binding ID and the complete candidate set in the decision trace.
+last-write-wins MUST NOT resolve ambiguity. Each request target MUST bind the
+complete ordered applicable candidate set and the selected binding/policy
+identities, or the explicit absent/`binding-missing` state, into the immutable
+request identity. Every result header MUST repeat that decision exactly even
+when there are zero detailed diagnostics. Joint validation MUST enforce an exact
+target bijection, candidate ID/identity/policy bijection, and selected-or-absent
+identity equality; a detailed diagnostic MUST repeat the same header decision.
 
 An uncovered target does not inherit a global policy unless a root-scope binding
 explicitly exists. With no applicable binding, an enforcement invocation returns
@@ -313,7 +318,11 @@ the semantic authority:
 
 - diagnostic contract version and stable code;
 - target ID, resolution, and any decided verdict;
-- enforcement mode, binding `aasIdentity`, and deterministic rollout disposition;
+- selected enforcement mode and binding/policy `aasIdentity` values when a
+  binding exists, or explicit binding-absent state, plus deterministic rollout
+  disposition;
+- the complete request-bound applicable candidate set and selected/absent
+  binding decision;
 - snapshot, policy, profile, analyzer, request, result, and applicable overlay
   `aasIdentity` values;
 - freshness status;
@@ -330,6 +339,11 @@ The diagnostic header's `resultAasIdentity` is the post-hash self-identity
 projection defined by `identity.md`; it MUST equal the top-level result
 `aasIdentity` and is not an additional input to result identity.
 
+Header freshness and resolution are coupled in both directions: the resolution
+is `stale` if and only if header freshness is `stale`. Every resolution other
+than `stale` MUST carry freshness `fresh`; no decided verdict can coexist with
+stale freshness.
+
 A diagnostic code is a provisional namespaced identifier registered to one
 stable semantic condition. Rendered prose is nonnormative and MAY change without
 changing the code. Codes MUST NOT embed paths, line numbers, severity, mode, or
@@ -342,11 +356,13 @@ and requiredness. A semantically complete decision trace conveys the effective
 binding, normalized facts, evaluated branch, exception disposition, and
 remediation preconditions; its JSON Schema owns field names and requiredness.
 Each detailed diagnostic target MUST resolve to exactly one resolution header.
-Its trace `bindingAasIdentity` MUST equal that header's binding identity.
-Candidate binding IDs MUST be unique, and `selectedBindingId` MUST select
-exactly one candidate whose `aasIdentity` equals both the trace and header
-binding identity. A trace cannot invent a second binding interpretation for the
-same target.
+Its binding decision MUST be byte-for-byte canonical-JSON equal to that header's
+request-bound decision. Candidate binding IDs and identities MUST each be
+unique. In selected state, `selectedBindingId` MUST select exactly one candidate
+whose binding and policy identities equal the selection and header. In absent
+state the candidate set is empty and the target resolution is exactly
+`needs-input` with `binding-missing`. A trace cannot invent a second binding
+interpretation for the same target.
 
 Remediation actions MUST come from trusted static profile data and a closed
 action registry. Repository or provider prose MUST NOT supply commands. Values

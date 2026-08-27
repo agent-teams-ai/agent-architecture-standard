@@ -33,6 +33,7 @@ test('release closure fails for mixed cohorts, duplicate members, bad pins, cycl
   const original = await load('release-manifest-rc.json');
   const mutations = [
     ['uniform version cohort', (value) => { value.supportedVersions = ['0.1.0']; }, /supportedVersions/],
+    ['nonzero-major RC', (value) => { for (const member of value.members) member.version = '1.1.0-rc.1'; value.supportedVersions = ['1.1.0-rc.1']; }, /uniform RC or numeric 0.x cohort/],
     ['duplicate member', (value) => { value.members.push(structuredClone(value.members[0])); }, /duplicate member name/],
     ['publication closure', (value) => { value.publicationOrder = []; }, /publicationOrder/],
     ['dependency pin', (value) => { value.dependencies = [{ from: 'aas-core', to: 'aas-core', version: value.members[0].version, artifactAasIdentity: value.members[0].artifact.aasIdentity }]; }, /self dependency/]
