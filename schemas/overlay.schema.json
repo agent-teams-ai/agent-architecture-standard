@@ -16,7 +16,7 @@
         }
       ]
     },
-    "overlay": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "baseSnapshotAasIdentity", "pathProfile", "limits", "operations"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "baseSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" }, "limits": { "$ref": "common.schema.json#/$defs/budgets" }, "operations": { "type": "array", "minItems": 1, "maxItems": 100000, "items": { "$ref": "#/$defs/operation" } } } },
+    "overlay": { "type": "object", "additionalProperties": false, "required": ["aasIdentity", "baseSnapshotAasIdentity", "pathProfile", "limits", "operations"], "properties": { "aasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "baseSnapshotAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }, "pathProfile": { "$ref": "registry-values.schema.json#/$defs/portablePathProfile" }, "limits": { "$ref": "common.schema.json#/$defs/budgets" }, "operations": { "type": "array", "maxItems": 100000, "items": { "$ref": "#/$defs/operation" } } } },
     "receipt": {
       "type": "object", "additionalProperties": false,
       "required": ["aasIdentity", "resultAasIdentity", "bindingAasIdentity", "integrationSnapshotAasIdentity", "integrationRevisionAasIdentity", "integrationWorktreeState", "exceptionValidityRevisionAasIdentity", "qualificationContext"],

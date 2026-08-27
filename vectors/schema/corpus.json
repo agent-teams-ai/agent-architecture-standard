@@ -619,7 +619,7 @@
     },
     {
       "caseId": "bindingSet-positive",
-      "requirement": "spec/security-and-conformance.md#operator-authority-boundary",
+      "requirement": "spec/security-and-conformance.md#trusted-invocation-kernel-boundary",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/binding-set-positive"
@@ -638,7 +638,7 @@
     },
     {
       "caseId": "bindingSet-object-negative",
-      "requirement": "spec/security-and-conformance.md#operator-authority-boundary",
+      "requirement": "spec/security-and-conformance.md#trusted-invocation-kernel-boundary",
       "input": {
         "reference": "vectors/schema/definition-fixtures.json",
         "pointer": "/binding-set-positive",
@@ -2174,7 +2174,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+            "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
           }
         }
       },
@@ -2524,7 +2524,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+                "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2538,7 +2538,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+                "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2576,7 +2576,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+                "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2590,7 +2590,7 @@
               "pathProfile": {
                 "version": "1",
                 "id": "agent-architecture-portable-path-unicode17@1",
-                "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+                "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
               },
               "owner": "owner",
               "reasonCode": "reason-1",
@@ -2650,7 +2650,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+            "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
           }
         }
       },
@@ -2677,7 +2677,7 @@
           "value": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+            "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
           }
         }
       },

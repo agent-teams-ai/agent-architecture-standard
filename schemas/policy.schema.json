@@ -85,7 +85,13 @@
       "allOf": [
         {
           "if": { "properties": { "mode": { "enum": ["advisory", "required"] } }, "required": ["mode"] },
-          "then": { "properties": { "promotionRecordAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" } }, "required": ["promotionRecordAasIdentity"] },
+          "then": {
+            "properties": {
+              "scope": { "type": "object", "properties": { "ruleId": { "$ref": "common.schema.json#/$defs/identifier" } }, "required": ["ruleId"] },
+              "promotionRecordAasIdentity": { "$ref": "common.schema.json#/$defs/aasIdentity" }
+            },
+            "required": ["promotionRecordAasIdentity"]
+          },
           "else": { "properties": { "promotionRecordAasIdentity": false } }
         }
       ]

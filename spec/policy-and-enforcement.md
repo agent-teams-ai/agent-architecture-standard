@@ -151,15 +151,29 @@ selection algorithm:
    promotion-record identity; otherwise the entire binding set is invalid and produces
    `aas.problem.binding-set-conflict` with no result envelope.
 
-Applicability authority is private trusted local `operatorAuthority`: the
-complete enabled binding catalog for the relevant namespace, never a request or
-repository binding set. Validators recompute every member binding and each
-request-bound `aas.target-selection.v0` coordinate. A target coordinate carries
-the exact path profile and MUST equal the target overlay profile; bindings from
-other profile namespaces are inapplicable, with no fallback. Target keys close
-exactly and candidates form a complete bijection with the derived same-profile
-applicable members. Every applicable equal-rank class is checked for semantic
-conflict before selection, including classes below the winning rank.
+Applicability authority is the complete enabled binding set admitted once by
+the trusted invocation kernel, never a request or repository-selected subset.
+Target authority independently resolves each `aas.target-selection.v0`
+coordinate and its identity-bound rollout cohorts from immutable local
+integration context; invocation data cannot provide coordinates or cohorts.
+The kernel clones and validates each resolution and requires its exact target
+key and identity to equal the request-bound target-selection identity. A target
+coordinate carries the exact path profile and MUST equal the target overlay
+profile; bindings from other profile namespaces are inapplicable, with no
+fallback. Target keys close exactly and candidates form a complete bijection
+with the derived same-profile applicable members. Every applicable equal-rank
+class is checked for semantic conflict before selection, including classes
+below the winning rank. A bounded index constructed during catalog admission
+MUST avoid scanning the entire binding catalog per target without changing any
+selection result, conflict check, candidate member, or ordering.
+
+Before target authority runs, the kernel computes cheap lower bounds only from
+the exact raw request and its overlay operations. It MUST handle empty operation
+arrays and distinct paths across multiple targets without inventing a target
+coordinate. The effective invocation ceiling is the componentwise minimum of
+the request ceiling, the trusted provider ceiling recorded in the analysis key,
+every selected binding ceiling, and every target-overlay ceiling. Selected
+profile `limits` are not an additional invocation budget authority.
 
 After semantic rank is computed, the wire candidate array is ordered by
 descending rank and then ascending binding `aasIdentity`. Equivalent top-rank
@@ -303,6 +317,16 @@ policy, analyzer, exposure interval, denominators, escapes, false blocks,
 confidence intervals, incidents, owner, thresholds, rollout scope,
 previous mode, rollback operation, and response SLA. Its JSON Schema is the sole
 authority for field names and requiredness.
+
+The operator MUST supply the exact promotion-record collection and a local
+duplicate-free qualification allowlist projected from those external approval
+sidecars. Every advisory or required binding MUST have an exact rule scope and
+cite one supplied, locally qualified record. The kernel MUST cross-check the
+consumer, exact rule, policy, complete profile references, rollout scope,
+request analyzer, and the adjacent `shadow` to `advisory` or `advisory` to
+`required` transition; `nextMode` MUST equal the binding mode. A shadow binding
+MUST NOT cite a promotion record. These requirements do not add approval
+evidence, approver identity, or sidecar identity to either identity document.
 
 The promotion record and binding MUST NOT contain approval evidence, an approver
 identity, or the later approval-sidecar identity.

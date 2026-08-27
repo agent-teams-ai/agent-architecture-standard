@@ -25,7 +25,7 @@ export type snapshotCaptureProfile = ({
 export type portablePathProfile = ({
   "version": "1";
   "id": "agent-architecture-portable-path-unicode17@1";
-  "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9";
+  "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752";
 });
 
 export type accountingProfile = ({

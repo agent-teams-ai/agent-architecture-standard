@@ -113,7 +113,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "entries": [
       {
@@ -182,7 +182,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "owner": "owner",
     "reasonCode": "reason-1",
@@ -191,13 +191,13 @@
   },
   "effective-policy-positive": {
     "schemaVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "aasIdentity": "aas:v0:sha256:0d8bdfdb5199e18f05a9f93e44dafcfc85aac4e897f939d137014774c387c6ec",
     "consumer": "consumer-1",
     "scope": "src",
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "profiles": [
       {
@@ -244,7 +244,7 @@
   },
   "binding-required-positive": {
     "schemaVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "aasIdentity": "aas:v0:sha256:af7bb4d8e778112f27ed0c14e770c4c120fd42ac3666c6beb70900ef7a089e4b",
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
@@ -256,7 +256,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "rolloutScope": "all",
     "mode": "required",
@@ -297,7 +297,7 @@
   },
   "binding-required-missing-promotion": {
     "schemaVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "aasIdentity": "aas:v0:sha256:8e48e446594eb3938e9d5d64a7711d2e8d974c29e6d315dc0421fd1a0ab472da",
     "id": "binding-1",
     "consumer": "consumer-1",
     "repository": "repo-1",
@@ -309,7 +309,7 @@
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "rolloutScope": "all",
     "mode": "required",
@@ -488,7 +488,7 @@
     "responseSla": "one hour"
   },
   "analysis-key-positive": {
-    "aasIdentity": "aas:v0:sha256:3d2ac8be16fd94742cea4c294a57cad6b1d79268b49aef96d90ef1a5ff2f075a",
+    "aasIdentity": "aas:v0:sha256:649c0105d630877bb86c5d00d2e5928203dbe3f6374106c4b8305294afea49cb",
     "operationProfile": {
       "version": "1",
       "id": "profile@1",
@@ -502,7 +502,8 @@
       }
     ],
     "inputAasIdentities": [
-      "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "aas:v0:sha256:72c3f41243d020e957eadb1195c128e1bf8eef8fdfed467678f99b3c7767fa81"
     ],
     "budgets": {
       "maxInputBytes": 100,
@@ -540,18 +541,18 @@
         }
       ]
     },
-    "requestAasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
+    "requestAasIdentity": "aas:v0:sha256:4e6d0bcf889bbe91fdf61126ea147d3b2b2b3c42289fc45973e13a525720e142",
     "operation": "validate-overlay@1",
     "profileAasIdentity": "aas:v0:sha256:5555555555555555555555555555555555555555555555555555555555555555",
     "analyzerAasIdentity": "aas:v0:sha256:6666666666666666666666666666666666666666666666666666666666666666",
     "snapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222"
   },
   "binding-set-positive": {
-    "aasIdentity": "aas:v0:sha256:a51e64cb1b5bdd78e589f19bebc7414e4900d34c04cca4b39f47f9f569421ee6",
+    "aasIdentity": "aas:v0:sha256:d42e2f7fa8bbad8ee88825ab85d36d0ebb8722e892db4055d4db0a978efa625a",
     "bindings": [
       {
         "schemaVersion": "0.1",
-        "aasIdentity": "aas:v0:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "aasIdentity": "aas:v0:sha256:af7bb4d8e778112f27ed0c14e770c4c120fd42ac3666c6beb70900ef7a089e4b",
         "id": "binding-1",
         "consumer": "consumer-1",
         "repository": "repo-1",
@@ -563,7 +564,7 @@
         "pathProfile": {
           "version": "1",
           "id": "agent-architecture-portable-path-unicode17@1",
-          "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+          "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
         },
         "rolloutScope": "all",
         "mode": "required",
@@ -605,14 +606,14 @@
     ]
   },
   "target-selection-positive": {
-    "aasIdentity": "aas:v0:sha256:22c17cf987184e6ae4064077551eb074a76f5ca6448dbba09e78b9051814f260",
+    "aasIdentity": "aas:v0:sha256:ee558e010574ddc2ea5259579f916667a528988f00e8e196394c9e49edad68fc",
     "targetId": "target-1",
     "consumer": "consumer-1",
     "repository": "repository-1",
     "pathProfile": {
       "version": "1",
       "id": "agent-architecture-portable-path-unicode17@1",
-      "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+      "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
     },
     "path": "src/a.ts",
     "rolloutCohorts": []
@@ -620,19 +621,19 @@
   "request-positive": {
     "kind": "request",
     "envelopeVersion": "0.1",
-    "aasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
+    "aasIdentity": "aas:v0:sha256:4e6d0bcf889bbe91fdf61126ea147d3b2b2b3c42289fc45973e13a525720e142",
     "standardVersion": "0.1.0-rc.1",
     "operation": "validate-overlay@1",
     "targets": [
       {
         "id": "target-1",
         "input": {
-          "aasIdentity": "aas:v0:sha256:11bfc1d401b41c4aec71f43642dce6014c70ad313aff152dc70758ac87e0fbe4",
+          "aasIdentity": "aas:v0:sha256:72c3f41243d020e957eadb1195c128e1bf8eef8fdfed467678f99b3c7767fa81",
           "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
           "pathProfile": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+            "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
           },
           "limits": {
             "maxInputBytes": 100,
@@ -660,7 +661,7 @@
             }
           ]
         },
-        "targetSelectionAasIdentity": "aas:v0:sha256:3dba732a7f1387e53bfd49e4ed6b4fa844a7419973935c29766e3dd6a4d20be5",
+        "targetSelectionAasIdentity": "aas:v0:sha256:ee558e010574ddc2ea5259579f916667a528988f00e8e196394c9e49edad68fc",
         "bindingSelection": {
           "state": "selected",
           "selectedBindingId": "binding-1",
@@ -715,12 +716,12 @@
       {
         "id": "target-1",
         "input": {
-          "aasIdentity": "aas:v0:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "aasIdentity": "aas:v0:sha256:ebe47c4e013086b52cc63ec5d2b9a59bbcb53cd934742c0de06b185aa27a3965",
           "baseSnapshotAasIdentity": "aas:v0:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
           "pathProfile": {
             "version": "1",
             "id": "agent-architecture-portable-path-unicode17@1",
-            "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+            "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
           },
           "limits": {
             "maxInputBytes": 100,

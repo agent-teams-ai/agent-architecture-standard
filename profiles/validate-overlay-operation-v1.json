@@ -1,12 +1,12 @@
 {
-  "aasIdentity": "aas:v0:sha256:f5b2a6bd7c93204b2aee18d7b5983fa0514dff36adc3a7e5a292a7c97d613f27",
+  "aasIdentity": "aas:v0:sha256:3281942269682561a520a37b1ba2045bf54e54eca48f6226b487d5b2f18bcdee",
   "kind": "operation",
   "id": "agent-architecture-validate-overlay@1",
   "definitionVersion": "1",
   "schemas": [{
-    "aasIdentity": "aas:v0:sha256:c4f019e6d8156631e302d4c0d9f08d683a4627a3ea9113391898c1963b4b1928",
-    "contentDigest": "sha256:bf0524b00a8448a99817f9e7eb69d1a26d28d619a354ba08c19044603ff5fb0b",
-    "byteLength": 3305,
+    "aasIdentity": "aas:v0:sha256:08554edc65213e8aa7412bcec47908c1ea7a67ad62b28691ec7e14ed2af4ef6f",
+    "contentDigest": "sha256:c65e5fc636d9a5e3bab49f103115bfd464575acb55a757bac4b3534233a0e379",
+    "byteLength": 3290,
     "mediaType": "application/json"
   }],
   "dependencies": [],
@@ -18,9 +18,9 @@
     "maxOutputBytes": 9007199254740991, "maxConcurrency": 100000, "maxTotalWork": 9007199254740991
   },
   "semanticsArtifacts": [{
-    "aasIdentity": "aas:v0:sha256:c38096197820aed18795abf57a9c8fc34e83097439a502ad2e3b2fad4d0533a4",
-    "contentDigest": "sha256:6fc418dc97fba95a9f65dc44598cd25cdf6f9583378b2c66916a5bd96aab0533",
-    "byteLength": 22651,
+    "aasIdentity": "aas:v0:sha256:79b5af399e3322652148c2791c5c128c8dc3ab5f4029f8a4068b0c4bddca6029",
+    "contentDigest": "sha256:6374437a3e90216125c229c03c67dd838320078f84de065f836e10d00436459e",
+    "byteLength": 24317,
     "mediaType": "text/markdown"
   }],
   "definitionVectorSuites": [{

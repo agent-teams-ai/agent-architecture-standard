@@ -1,19 +1,19 @@
 {
   "kind": "request",
   "envelopeVersion": "0.1",
-  "aasIdentity": "aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b",
+  "aasIdentity": "aas:v0:sha256:4e6d0bcf889bbe91fdf61126ea147d3b2b2b3c42289fc45973e13a525720e142",
   "standardVersion": "0.1.0-rc.1",
   "operation": "validate-overlay@1",
   "targets": [
     {
       "id": "target-1",
       "input": {
-        "aasIdentity": "aas:v0:sha256:11bfc1d401b41c4aec71f43642dce6014c70ad313aff152dc70758ac87e0fbe4",
+        "aasIdentity": "aas:v0:sha256:72c3f41243d020e957eadb1195c128e1bf8eef8fdfed467678f99b3c7767fa81",
         "baseSnapshotAasIdentity": "aas:v0:sha256:2222222222222222222222222222222222222222222222222222222222222222",
         "pathProfile": {
           "version": "1",
           "id": "agent-architecture-portable-path-unicode17@1",
-          "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9"
+          "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752"
         },
         "limits": {
           "maxInputBytes": 100,
@@ -41,7 +41,7 @@
           }
         ]
       },
-      "targetSelectionAasIdentity": "aas:v0:sha256:3dba732a7f1387e53bfd49e4ed6b4fa844a7419973935c29766e3dd6a4d20be5",
+      "targetSelectionAasIdentity": "aas:v0:sha256:ee558e010574ddc2ea5259579f916667a528988f00e8e196394c9e49edad68fc",
       "bindingSelection": {
         "state": "selected",
         "selectedBindingId": "binding-1",

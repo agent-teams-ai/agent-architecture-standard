@@ -68,7 +68,9 @@ export type binding = ({
   "id": import("./common.js").identifier;
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
-  "scope": bindingScope;
+  "scope": (bindingScope) & ({
+  "ruleId": import("./common.js").identifier;
+});
   "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("advisory");
@@ -85,7 +87,9 @@ export type binding = ({
   "id": import("./common.js").identifier;
   "consumer": import("./common.js").identifier;
   "repository": import("./common.js").identifier;
-  "scope": bindingScope;
+  "scope": (bindingScope) & ({
+  "ruleId": import("./common.js").identifier;
+});
   "pathProfile": import("./registry-values.js").portablePathProfile;
   "rolloutScope": ConstrainedString;
   "mode": ("shadow" | "advisory" | "required") & ("required");

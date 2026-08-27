@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { assertInvocationInvariants, assertRequestResultInvariants, assertResultInvariants, canonicalRequestExtensionBytes, canonicalRequestWireBytes, canonicalResultOutputBytes, computeAnalysisKeyAasIdentity, computeBindingAasIdentity, computeBindingSetAasIdentity, computeOverlayAasIdentity, computeRequestAasIdentity, computeResultAasIdentity, computeTargetSelectionAasIdentity, deriveBindingSelection, deriveEffectiveBudgets, preflightInvocation, reconcileInvocationResult, requestIdentityProjection, RESOURCE_ACCOUNTING_PROFILE_AAS_IDENTITY } from '../lib/result-validation.mjs';
+import { assertRequestResultInvariants, assertResultInvariants, canonicalRequestExtensionBytes, canonicalRequestWireBytes,
+  canonicalResultOutputBytes, computeBindingAasIdentity, computeBindingSetAasIdentity, computeRequestAasIdentity,
+  computeResultAasIdentity, computeTargetSelectionAasIdentity, deriveBindingSelection, deriveEffectiveBudgets,
+  requestIdentityProjection } from '../lib/result-validation.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const canonicalize = (value) => {
@@ -22,13 +25,13 @@ test('request self-identity vector includes every substantive request field', as
   const request = fixtures['request-positive'];
   const payload = Buffer.from(canonicalize(requestIdentityProjection(request)));
   assert.equal(payload.byteLength, 2503);
-  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:3ca3a239b055ab5e8680657c1181eb6a0285803fcdf1814ef0a535c8c874921e');
+  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:f3c6d531936756cfe774a76261c045b00b15744256b6d2cb2f06b5a51aeacdc4');
   const magic = Buffer.from('AAS-ID');
   const domain = Buffer.from('aas.request.v0');
   const profile = Buffer.from('agent-architecture-canonical-json-rfc8785@0');
   const frame = Buffer.concat([u32be(magic.length), magic, u32be(domain.length), domain, u32be(profile.length), profile, u64be(payload.length), payload]);
   assert.equal(frame.byteLength, 2586);
-  assert.equal(request.aasIdentity, 'aas:v0:sha256:a5bb2bd518ead6e9a29ec312507430869f60ffc9601fdd0d9462a0fbc05c1c6b');
+  assert.equal(request.aasIdentity, 'aas:v0:sha256:4e6d0bcf889bbe91fdf61126ea147d3b2b2b3c42289fc45973e13a525720e142');
   assert.equal(computeRequestAasIdentity(request), request.aasIdentity);
   assert.equal(`aas:v0:sha256:${createHash('sha256').update(frame).digest('hex')}`, request.aasIdentity);
 });
@@ -74,7 +77,7 @@ test('result self-identity vector includes the complete closed result projection
   for (const resolution of result.resolutions) delete resolution.diagnostic.resultAasIdentity;
   const payload = Buffer.from(canonicalize(result));
   assert.equal(payload.byteLength, 3311);
-  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:8aef9b1784aaacac126d601996ef2676358ffebb7f536aee3497780c434108d2');
+  assert.equal(`sha256:${createHash('sha256').update(payload).digest('hex')}`, 'sha256:4a80f9b90dd8f6ed7d0ecedc018528be8ded1ce3a135898a86e02b94d29fd630');
   const magic = Buffer.from('AAS-ID');
   const domain = Buffer.from('aas.result.v0');
   const profile = Buffer.from('agent-architecture-canonical-json-rfc8785@0');

@@ -1,5 +1,5 @@
 {
-  "aasIdentity": "aas:v0:sha256:dc4b83cc11a2a3d95759225fe8f6b72d0df730fb3d7ec8aef93bc610fc9a3ff9",
+  "aasIdentity": "aas:v0:sha256:33506c698ffc526f13b18f0354a3b1138a3efc462dc14ae42ccd5a4d46343752",
   "kind": "path",
   "id": "agent-architecture-portable-path-unicode17@1",
   "definitionVersion": "1",
@@ -32,9 +32,9 @@
   },
   "semanticsArtifacts": [
     {
-    "aasIdentity": "aas:v0:sha256:e05fab1c6cc8fc940084c4d31d4d16ef4c94fa392fc5e40a87d7eacc38af165f",
-    "contentDigest": "sha256:bc1dc0e20550fc9813269e68bc89949ff498c8a824df1c97de98019104fd9bd6",
-    "byteLength": 22013,
+    "aasIdentity": "aas:v0:sha256:1e5c04d040bf2222bfd6f17a60eb8eeb91511c29cdcdd531507e4835b5f47489",
+    "contentDigest": "sha256:7eb9e3216a9d4117c1f4efa34ebdb5b8c9b24730aacbcb91bf1c6886d0424b51",
+    "byteLength": 23099,
       "mediaType": "text/markdown"
     }
   ],

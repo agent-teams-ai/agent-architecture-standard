@@ -3,18 +3,30 @@
   "identityOrdering": "ascending-lowercase-ascii-code-unit",
   "cases": [
     {
-      "inputOrder": ["binding-z", "binding-a"],
-      "bindingSetAasIdentity": "aas:v0:sha256:5e487058f19e1097f1c142c797474b0a0886c91603eb10613c21dc0846049a3a",
-      "candidateOrder": ["binding-a", "binding-z"],
-      "selectedBindingId": "binding-a",
-      "requestAasIdentity": "aas:v0:sha256:e7bfb861f74604a791a7fa1fc38efa2a958098e3a51b9c05ce187b9d7a163f40"
+      "inputOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "bindingSetAasIdentity": "aas:v0:sha256:52f240716bfc24a1ddaf31b3facf5b8e08986ce813c540a24c07346b3578498f",
+      "candidateOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:61906cdeb034f7ce8c9ef89e3a02041e606531aed095a790f902098e0f5b84bd"
     },
     {
-      "inputOrder": ["binding-a", "binding-z"],
-      "bindingSetAasIdentity": "aas:v0:sha256:b504eedc810c521ce83f5bf54e31496c4edb5fa78cd0381eeb46f55b9ebf126b",
-      "candidateOrder": ["binding-a", "binding-z"],
-      "selectedBindingId": "binding-a",
-      "requestAasIdentity": "aas:v0:sha256:e7bfb861f74604a791a7fa1fc38efa2a958098e3a51b9c05ce187b9d7a163f40"
+      "inputOrder": [
+        "binding-a",
+        "binding-z"
+      ],
+      "bindingSetAasIdentity": "aas:v0:sha256:0e510a1e6eca51259ead39c529597772a18482833dbf9a5bb6deab3eb524335a",
+      "candidateOrder": [
+        "binding-z",
+        "binding-a"
+      ],
+      "selectedBindingId": "binding-z",
+      "requestAasIdentity": "aas:v0:sha256:61906cdeb034f7ce8c9ef89e3a02041e606531aed095a790f902098e0f5b84bd"
     }
   ],
   "negativeCases": [
