@@ -21,6 +21,7 @@
     "profiles/",
     "decisions/",
     "docs/decisions/",
+    "docs/status/",
     "registries/",
     "schemas/",
     "spec/",

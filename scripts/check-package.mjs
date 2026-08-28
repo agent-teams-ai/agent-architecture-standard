@@ -15,7 +15,7 @@ try {
   await assertProfileSourceClosure(createProfileSourceBoundary(root), computeProfileAasIdentity);
   const inventory = JSON.parse(run(['pack', '--json', '--dry-run']))[0].files.map((entry) => entry.path).sort();
   const manifest = await readJson('artifacts.json');
-  const rootPackageFiles = ['LICENSE', 'README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'package.json', 'artifacts.json'];
+  const rootPackageFiles = ['LICENSE', 'README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'MAINTAINERS.md', 'SECURITY.md', 'SOURCE.md', 'package.json', 'artifacts.json', 'docs/status/implementation-ledger.md'];
   const expectedInventory = [...rootPackageFiles, ...manifest.artifacts.map((entry) => entry.path)].sort();
   if (JSON.stringify(inventory) !== JSON.stringify(expectedInventory)) throw new Error(`packed inventory drift\nexpected: ${expectedInventory.join('\n')}\nactual: ${inventory.join('\n')}`);
   if (inventory.some((item) => /^(?:lib|test|scripts)\//u.test(item))) throw new Error('Phase 1 helper/constructor code leaked into package files');
