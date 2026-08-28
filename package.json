@@ -21,6 +21,7 @@
     "profiles/",
     "decisions/",
     "docs/decisions/",
+    "docs/status/",
     "registries/",
     "schemas/",
     "spec/",
@@ -38,7 +39,7 @@
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",
-    "check:index": "node scripts/check-index.mjs",
+    "check:index": "node --test scripts/github-heading-slug.test.mjs && node scripts/check-index.mjs",
     "check:schemas": "node scripts/check-schemas.mjs",
     "check:corpus": "node scripts/run-corpus-tests.mjs",
     "check:generated": "node scripts/check-clean-generation.mjs",

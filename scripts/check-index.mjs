@@ -6,6 +6,7 @@ import { sha256 } from '../lib/digests.mjs';
 import { assertRegistryInvariants, assertRegistryVectorInvariants, indexRegistryVectorCases } from '../lib/registry-validation.mjs';
 import { computeProfileAasIdentity } from '../lib/identity-framing.mjs';
 import { assertProfileSourceClosure, createProfileSourceBoundary } from './profile-source-closure.mjs';
+import { githubHeadingSlug } from './github-heading-slug.mjs';
 
 const immutableDigests = new Map([
   ['decisions/README.md', 'sha256:8aa3b8d91ec3349bbee6489182741d0e7651f1a6490be869ba1c1f6b1a11c284'],
@@ -86,11 +87,10 @@ for (const schema of schemas) {
 }
 
 const markdownPaths = (await walk('.')).filter((item) => item.endsWith('.md') && !item.startsWith('node_modules/'));
-const slug = (heading) => heading.toLowerCase().trim().replace(/[`*_~]/gu, '').replace(/[^\p{Letter}\p{Number} _-]/gu, '').replace(/\s+/gu, '-');
 const headings = new Map();
 for (const relative of markdownPaths) {
   const source = await readFile(path.join(root, relative), 'utf8');
-  headings.set(relative, new Set([...source.matchAll(/^#{1,6}\s+(.+)$/gmu)].map((match) => slug(match[1]))));
+  headings.set(relative, new Set([...source.matchAll(/^#{1,6}\s+(.+)$/gmu)].map((match) => githubHeadingSlug(match[1]))));
   for (const match of source.matchAll(/\[[^\]]*\]\(([^)]+)\)/gu)) {
     if (/^(?:https?:|mailto:)/u.test(match[1])) continue;
     const [targetPart, fragment] = match[1].split('#', 2);
