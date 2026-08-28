@@ -15,8 +15,10 @@ close D1. Normative authority remains with the owner artifacts indexed by the
 | AAS implementation baseline | `535ca76726da0db6eaac3c0eee98ff68fe34befe` | Audited private implementation and documentation state; see [source provenance](../../SOURCE.md), [private verifier architecture](../architecture/private-verifier-modules.md), and [private conformance slice](../../conformance/README.md). |
 | Engineering Foundation current main | [`1105fdbf4535d9518f655a52f2dc12f542533901`](https://github.com/agent-teams-ai/engineering-foundation/commit/1105fdbf4535d9518f655a52f2dc12f542533901) | Read-only integration and release context. |
 | Foundation research source | [`75cc49466bb7eebef375b24a870f2a9feeb688cb`](https://github.com/agent-teams-ai/engineering-foundation/commit/75cc49466bb7eebef375b24a870f2a9feeb688cb) | Historical research slice copied unchanged into `docs/research/`; it is not current authority. |
-| Orchestrator evidence snapshot | [`fdd47cbc0bc1a2177060200db00bb435e0d79f76`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/fdd47cbc0bc1a2177060200db00bb435e0d79f76) | Exact consumer snapshot in Foundation's [commit-addressed evidence fixture](https://github.com/agent-teams-ai/engineering-foundation/blob/1105fdbf4535d9518f655a52f2dc12f542533901/packages/docs-protocol/tests/fixtures/current-consumer-shapes.v1.json); not evidence of later default-branch state. |
-| Platform evidence snapshot | [`001dcdc39067be55b93b7faf7b432f901d1d85b5`](https://github.com/agent-teams-ai/agent-teams-platform/commit/001dcdc39067be55b93b7faf7b432f901d1d85b5) | Exact consumer snapshot in Foundation's [commit-addressed evidence fixture](https://github.com/agent-teams-ai/engineering-foundation/blob/1105fdbf4535d9518f655a52f2dc12f542533901/packages/docs-protocol/tests/fixtures/current-consumer-shapes.v1.json); not evidence of later default-branch state. |
+| Orchestrator default branch observed 2026-08-28 | [`4c5f55366ed8c83f97374b66c8e9f84059c47382`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/4c5f55366ed8c83f97374b66c8e9f84059c47382) | Commit-scoped current consumer observation; independent of the historical Foundation fixture below. |
+| Platform default branch observed 2026-08-28 | [`ae6c0579000c87e7deac63453b619319a4e08e4e`](https://github.com/agent-teams-ai/agent-teams-platform/commit/ae6c0579000c87e7deac63453b619319a4e08e4e) | Commit-scoped current consumer observation; independent of the historical Foundation fixture below. |
+| Historical Orchestrator Foundation fixture | [`fdd47cbc0bc1a2177060200db00bb435e0d79f76`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/fdd47cbc0bc1a2177060200db00bb435e0d79f76) | Snapshot retained in Foundation's [commit-addressed fixture](https://github.com/agent-teams-ai/engineering-foundation/blob/1105fdbf4535d9518f655a52f2dc12f542533901/packages/docs-protocol/tests/fixtures/current-consumer-shapes.v1.json); historical evidence only. |
+| Historical Platform Foundation fixture | [`001dcdc39067be55b93b7faf7b432f901d1d85b5`](https://github.com/agent-teams-ai/agent-teams-platform/commit/001dcdc39067be55b93b7faf7b432f901d1d85b5) | Snapshot retained in the same Foundation fixture; historical evidence only. |
 
 ## Accepted decisions and authority
 
@@ -26,18 +28,18 @@ supersedes version 1 in full while incorporating the rows identified below.
 
 | Decision | Current status | Exact decision record | Normative projection |
 | --- | --- | --- | --- |
-| D0 naming | Accepted, unpublished | [Incorporated D0 record](../../decisions/phase-0-d0-d11-v1.md#d0-public-naming), controlled by [packet v2](../../decisions/phase-0-d0-d11-v2.md#record-authority-and-provenance) | [Core purpose and boundary](../../spec/core.md#1-purpose-and-boundary) |
-| D1 authority home | Accepted; **incomplete** | [Incorporated D1 record](../../decisions/phase-0-d0-d11-v1.md#d1-repository-and-authority-home), corrected by [ADR-0002](../decisions/0002-d1-relocation-status.md) | [Governance current state and neutrality trigger](../../spec/governance.md#1-honest-current-state) |
-| D2 artifact authority | Accepted, unpublished | [Incorporated D2 record](../../decisions/phase-0-d0-d11-v1.md#d2-artifact-authority), controlled by packet v2 | [Artifact authority and conflicts](../../spec/core.md#3-artifact-authority-and-conflicts) |
-| D3 JSON and identity | Accepted, unpublished | [Incorporated D3 record](../../decisions/phase-0-d0-d11-v1.md#d3-canonical-json-and-identities), controlled by packet v2 | [Identity and canonicalization](../../spec/identity.md) |
-| D4 security profile | Accepted, unpublished | [Incorporated D4 record](../../decisions/phase-0-d0-d11-v1.md#d4-snapshot-security-profiles), controlled by packet v2 | [Portable path, capture, and denied-capability requirements](../../spec/security-and-conformance.md#3-portable-path-requirements) |
-| D5 operation surface | Accepted replacement | [Packet v2 D5](../../decisions/phase-0-d0-d11-v2.md#d5-first-operation-surface-replacement) | [`validate-overlay@1` initial boundary](../../spec/core.md#initial-public-operation-boundary) |
-| D6 policy boundary | Accepted, unpublished | [Incorporated D6 record](../../decisions/phase-0-d0-d11-v1.md#d6-policy-composition-boundary), controlled by packet v2 | [Closed effective-policy boundary](../../spec/policy-and-enforcement.md#1-closed-effective-policy-boundary) |
-| D7 consumer adoption | Accepted; no adoption authorized by the record | [Incorporated D7 record](../../decisions/phase-0-d0-d11-v1.md#d7-consumers-and-adoption), controlled by packet v2 | [Foundation and consumers](../../spec/governance.md#6-foundation-and-consumers) |
-| D8 enforcement graduation | Accepted, unpublished | [Incorporated D8 record](../../decisions/phase-0-d0-d11-v1.md#d8-enforcement-graduation), controlled by packet v2 | [Enforcement modes and rollout](../../spec/policy-and-enforcement.md#8-enforcement-modes-and-rollout) |
-| D9 release sequence | Accepted replacement; privately amended | [Packet v2 D9](../../decisions/phase-0-d0-d11-v2.md#d9-experimental-publication-sequence-replacement) and [current Phase 1 amendment](../../decisions/phase-1-p1-remediation-v1.md#numeric-successor-release-candidate-grammar) | [Release channel sequence](../../spec/security-and-conformance.md#13-release-channel-sequence) |
-| D10 dependency/publication DAGs | Accepted, unpublished | [Incorporated D10 record](../../decisions/phase-0-d0-d11-v1.md#d10-dependency-and-publication-dags), controlled by packet v2 | [Separate dependency and publication DAGs](../../spec/security-and-conformance.md#12-separate-dependency-and-publication-dags) |
-| D11 governance | Accepted; operational gate unmet | [Incorporated D11 record](../../decisions/phase-0-d0-d11-v1.md#d11-lightweight-governance-before-public-0x), controlled by packet v2 | [Required roles and publication policies](../../spec/governance.md#2-required-lightweight-roles) |
+| D0 naming | Accepted, unpublished | [Incorporated D0 record](../../decisions/phase-0-d0-d11-v1.md#d0--public-naming), controlled by [packet v2](../../decisions/phase-0-d0-d11-v2.md#record-authority-and-provenance) | [Core purpose and boundary](../../spec/core.md#1-purpose-and-boundary) |
+| D1 authority home | Accepted; **incomplete** | [Incorporated D1 record](../../decisions/phase-0-d0-d11-v1.md#d1--repository-and-authority-home), corrected by [ADR-0002](../decisions/0002-d1-relocation-status.md) | [Governance current state and neutrality trigger](../../spec/governance.md#1-honest-current-state) |
+| D2 artifact authority | Accepted, unpublished | [Incorporated D2 record](../../decisions/phase-0-d0-d11-v1.md#d2--artifact-authority), controlled by packet v2 | [Artifact authority and conflicts](../../spec/core.md#3-artifact-authority-and-conflicts) |
+| D3 JSON and identity | Accepted, unpublished | [Incorporated D3 record](../../decisions/phase-0-d0-d11-v1.md#d3--canonical-json-and-identities), controlled by packet v2 | [Identity and canonicalization](../../spec/identity.md) |
+| D4 security profile | Accepted, unpublished | [Incorporated D4 record](../../decisions/phase-0-d0-d11-v1.md#d4--snapshot-security-profiles), controlled by packet v2 | [Portable path, capture, and denied-capability requirements](../../spec/security-and-conformance.md#3-portable-path-requirements) |
+| D5 operation surface | Accepted replacement | [Packet v2 D5](../../decisions/phase-0-d0-d11-v2.md#d5--first-operation-surface-replacement) | [`validate-overlay@1` initial boundary](../../spec/core.md#initial-public-operation-boundary) |
+| D6 policy boundary | Accepted, unpublished | [Incorporated D6 record](../../decisions/phase-0-d0-d11-v1.md#d6--policy-composition-boundary), controlled by packet v2 | [Closed effective-policy boundary](../../spec/policy-and-enforcement.md#1-closed-effective-policy-boundary) |
+| D7 consumer adoption | Accepted; no adoption authorized by the record | [Incorporated D7 record](../../decisions/phase-0-d0-d11-v1.md#d7--consumers-and-adoption), controlled by packet v2 | [Foundation and consumers](../../spec/governance.md#6-foundation-and-consumers) |
+| D8 enforcement graduation | Accepted, unpublished | [Incorporated D8 record](../../decisions/phase-0-d0-d11-v1.md#d8--enforcement-graduation), controlled by packet v2 | [Enforcement modes and rollout](../../spec/policy-and-enforcement.md#8-enforcement-modes-and-rollout) |
+| D9 release sequence | Accepted replacement; privately amended | [Packet v2 D9](../../decisions/phase-0-d0-d11-v2.md#d9--experimental-publication-sequence-replacement) and [current Phase 1 amendment](../../decisions/phase-1-p1-remediation-v1.md#numeric-successor-release-candidate-grammar) | [Release channel sequence](../../spec/security-and-conformance.md#13-release-channel-sequence) |
+| D10 dependency/publication DAGs | Accepted, unpublished | [Incorporated D10 record](../../decisions/phase-0-d0-d11-v1.md#d10--dependency-and-publication-dags), controlled by packet v2 | [Separate dependency and publication DAGs](../../spec/security-and-conformance.md#12-separate-dependency-and-publication-dags) |
+| D11 governance | Accepted; operational gate unmet | [Incorporated D11 record](../../decisions/phase-0-d0-d11-v1.md#d11--lightweight-governance-before-public-0x), controlled by packet v2 | [Required roles and publication policies](../../spec/governance.md#2-required-lightweight-roles) |
 
 [ADR-0001](../decisions/0001-authority-and-incubation.md) preserves the
 artifact-authority split and Foundation's nonnormative role. ADR-0002 supersedes
@@ -93,8 +95,13 @@ process-tree containment; its exact limits are recorded in the
 | Consumer | AAS status | Current evidence |
 | --- | --- | --- |
 | Foundation | Direction accepted; implementation **not integrated** | The direction was accepted in [`58a37663e84f1225ca4866b71c61ae88a783c8a6`](https://github.com/agent-teams-ai/engineering-foundation/commit/58a37663e84f1225ca4866b71c61ae88a783c8a6); current main is [`1105fdbf4535d9518f655a52f2dc12f542533901`](https://github.com/agent-teams-ai/engineering-foundation/commit/1105fdbf4535d9518f655a52f2dc12f542533901). Foundation retains the accepted incubation direction and historical research, but no AAS package, official reference provider, adapter, dogfood binding, or adoption record is evidenced. |
-| Orchestrator | **Not adopted** on the evidence available here | Foundation's exact recorded snapshot is [`fdd47cbc0bc1a2177060200db00bb435e0d79f76`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/fdd47cbc0bc1a2177060200db00bb435e0d79f76); it shows repository-local architecture checks and Foundation/Docs consumption, not an AAS advisory binding or adoption record. No later default-branch audit is claimed. |
-| Platform | **Not adopted** on the evidence available here | Foundation's exact recorded snapshot is [`001dcdc39067be55b93b7faf7b432f901d1d85b5`](https://github.com/agent-teams-ai/agent-teams-platform/commit/001dcdc39067be55b93b7faf7b432f901d1d85b5); it shows repository-local architecture checks and Foundation/Docs consumption, not an AAS advisory binding or adoption record. No later default-branch audit is claimed. |
+| Orchestrator | No AAS adoption evidenced at the observed revision | Default branch observed at [`4c5f55366ed8c83f97374b66c8e9f84059c47382`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/4c5f55366ed8c83f97374b66c8e9f84059c47382). Its manifest, lockfile, workspace catalog, and integration state exactly pin `@agent-teams/engineering-foundation@0.19.0` and `@agent-teams/docs-protocol@0.1.4`. |
+| Platform | No AAS adoption evidenced at the observed revision | Default branch observed at [`ae6c0579000c87e7deac63453b619319a4e08e4e`](https://github.com/agent-teams-ai/agent-teams-platform/commit/ae6c0579000c87e7deac63453b619319a4e08e4e). Its manifest, lockfile, workspace catalog, and integration state exactly pin `@agent-teams/engineering-foundation@0.19.0` and `@agent-teams/docs-protocol@0.1.4`. |
+
+Those exact pins evidence Foundation and Docs consumption only. Neither observed
+tree contains an AAS package, `validate-overlay@1`, an advisory binding, or an
+adoption record. These commit-scoped observations make no conformance,
+publication, compatibility, or governance claim.
 
 ### Resolved Foundation release incident (not AAS status)
 
@@ -107,9 +114,9 @@ and
 The first release run partially published Foundation and failed while npm
 visibility was delayed. PR #204 merged as
 [`1105fdbf4535d9518f655a52f2dc12f542533901`](https://github.com/agent-teams-ai/engineering-foundation/commit/1105fdbf4535d9518f655a52f2dc12f542533901)
-and changed only the bounded observation window. Its automatic release run
-completed: both exact versions now resolve from npm and both `latest` tags point
-to them.
+and increased registry observation from 37 to 73 attempts and the outer release
+workflow timeout from 20 to 30 minutes. Its automatic release run completed:
+both exact versions now resolve from npm and both `latest` tags point to them.
 
 That operational incident is resolved for the two Foundation-owned packages.
 It did not publish AAS, provide AAS conformance evidence, or close D1.
