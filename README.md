@@ -47,6 +47,9 @@ remain provisional.
 
 ## Artifact indexes
 
+- [docs/status/implementation-ledger.md](docs/status/implementation-ledger.md)
+  records the nonnormative current implementation, conformance, integration,
+  and publication status.
 - [schemas/readme.md](schemas/readme.md) indexes the checked-in provisional wire-shape schemas.
 - [registries/readme.md](registries/readme.md) defines registry files and their
   lifecycle.
