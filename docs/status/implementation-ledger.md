@@ -11,19 +11,19 @@ close D1. Normative authority remains with the owner artifacts indexed by the
 ## Source boundary
 
 The remote observations in this section are commit-scoped operational context.
-They were captured in a retained read-only GitHub API snapshot generated at
-`2026-08-29T22:09:58Z`; the snapshot retains its own `SHA256SUMS` manifest, and
-the independent audit is a separate retained result. Stable commit links
-identify the observed remote revisions here; neither the external snapshot nor
-a consumer plan establishes AAS semantics, conformance, qualification, or
-adoption.
+Most were captured in a retained read-only GitHub API snapshot generated at
+`2026-08-29T22:09:58Z`; the Orchestrator observation below was refreshed from a
+separate retained independent audit observed at `2026-08-29T23:53:22Z`. The
+snapshot retains its own `SHA256SUMS` manifest. Stable commit links identify the
+observed remote revisions here; neither the external snapshot nor a consumer
+plan establishes AAS semantics, conformance, qualification, or adoption.
 
 | Source | Exact revision used | What it establishes |
 | --- | --- | --- |
 | AAS remote main observed | [`d5564cfe1567b302bcf36fd48b931a95b267dfb1`](https://github.com/agent-teams-ai/agent-architecture-standard/commit/d5564cfe1567b302bcf36fd48b931a95b267dfb1) | Exact clean base for this ledger refresh. Its parent `535ca76726da0db6eaac3c0eee98ff68fe34befe` remains implementation provenance for the private machinery, not the current observation head; see [source provenance](../../SOURCE.md), [private verifier architecture](../architecture/private-verifier-modules.md), and [private conformance slice](../../conformance/README.md). |
 | Engineering Foundation remote main and release commit observed | [`16e19d1ff82ceb049198c2070d45ec9031ab6cef`](https://github.com/agent-teams-ai/engineering-foundation/commit/16e19d1ff82ceb049198c2070d45ec9031ab6cef) | Read-only Foundation `0.21.0` and Docs Protocol `0.4.1` release context only. |
 | Foundation research source | [`75cc49466bb7eebef375b24a870f2a9feeb688cb`](https://github.com/agent-teams-ai/engineering-foundation/commit/75cc49466bb7eebef375b24a870f2a9feeb688cb) | Historical research slice copied unchanged into `docs/research/`; it is not current authority. |
-| Orchestrator remote main observed | [`f68d3d391c32d6c58bb0b11b0736831e5057743b`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/f68d3d391c32d6c58bb0b11b0736831e5057743b) | Commit-scoped consumer observation; independent of the historical Foundation fixture below. |
+| Orchestrator remote main observed | [`bb71eb685a486ff65ab357cba321e0f820a03052`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/bb71eb685a486ff65ab357cba321e0f820a03052) | Fresh independently reviewed, commit-scoped consumer observation. The head is one signature-verified, architecture-only commit ahead of the retained snapshot observation and still uses Foundation `0.20.0`, Docs Protocol `0.2.0`, and managed cohort `docs-2026-08-28-stable8`. Those existing Foundation and Docs facts are not AAS adoption, and this observation remains independent of the historical Foundation fixture below. |
 | Runtime remote main observed | [`3e1b977d9ab6147eb702b62497bd0be62acb8cf7`](https://github.com/agent-teams-ai/agent-runtime/commit/3e1b977d9ab6147eb702b62497bd0be62acb8cf7) | Commit-scoped consumer observation. |
 | Platform remote main observed | [`01abe850fe1a975e6bdcad6edfeb4d5978316bca`](https://github.com/agent-teams-ai/agent-teams-platform/commit/01abe850fe1a975e6bdcad6edfeb4d5978316bca) | Commit-scoped consumer observation; independent of the historical Foundation fixture below. |
 | Extension remote main observed | [`5aa3da7ff6f5e202e65115e4712e3ef638895e10`](https://github.com/agent-teams-ai/extension-foundation/commit/5aa3da7ff6f5e202e65115e4712e3ef638895e10) | Commit-scoped consumer observation. |
@@ -134,7 +134,7 @@ claims.
 | Consumer | AAS status | Current evidence |
 | --- | --- | --- |
 | Foundation | Direction accepted; AAS implementation **not integrated** | The incubation direction was accepted in [`58a37663e84f1225ca4866b71c61ae88a783c8a6`](https://github.com/agent-teams-ai/engineering-foundation/commit/58a37663e84f1225ca4866b71c61ae88a783c8a6); remote main and the current Foundation release commit were observed at [`16e19d1ff82ceb049198c2070d45ec9031ab6cef`](https://github.com/agent-teams-ai/engineering-foundation/commit/16e19d1ff82ceb049198c2070d45ec9031ab6cef). No AAS package, official reference provider, adapter, dogfood binding, or adoption record is evidenced. |
-| Orchestrator | No AAS adoption record evidenced | Remote main was observed at [`f68d3d391c32d6c58bb0b11b0736831e5057743b`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/f68d3d391c32d6c58bb0b11b0736831e5057743b). The consumer plan uses this as its planning base, not as an adoption receipt. |
+| Orchestrator | No AAS adoption record evidenced | Remote main was independently observed at [`bb71eb685a486ff65ab357cba321e0f820a03052`](https://github.com/agent-teams-ai/agent-teams-orchestrator/commit/bb71eb685a486ff65ab357cba321e0f820a03052), one signature-verified, architecture-only commit ahead of the retained snapshot observation. It still uses Foundation `0.20.0`, Docs Protocol `0.2.0`, and managed cohort `docs-2026-08-28-stable8`; this is existing dependency and cohort state, not an AAS adoption receipt. The preserved dependency-only candidate and comparisons are stale planning artifacts, not remote adoption evidence. |
 | Runtime | No AAS adoption record evidenced | Remote main was observed at [`3e1b977d9ab6147eb702b62497bd0be62acb8cf7`](https://github.com/agent-teams-ai/agent-runtime/commit/3e1b977d9ab6147eb702b62497bd0be62acb8cf7). The consumer plan uses this as its planning base, not as an adoption receipt. |
 | Platform | No AAS adoption record evidenced | Remote main was observed at [`01abe850fe1a975e6bdcad6edfeb4d5978316bca`](https://github.com/agent-teams-ai/agent-teams-platform/commit/01abe850fe1a975e6bdcad6edfeb4d5978316bca). The consumer plan uses this as its planning base, not as an adoption receipt. |
 | Extension | No AAS adoption record evidenced | Remote main was observed at [`5aa3da7ff6f5e202e65115e4712e3ef638895e10`](https://github.com/agent-teams-ai/extension-foundation/commit/5aa3da7ff6f5e202e65115e4712e3ef638895e10). It is later than the plan-construction base; no retained completion receipt establishes the planned dependency upgrade or AAS adoption at this head. |
@@ -143,8 +143,9 @@ The current consumer plan is proposed pending owner confirmation. It describes
 a dependency-only Wave 1 for Orchestrator, Runtime, Platform, and Extension,
 targeting Foundation `0.21.0` and Docs Protocol `0.4.1`, followed by separately
 reviewed semantic work. It expressly excludes AAS `validate-overlay@1`, Secure
-Snapshot, and new normative decisions. A plan, release-age exclusion, package
-pin, or dependency qualification is not an AAS adoption record.
+Snapshot, and new normative decisions. Release facts and age exclusions,
+dependency pins or qualifications, local candidates or comparisons, and
+consumer plans are operational evidence only; none is an AAS adoption record.
 
 ### Foundation 0.21.0 / Docs Protocol 0.4.1 release context
 
