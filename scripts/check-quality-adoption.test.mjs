@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertQualityAdoption, classifyTrackedSources, readQualityAdoption } from "./check-quality-adoption.mjs";
+import { assertQualityAdoption, classifyTrackedSources, deriveLintPaths, readQualityAdoption } from "./check-quality-adoption.mjs";
+import { selectOxlintFiles } from "./run-quality-lint.mjs";
 
 const accepted = await readQualityAdoption();
 
@@ -8,10 +9,29 @@ test("quality activation retains the accepted Foundation contract", () => {
   assertQualityAdoption(accepted);
 });
 
-test("generated declarations retain provenance instead of authored-source status", () => {
+test("generated JavaScript and declarations retain provenance instead of authored-source status", () => {
   const census = classifyTrackedSources(accepted.trackedPaths, accepted.profile);
-  assert.ok(census.classified.some(source => source.path === "generated/artifacts.d.ts" && source.role === "generated"));
+  for (const path of ["lib/unicode-case-fold-17.mjs", "lib/unicode-normalization-17.mjs", "generated/artifacts.d.ts"]) {
+    assert.ok(census.classified.some(source => source.path === path && source.role === "generated"), `${path} must be generated`);
+  }
   assert.ok(census.classified.some(source => source.path === "test/type-projections.ts" && source.role === "test"));
+});
+
+test("lint inputs are exactly production and tooling and match Oxlint selection", async () => {
+  const census = assertQualityAdoption(accepted);
+  const lintPaths = deriveLintPaths(census, accepted.profile);
+  for (const path of ["lib/binding-selection.mjs", "scripts/check-quality-adoption.mjs", "conformance/private/runner.mjs"]) {
+    assert.ok(lintPaths.includes(path), `${path} must be linted`);
+  }
+  for (const path of [
+    "lib/unicode-case-fold-17.mjs",
+    "lib/unicode-normalization-17.mjs",
+    "scripts/check-quality-adoption.test.mjs",
+    "scripts/github-heading-slug.test.mjs"
+  ]) {
+    assert.ok(!lintPaths.includes(path), `${path} must not be linted`);
+  }
+  assert.deepEqual(await selectOxlintFiles(lintPaths), lintPaths);
 });
 
 const mutations = {
@@ -22,7 +42,10 @@ const mutations = {
   "a detached fast route": value => { value.manifest.scripts["check:fast"] = "pnpm check:index"; },
   "a removed lint route": value => { value.manifest.scripts.verify = "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance"; },
   "a removed existing package gate": value => { value.manifest.scripts.verify = value.manifest.scripts.verify.replace(" && pnpm check:package", ""); },
-  "an uncovered tooling root": value => { value.profile.lint.targets = ["lib", "scripts"]; },
+  "a generated artifact reclassified as production": value => { value.profile.sourceUniverse.generatedFiles.shift(); },
+  "an extra generated lib file": value => { value.profile.sourceUniverse.generatedFiles.push("lib/binding-selection.mjs"); },
+  "an arbitrary generated root": value => { value.profile.sourceUniverse.generatedRoots.push("lib"); },
+  "changed included lint roles": value => { value.profile.lint.includedRoles = ["production"]; },
   "a local lint rule": value => { value.lintConfig.rules = { "no-eval": "off" }; },
   "a local lint override": value => { value.lintConfig.overrides = []; },
   "a local lint ignore": value => { value.lintConfig.ignorePatterns = ["lib/**"]; },

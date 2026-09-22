@@ -12,12 +12,12 @@
     "testRoots": ["test", "conformance/test"],
     "fixtureRoots": ["conformance/candidates"],
     "generatedRoots": ["generated"],
+    "generatedFiles": ["lib/unicode-case-fold-17.mjs", "lib/unicode-normalization-17.mjs"],
     "trackedExtensions": [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"]
   },
   "lint": {
     "configPath": ".oxlintrc.json",
-    "targets": ["lib", "scripts", "conformance/private"],
-    "ignoredRoles": ["fixture", "generated", "test"]
+    "includedRoles": ["production", "tooling"]
   },
   "scripts": {
     "fast": "check:fast",

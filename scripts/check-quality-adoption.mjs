@@ -10,7 +10,7 @@ const FOUNDATION_PRESET = "./node_modules/@agent-teams/engineering-foundation/pr
 const SOURCE_SUFFIXES = [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"];
 const EXACT_SCRIPTS = {
   "quality:scope": "node --test scripts/check-quality-adoption.test.mjs",
-  "quality:lint": "oxlint --config .oxlintrc.json --deny-warnings --disable-nested-config lib scripts conformance/private",
+  "quality:lint": "node scripts/run-quality-lint.mjs",
   "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
   verify: "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
 };
@@ -30,7 +30,7 @@ export function classifyTrackedSources(paths, profile) {
   const unclassified = [];
   for (const path of [...new Set(paths)].filter(isTrackedSource).toSorted()) {
     let role;
-    if (source.generatedRoots.some(root => inside(path, root))) {role = "generated";}
+    if (source.generatedFiles.includes(path) || source.generatedRoots.some(root => inside(path, root))) {role = "generated";}
     else if (source.fixtureRoots.some(root => inside(path, root))) {role = "fixture";}
     else if (source.testRoots.some(root => inside(path, root)) || /\.test\.[cm]?[jt]sx?$/u.test(path)) {role = "test";}
     else if (source.productionRoots.some(root => inside(path, root))) {role = "production";}
@@ -39,6 +39,13 @@ export function classifyTrackedSources(paths, profile) {
     else {classified.push({ path, role, kind: sourceKind(path) });}
   }
   return { classified, unclassified };
+}
+
+export function deriveLintPaths(census, profile) {
+  return census.classified
+    .filter(source => profile.lint.includedRoles.includes(source.role))
+    .map(source => source.path)
+    .toSorted();
 }
 
 function assertConfig(lintConfig) {
@@ -70,9 +77,19 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
     publicPreset: FOUNDATION_PRESET,
     sourceCoverage: "consumer-exact-js-census"
   });
-  assert.deepEqual(profile.sourceUniverse.trackedExtensions, SOURCE_SUFFIXES);
-  assert.deepEqual(profile.lint.targets, ["lib", "scripts", "conformance/private"]);
-  assert.deepEqual(profile.lint.ignoredRoles, ["fixture", "generated", "test"]);
+  assert.deepEqual(profile.sourceUniverse, {
+    productionRoots: ["lib"],
+    toolingRoots: ["scripts", "conformance/private"],
+    testRoots: ["test", "conformance/test"],
+    fixtureRoots: ["conformance/candidates"],
+    generatedRoots: ["generated"],
+    generatedFiles: ["lib/unicode-case-fold-17.mjs", "lib/unicode-normalization-17.mjs"],
+    trackedExtensions: SOURCE_SUFFIXES
+  });
+  assert.deepEqual(profile.lint, {
+    configPath: ".oxlintrc.json",
+    includedRoles: ["production", "tooling"]
+  });
   assert.equal(profile.typedCoverage, false, "JavaScript lint cannot claim typed coverage");
   assertConfig(lintConfig);
 
@@ -86,12 +103,10 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
   for (const role of ["production", "tooling", "test", "fixture", "generated"]) {
     assert.ok(census.classified.some(source => source.role === role), `${role} source census is empty`);
   }
-  const uncovered = census.classified
-    .filter(source => source.role === "production" || source.role === "tooling")
-    .filter(source => !profile.lint.targets.some(root => inside(source.path, root)))
-    .map(source => source.path);
-  assert.deepEqual(uncovered, [], `authored lint source is outside lint targets: ${uncovered.join(", ")}`);
-  assert.ok(census.classified.filter(source => source.role === "generated").every(source => source.kind === "declaration"));
+  const lintPaths = deriveLintPaths(census, profile);
+  assert.ok(lintPaths.length > 0, "authored lint source census is empty");
+  assert.ok(census.classified.some(source => source.role === "generated" && source.kind === "declaration"));
+  assert.ok(census.classified.some(source => source.role === "generated" && source.kind === "javascript"));
   assert.ok(census.classified.some(source => source.role === "test" && source.kind === "typescript"));
   assertWorkflow(workflow);
   return census;

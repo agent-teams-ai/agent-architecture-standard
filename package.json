@@ -25,7 +25,7 @@
     "check:conformance": "node --test conformance/test/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "quality:scope": "node --test scripts/check-quality-adoption.test.mjs",
-    "quality:lint": "oxlint --config .oxlintrc.json --deny-warnings --disable-nested-config lib scripts conformance/private",
+    "quality:lint": "node scripts/run-quality-lint.mjs",
     "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
     "check:changed": "pnpm check:fast",
     "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
