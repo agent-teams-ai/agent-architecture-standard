@@ -37,10 +37,7 @@ jobs:
           node-version: 24.20.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm check:fast
-      - run: pnpm check:generated
-      - run: pnpm check:package
-      - run: pnpm check:conformance
+      - run: pnpm verify
       - run: node scripts/ci-head-evidence.mjs
         env:
           AAS_EVIDENCE_PATH: ${{ runner.temp }}/exact-head-evidence.json

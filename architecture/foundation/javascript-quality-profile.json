@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "adoption": {
+    "mode": "active-foundation",
+    "foundationVersion": "1.5.0",
+    "publicPreset": "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json",
+    "sourceCoverage": "consumer-exact-js-census"
+  },
+  "sourceUniverse": {
+    "productionRoots": ["lib"],
+    "toolingRoots": ["scripts", "conformance/private"],
+    "testRoots": ["test", "conformance/test"],
+    "fixtureRoots": ["conformance/candidates"],
+    "generatedRoots": ["generated"],
+    "trackedExtensions": [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"]
+  },
+  "lint": {
+    "configPath": ".oxlintrc.json",
+    "targets": ["lib", "scripts", "conformance/private"],
+    "ignoredRoles": ["fixture", "generated", "test"]
+  },
+  "scripts": {
+    "fast": "check:fast",
+    "full": "verify",
+    "scope": "quality:scope",
+    "lint": "quality:lint",
+    "typecheck": "typecheck",
+    "generate": "generate",
+    "generatedCheck": "check:generated"
+  },
+  "typedCoverage": false
+}

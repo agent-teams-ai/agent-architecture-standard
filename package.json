@@ -6,36 +6,14 @@
   "license": "Apache-2.0",
   "type": "module",
   "packageManager": "pnpm@11.24.0",
-  "engines": {
-    "node": ">=24"
-  },
-  "files": [
-    "CONTRIBUTING.md",
-    "GOVERNANCE.md",
-    "MAINTAINERS.md",
-    "SECURITY.md",
-    "SOURCE.md",
-    "artifacts.json",
-    "version-matrix.json",
-    "generated/",
-    "profiles/",
-    "decisions/",
-    "docs/decisions/",
-    "docs/status/",
-    "registries/",
-    "schemas/",
-    "spec/",
-    "templates/normative-traceability.md",
-    "vectors/"
-  ],
+  "engines": { "node": ">=24" },
+  "files": ["CONTRIBUTING.md", "GOVERNANCE.md", "MAINTAINERS.md", "SECURITY.md", "SOURCE.md", "artifacts.json", "version-matrix.json", "generated/", "profiles/", "decisions/", "docs/decisions/", "docs/status/", "registries/", "schemas/", "spec/", "templates/normative-traceability.md", "vectors/"],
   "exports": {
     "./artifacts": "./artifacts.json",
     "./version-matrix": "./version-matrix.json",
     "./schemas/*": "./schemas/*.json",
     "./registries/*": "./registries/*.json",
-    "./generated/*": {
-      "types": "./generated/*.d.ts"
-    }
+    "./generated/*": { "types": "./generated/*.d.ts" }
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",
@@ -46,12 +24,16 @@
     "check:package": "node scripts/check-package.mjs",
     "check:conformance": "node --test conformance/test/*.test.mjs",
     "typecheck": "tsc --noEmit",
-    "check:fast": "pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
+    "quality:scope": "node --test scripts/check-quality-adoption.test.mjs",
+    "quality:lint": "oxlint --config .oxlintrc.json --deny-warnings --disable-nested-config lib scripts conformance/private",
+    "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
     "check:changed": "pnpm check:fast",
-    "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance"
+    "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
   },
   "devDependencies": {
+    "@agent-teams/engineering-foundation": "1.5.0",
     "ajv": "8.20.0",
+    "oxlint": "1.85.0",
     "typescript": "7.0.2"
   }
 }
