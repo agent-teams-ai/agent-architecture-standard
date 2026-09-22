@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { assertQualityAdoption, deriveLintPaths, readQualityAdoption } from "./check-quality-adoption.mjs";
 
@@ -49,6 +49,6 @@ export async function runQualityLint() {
   process.stderr.write(stderr);
 }
 
-if (process.argv[1] && new URL(`file://${process.argv[1]}`).href === import.meta.url) {
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   await runQualityLint();
 }

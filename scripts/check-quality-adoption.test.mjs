@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
+import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { assertQualityAdoption, classifyTrackedSources, deriveLintPaths, readQualityAdoption } from "./check-quality-adoption.mjs";
 import { selectOxlintFiles } from "./run-quality-lint.mjs";
 
+const execFileAsync = promisify(execFile);
+const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const accepted = await readQualityAdoption();
 
 test("quality activation retains the accepted Foundation contract", () => {
@@ -32,6 +40,31 @@ test("lint inputs are exactly production and tooling and match Oxlint selection"
     assert.ok(!lintPaths.includes(path), `${path} must not be linted`);
   }
   assert.deepEqual(await selectOxlintFiles(lintPaths), lintPaths);
+});
+
+test("lint entrypoint runs from a checkout path containing # and %", async () => {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aas-quality-lint-entrypoint-"));
+  const checkout = join(temporaryRoot, "checkout#with%characters");
+  const marker = join(temporaryRoot, "oxlint-invocations.txt");
+  const observer = join(temporaryRoot, "observe-oxlint.cjs");
+  try {
+    await symlink(repositoryRoot, checkout, "dir");
+    await writeFile(observer, `
+const { appendFileSync } = require("node:fs");
+if (process.argv[1]?.replaceAll("\\\\", "/").endsWith("/node_modules/oxlint/bin/oxlint")) {
+  appendFileSync(process.env.AAS_OXLINT_MARKER, "invoked\\n");
+}
+`, "utf8");
+    await execFileAsync(process.execPath, ["--preserve-symlinks-main", join(checkout, "scripts/run-quality-lint.mjs")], {
+      cwd: checkout,
+      encoding: "utf8",
+      env: { ...process.env, AAS_OXLINT_MARKER: marker, NODE_OPTIONS: `--require=${observer}` },
+      maxBuffer: 2 * 1024 * 1024
+    });
+    assert.deepEqual((await readFile(marker, "utf8")).trim().split("\n"), ["invoked", "invoked"]);
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
 });
 
 const mutations = {
