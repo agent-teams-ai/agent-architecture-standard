@@ -35,25 +35,25 @@ const sha256 = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('h
 export async function loadOracleCases() {
   const corpusBytes = await readFile(corpusPath);
   const corpus = JSON.parse(corpusBytes);
-  if (corpus.cases.length !== 18 || expectations.length !== 18) throw new Error('oracle-corpus-cardinality');
+  if (corpus.cases.length !== 18 || expectations.length !== 18) {throw new Error('oracle-corpus-cardinality');}
   const result = [];
   for (let index = 0; index < expectations.length; index += 1) {
     const [caseId, diagnostic, valueDigest] = expectations[index];
     const item = corpus.cases[index];
-    if (item.caseId !== caseId || item.expected.diagnostic !== diagnostic) throw new Error('oracle-corpus-drift');
+    if (item.caseId !== caseId || item.expected.diagnostic !== diagnostic) {throw new Error('oracle-corpus-drift');}
     let bytes;
     let form = 'bytes';
     if (item.input.constructedToken) {
       const { prefix, repeat, suffix } = item.input.constructedToken;
-      if (repeat.text !== '0' || repeat.count !== 100001) throw new Error('oracle-construction-drift');
+      if (repeat.text !== '0' || repeat.count !== 100001) {throw new Error('oracle-construction-drift');}
       bytes = Buffer.from(`${prefix}${repeat.text.repeat(repeat.count)}${suffix}`);
     } else {
       const resolved = path.resolve(workspace, item.input.reference);
       const vectorRoot = `${path.join(workspace, 'vectors/json')}${path.sep}`;
-      if (!resolved.startsWith(vectorRoot)) throw new Error('oracle-reference-outside-json-vectors');
+      if (!resolved.startsWith(vectorRoot)) {throw new Error('oracle-reference-outside-json-vectors');}
       bytes = await readFile(resolved);
-      if (item.input.prefixHex) bytes = Buffer.concat([Buffer.from(item.input.prefixHex, 'hex'), bytes]);
-      if (item.input.form === 'decoded-text') form = 'decoded-text';
+      if (item.input.prefixHex) {bytes = Buffer.concat([Buffer.from(item.input.prefixHex, 'hex'), bytes]);}
+      if (item.input.form === 'decoded-text') {form = 'decoded-text';}
     }
     result.push(Object.freeze({
       caseId,

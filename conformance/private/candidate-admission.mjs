@@ -28,38 +28,38 @@ function sameFile(left, right) {
 
 async function pathnameEvidence(candidatePath) {
   const status = await lstat(candidatePath, { bigint: true });
-  if (!status.isFile() || status.isSymbolicLink()) throw invalid();
+  if (!status.isFile() || status.isSymbolicLink()) {throw invalid();}
   const resolved = await realpath(candidatePath);
   return { status, resolved: canonicalPathname(resolved) };
 }
 
 function admissionFlags() {
   let flags = constants.O_RDONLY;
-  if (typeof constants.O_NOFOLLOW === 'number' && constants.O_NOFOLLOW !== 0) flags |= constants.O_NOFOLLOW;
-  if (typeof constants.O_NONBLOCK === 'number' && constants.O_NONBLOCK !== 0) flags |= constants.O_NONBLOCK;
+  if (typeof constants.O_NOFOLLOW === 'number' && constants.O_NOFOLLOW !== 0) {flags |= constants.O_NOFOLLOW;}
+  if (typeof constants.O_NONBLOCK === 'number' && constants.O_NONBLOCK !== 0) {flags |= constants.O_NONBLOCK;}
   return flags;
 }
 
 export async function admitCandidate(candidatePath, candidateBytes) {
   if (typeof candidatePath !== 'string' || candidatePath.length === 0
-      || !Number.isSafeInteger(candidateBytes) || candidateBytes < 1) throw invalid();
+      || !Number.isSafeInteger(candidateBytes) || candidateBytes < 1) {throw invalid();}
   let handle;
   try {
     const before = await pathnameEvidence(candidatePath);
-    if (before.status.size < 1n || before.status.size > BigInt(candidateBytes)) throw invalid();
+    if (before.status.size < 1n || before.status.size > BigInt(candidateBytes)) {throw invalid();}
 
     handle = await open(candidatePath, admissionFlags());
     const openedBefore = await handle.stat({ bigint: true });
-    if (!sameFile(before.status, openedBefore)) throw race();
+    if (!sameFile(before.status, openedBefore)) {throw race();}
 
     const buffer = Buffer.allocUnsafe(candidateBytes + 1);
     let length = 0;
     while (length < buffer.length) {
       const { bytesRead } = await handle.read(buffer, length, buffer.length - length, length);
-      if (bytesRead === 0) break;
+      if (bytesRead === 0) {break;}
       length += bytesRead;
     }
-    if (length < 1 || length > candidateBytes) throw invalid();
+    if (length < 1 || length > candidateBytes) {throw invalid();}
 
     const openedAfter = await handle.stat({ bigint: true });
     const after = await pathnameEvidence(candidatePath);
@@ -67,12 +67,12 @@ export async function admitCandidate(candidatePath, candidateBytes) {
         || !sameFile(before.status, openedAfter)
         || !sameFile(before.status, after.status)
         || !sameFile(openedBefore, openedAfter)
-        || openedAfter.size !== BigInt(length)) throw race();
+        || openedAfter.size !== BigInt(length)) {throw race();}
     return Buffer.from(buffer.subarray(0, length));
   } catch (error) {
-    if (error?.message === INVALID || error?.message === RACE) throw error;
+    if (error?.message === INVALID || error?.message === RACE) {throw error;}
     if (error?.code === 'ELOOP' || error?.code === 'EISDIR' || error?.code === 'ENXIO'
-        || error?.code === 'EINVAL' || error?.code === 'ENOENT' || error?.code === 'ENOTDIR') throw invalid();
+        || error?.code === 'EINVAL' || error?.code === 'ENOENT' || error?.code === 'ENOTDIR') {throw invalid();}
     throw invalid();
   } finally {
     try { await handle?.close(); } catch { /* admission already has a normalized outcome */ }

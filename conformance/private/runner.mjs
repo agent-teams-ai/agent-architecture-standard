@@ -45,20 +45,20 @@ export const CANDIDATE_NODE_ARGS = Object.freeze([
 
 const sha256 = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 const ownKeysAre = (value, keys) => value !== null && typeof value === 'object' && !Array.isArray(value)
-  && Object.keys(value).sort().join('\0') === [...keys].sort().join('\0');
+  && Object.keys(value).toSorted().join('\0') === [...keys].toSorted().join('\0');
 const remaining = (deadline) => Math.max(0, Math.ceil(deadline - performance.now()));
 
 function validateBounds(value) {
-  if (!ownKeysAre(value, Object.keys(DEFAULT_BOUNDS))) throw new Error('invalid-bounds');
+  if (!ownKeysAre(value, Object.keys(DEFAULT_BOUNDS))) {throw new Error('invalid-bounds');}
   for (const [key, defaultValue] of Object.entries(DEFAULT_BOUNDS)) {
-    if (!Number.isSafeInteger(value[key]) || value[key] < 1 || value[key] > defaultValue * 10) throw new Error('invalid-bounds');
+    if (!Number.isSafeInteger(value[key]) || value[key] < 1 || value[key] > defaultValue * 10) {throw new Error('invalid-bounds');}
   }
   return Object.freeze({ ...value });
 }
 
 function boundedCandidateName(name, bounds) {
   if (typeof name !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(name)
-      || Buffer.byteLength(name) > bounds.candidateNameBytes) throw new Error('invalid-candidate-name');
+      || Buffer.byteLength(name) > bounds.candidateNameBytes) {throw new Error('invalid-candidate-name');}
   return name;
 }
 
@@ -68,11 +68,11 @@ function candidateEnvironment() {
 
 function waitUntil(promise, deadline, fallback) {
   const milliseconds = remaining(deadline);
-  if (milliseconds === 0) return Promise.resolve(fallback);
+  if (milliseconds === 0) {return Promise.resolve(fallback);}
   return new Promise((resolve) => {
     let settled = false;
     const finish = (value) => {
-      if (settled) return;
+      if (settled) {return;}
       settled = true;
       clearTimeout(timer);
       resolve(value);
@@ -83,7 +83,7 @@ function waitUntil(promise, deadline, fallback) {
 }
 
 async function teardown(child, deadline, closeState) {
-  if (!child?.pid) return 'launch-failed';
+  if (!child?.pid) {return 'launch-failed';}
   if (process.platform === 'win32') {
     try { child.kill('SIGKILL'); } catch { /* bounded best effort */ }
   } else {
@@ -97,7 +97,7 @@ async function teardown(child, deadline, closeState) {
     ? (closeState.isClosed() ? Promise.resolve(true) : closeState.promise)
     : (child.exitCode !== null || child.signalCode !== null
       ? Promise.resolve(true)
-      : new Promise((resolve) => child.once('close', () => resolve(true))));
+      : new Promise((resolve) => { child.once('close', () => { resolve(true); }); }));
   const reaped = await waitUntil(closed, deadline, false);
   child.stdin?.destroy();
   child.stdout?.destroy();
@@ -107,16 +107,16 @@ async function teardown(child, deadline, closeState) {
   return reaped ? 'bounded-attempt-complete' : 'bounded-attempt-deadline';
 }
 
-export const __testOnlyTeardown = teardown;
+export const testOnlyTeardown = teardown;
 
 function parseTinyRecord(text) {
   let offset = 0;
   const whitespace = () => {
-    while (text[offset] === ' ' || text[offset] === '\t' || text[offset] === '\r' || text[offset] === '\n') offset += 1;
+    while (text[offset] === ' ' || text[offset] === '\t' || text[offset] === '\r' || text[offset] === '\n') {offset += 1;}
   };
   const string = (escapes = true) => {
     whitespace();
-    if (text[offset] !== '"') throw new Error('string');
+    if (text[offset] !== '"') {throw new Error('string');}
     const start = offset;
     offset += 1;
     while (offset < text.length) {
@@ -125,58 +125,58 @@ function parseTinyRecord(text) {
         offset += 1;
         return JSON.parse(text.slice(start, offset));
       }
-      if (code < 0x20) throw new Error('control');
+      if (code < 0x20) {throw new Error('control');}
       if (code === 0x5c) {
-        if (!escapes) throw new Error('escaped-key');
+        if (!escapes) {throw new Error('escaped-key');}
         offset += 1;
         if (text[offset] === 'u') {
-          if (!/^[0-9a-fA-F]{4}$/.test(text.slice(offset + 1, offset + 5))) throw new Error('escape');
+          if (!/^[0-9a-fA-F]{4}$/.test(text.slice(offset + 1, offset + 5))) {throw new Error('escape');}
           offset += 5;
           continue;
         }
-        if (!/["\\/bfnrt]/.test(text[offset] ?? '')) throw new Error('escape');
+        if (!/["\\/bfnrt]/.test(text[offset] ?? '')) {throw new Error('escape');}
       }
       offset += 1;
     }
     throw new Error('unterminated');
   };
   whitespace();
-  if (text[offset] !== '{') throw new Error('object');
+  if (text[offset] !== '{') {throw new Error('object');}
   offset += 1;
   const value = Object.create(null);
   const seen = new Set();
   whitespace();
-  if (text[offset] === '}') offset += 1;
+  if (text[offset] === '}') {offset += 1;}
   else {
     for (;;) {
       const key = string(false);
-      if (seen.has(key)) throw new Error('duplicate');
+      if (seen.has(key)) {throw new Error('duplicate');}
       seen.add(key);
       whitespace();
-      if (text[offset] !== ':') throw new Error('colon');
+      if (text[offset] !== ':') {throw new Error('colon');}
       offset += 1;
       whitespace();
       if (text.startsWith('null', offset)) {
         value[key] = null;
         offset += 4;
-      } else value[key] = string();
+      } else {value[key] = string();}
       whitespace();
       if (text[offset] === '}') { offset += 1; break; }
-      if (text[offset] !== ',') throw new Error('comma');
+      if (text[offset] !== ',') {throw new Error('comma');}
       offset += 1;
     }
   }
   whitespace();
-  if (offset !== text.length) throw new Error('trailing');
+  if (offset !== text.length) {throw new Error('trailing');}
   return value;
 }
 
 export function validateResponse(line, expectedToken, bounds = DEFAULT_BOUNDS) {
-  if (Buffer.byteLength(line) > bounds.responseBytes) return { failure: 'response-too-large' };
+  if (Buffer.byteLength(line) > bounds.responseBytes) {return { failure: 'response-too-large' };}
   let value;
   try { value = parseTinyRecord(line); } catch { return { failure: 'malformed-response' }; }
   const keys = ['version', 'token', 'diagnostic', 'valueDigest'];
-  if (!ownKeysAre(value, keys)) return { failure: 'unexpected-response-field' };
+  if (!ownKeysAre(value, keys)) {return { failure: 'unexpected-response-field' };}
   if (value.version !== PROTOCOL || value.token !== expectedToken || !TOKEN.test(value.token)
       || typeof value.diagnostic !== 'string' || value.diagnostic.length > 64 || !DIAGNOSTICS.has(value.diagnostic)
       || !(value.valueDigest === null || (typeof value.valueDigest === 'string' && DIGEST.test(value.valueDigest)))
@@ -192,19 +192,19 @@ function writePipe(stream, bytes) {
     let settled = false;
     const onError = () => finish(false);
     const finish = (ok) => {
-      if (settled) return;
+      if (settled) {return;}
       settled = true;
       resolve(ok);
     };
     stream.once('error', onError);
-    stream.end(bytes, (error) => finish(error == null));
+    stream.end(bytes, (error) => finish(error === undefined || error === null));
   });
 }
 
 let permissionContractCheck;
 export function verifyNodePermissionContract() {
   permissionContractCheck ??= (async () => {
-    if (process.versions.node.split('.')[0] !== '24') return false;
+    if (process.versions.node.split('.')[0] !== '24') {return false;}
     const probe = Buffer.from("const scopes=['fs.read','fs.write','child','worker','addons'];if(!scopes.every((scope)=>process.permission?.has(scope)===false))process.exitCode=91");
     const started = performance.now();
     const invocationDeadline = started + DEFAULT_BOUNDS.invocationMilliseconds;
@@ -242,7 +242,7 @@ export function verifyNodePermissionContract() {
 
 async function executeOne(candidateBytes, request, bounds) {
   const encoded = Buffer.from(`${JSON.stringify(request)}\n`);
-  if (encoded.length > bounds.requestBytes) throw new Error('request-too-large');
+  if (encoded.length > bounds.requestBytes) {throw new Error('request-too-large');}
   const started = performance.now();
   const invocationDeadline = started + bounds.invocationMilliseconds;
   const absoluteDeadline = invocationDeadline + bounds.settlementMilliseconds;
@@ -274,9 +274,9 @@ async function executeOne(candidateBytes, request, bounds) {
   child.stderr.on('error', () => { streamFailure = true; notifyEvent('pipe-error'); });
   child.stdout.on('data', (chunk) => {
     const available = Math.max(0, bounds.responseBytes + 1 - stdout.length);
-    if (available > 0) stdout = Buffer.concat([stdout, chunk.subarray(0, available)]);
-    if (stdout.includes(0x0a)) notifyEvent('response');
-    if (stdout.length > bounds.responseBytes) notifyEvent('oversized');
+    if (available > 0) {stdout = Buffer.concat([stdout, chunk.subarray(0, available)]);}
+    if (stdout.includes(0x0a)) {notifyEvent('response');}
+    if (stdout.length > bounds.responseBytes) {notifyEvent('oversized');}
   });
   child.stderr.on('data', (chunk) => {
     stderrBytes = Math.min(bounds.stderrBytes + 1, stderrBytes + chunk.length);
@@ -293,9 +293,9 @@ async function executeOne(candidateBytes, request, bounds) {
   const cleanup = await teardown(child, absoluteDeadline, { promise: closePromise, isClosed: () => closed });
   const writes = await waitUntil(Promise.all([candidateWrite, requestWrite]), absoluteDeadline, [false, false]);
 
-  if (!responseSettlement || cleanup === 'bounded-attempt-deadline') return { failure: 'settlement-timeout', diagnostic: null, cleanup };
-  if (first === 'error' || !child.pid) return { failure: 'launch-failed', diagnostic: null, cleanup };
-  if (first === 'timeout') return { failure: 'timeout', diagnostic: null, cleanup };
+  if (!responseSettlement || cleanup === 'bounded-attempt-deadline') {return { failure: 'settlement-timeout', diagnostic: null, cleanup };}
+  if (first === 'error' || !child.pid) {return { failure: 'launch-failed', diagnostic: null, cleanup };}
+  if (first === 'timeout') {return { failure: 'timeout', diagnostic: null, cleanup };}
   if (stdout.length > bounds.responseBytes || first === 'oversized' || stderrBytes > bounds.stderrBytes) {
     return { failure: 'response-too-large', diagnostic: null, cleanup };
   }
@@ -345,13 +345,13 @@ function validateReport(report) {
     if (!ownKeysAre(item, ['status', 'failure', 'observedDiagnostic', 'cleanup'])
         || !['pass', 'fail'].includes(item.status)
         || !FAILURE_CODES.has(item.failure) || !(item.observedDiagnostic === null || DIAGNOSTICS.has(item.observedDiagnostic))
-        || !CLEANUP.has(item.cleanup)) throw new Error('internal-report-schema');
+        || !CLEANUP.has(item.cleanup)) {throw new Error('internal-report-schema');}
   }
   return report;
 }
 
 export function createTransportPlan(length) {
-  if (!Number.isSafeInteger(length) || length < 1 || length > 1024) throw new Error('invalid-transport-length');
+  if (!Number.isSafeInteger(length) || length < 1 || length > 1024) {throw new Error('invalid-transport-length');}
   const indexes = Array.from({ length }, (_, index) => index);
   for (let index = indexes.length - 1; index > 0; index -= 1) {
     const other = randomInt(index + 1);
@@ -366,7 +366,7 @@ export function createTransportPlan(length) {
 export async function runSuite({ candidatePath, candidateName, bounds: suppliedBounds = DEFAULT_BOUNDS }) {
   const bounds = validateBounds(suppliedBounds);
   const name = boundedCandidateName(candidateName, bounds);
-  if (!(await verifyNodePermissionContract())) throw new Error('unsupported-node-permission-contract');
+  if (!(await verifyNodePermissionContract())) {throw new Error('unsupported-node-permission-contract');}
   const candidateBytes = await admitCandidate(candidatePath, bounds.candidateBytes);
   const candidateDigest = sha256(candidateBytes);
   const oracle = await loadOracleCases();

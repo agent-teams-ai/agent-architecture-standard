@@ -10,13 +10,13 @@ const root = path.resolve(import.meta.dirname, '..');
 let evidencePath = resolveEvidencePath(process.env.AAS_EVIDENCE_PATH, root);
 const gitRun = (args, cwd = root) => {
   const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
-  if (result.error) throw new Error(`git ${args.join(' ')} failed to start: ${result.error.message}`, { cause: result.error });
-  if (result.status !== 0) throw new Error(result.stderr || `git ${args.join(' ')} failed`);
+  if (result.error) {throw new Error(`git ${args.join(' ')} failed to start: ${result.error.message}`, { cause: result.error });}
+  if (result.status !== 0) {throw new Error(result.stderr || `git ${args.join(' ')} failed`);}
   return result.stdout.trim();
 };
 const assertMaterialization = (cwd, expectedHead, includeUntracked) => {
   const actual = gitRun(['rev-parse', 'HEAD'], cwd);
-  if (actual !== expectedHead) throw new Error(`checked-out HEAD mismatch: expected ${expectedHead}, got ${actual}`);
+  if (actual !== expectedHead) {throw new Error(`checked-out HEAD mismatch: expected ${expectedHead}, got ${actual}`);}
   const status = gitRun(['status', '--porcelain', includeUntracked ? '--untracked-files=all' : '--untracked-files=no'], cwd);
   assertCleanGitStatus(status, includeUntracked ? 'commit materialization' : 'root tracked workspace');
 };
@@ -32,7 +32,7 @@ const writeEvidence = async (target, bytes) => {
 
 const head = gitRun(['rev-parse', 'HEAD']);
 const expected = process.env.AAS_EXPECTED_HEAD;
-if (!expected || head !== expected) throw new Error(`checked-out HEAD mismatch: expected ${expected}, got ${head}`);
+if (!expected || head !== expected) {throw new Error(`checked-out HEAD mismatch: expected ${expected}, got ${head}`);}
 assertMaterialization(root, head, false);
 await mkdir(path.dirname(evidencePath), { recursive: true });
 evidencePath = resolveEvidencePath(path.join(await realpath(path.dirname(evidencePath)), path.basename(evidencePath)), await realpath(root));
@@ -62,11 +62,11 @@ try {
     await mkdir(destination);
     runNpmSync(['pack', '--pack-destination', destination], { cwd: worktree, encoding: 'utf8', env: { ...process.env, npm_config_cache: path.join(temporary, 'npm-cache') } });
     const tarballs = (await readdir(destination)).filter((item) => item.endsWith('.tgz'));
-    if (tarballs.length !== 1) throw new Error('post-gate evidence requires exactly one npm tarball per clean pack');
+    if (tarballs.length !== 1) {throw new Error('post-gate evidence requires exactly one npm tarball per clean pack');}
     packed.push(await readFile(path.join(destination, tarballs[0])));
   }
   const digests = packed.map((bytes) => createHash('sha256').update(bytes).digest('hex'));
-  if (digests[0] !== digests[1]) throw new Error('post-gate npm tarball is not reproducible');
+  if (digests[0] !== digests[1]) {throw new Error('post-gate npm tarball is not reproducible');}
   tarballDigest = digests[0];
   assertMaterialization(worktree, head, true);
 
@@ -90,6 +90,6 @@ try {
   await writeEvidence(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
   assertMaterialization(root, head, false);
 } finally {
-  if (worktreeAdded) gitRun(['worktree', 'remove', '--force', worktree]);
+  if (worktreeAdded) {gitRun(['worktree', 'remove', '--force', worktree]);}
   await rm(temporary, { recursive: true, force: true });
 }

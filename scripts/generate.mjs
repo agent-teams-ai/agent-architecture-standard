@@ -12,7 +12,7 @@ const actionIds = (await registryEntries('actions')).map(({ id }) => id);
 const problemCodes = (await registryEntries('problems')).map(({ id }) => id);
 const profileBranches = (await registryEntries('profiles')).map(({ id, role, profileAasIdentity }) => {
   const match = /@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){0,2})$/u.exec(id);
-  if (!match) throw new Error(`registered profile ID does not end in its definition version: ${id}`);
+  if (!match) {throw new Error(`registered profile ID does not end in its definition version: ${id}`);}
   return { role,
     schema: {
     type: 'object', additionalProperties: false, required: ['version', 'id', 'aasIdentity'],
@@ -24,7 +24,7 @@ const profileBranches = (await registryEntries('profiles')).map(({ id, role, pro
 });
 const profileSchemaForRole = (role) => {
   const branches = profileBranches.filter((item) => item.role === role).map((item) => item.schema);
-  if (branches.length === 0) throw new Error(`profile role has no registry entries: ${role}`);
+  if (branches.length === 0) {throw new Error(`profile role has no registry entries: ${role}`);}
   return { oneOf: branches };
 };
 const diagnosticCodes = (await registryEntries('diagnostics')).map(({ id }) => id);
@@ -55,51 +55,51 @@ for (const schemaPath of schemaPaths) {
 
 const literal = (value) => JSON.stringify(value);
 const typeName = (value) => value.replace(/[^A-Za-z0-9_$]/g, '_');
+const intersectSchemas = (left, right) => left === undefined ? right : { allOf: [left, right] };
+const makeBranch = (source, key, values, effect = {}) => {
+  if (values.length === 0) {return;}
+  const branch = { ...source, properties: { ...source.properties }, required: [...(source.required ?? [])] };
+  const selection = values.length === 1 ? { const: values[0] } : { enum: values };
+  branch.properties[key] = intersectSchemas(branch.properties[key], selection);
+  const required = new Set(branch.required);
+  for (const [property, constraint] of Object.entries(effect.properties ?? {})) {
+    if (constraint === false) { delete branch.properties[property]; required.delete(property); }
+    else {branch.properties[property] = intersectSchemas(branch.properties[property], constraint);}
+  }
+  for (const property of effect.required ?? []) {required.add(property);}
+  branch.required = [...required];
+  return branch;
+  };
 function plainObjectType(schema, document) {
   if ((schema.additionalProperties === false || schema.additionalProperties === undefined) && Object.keys(schema.properties ?? {}).length === 0 && schema.maxProperties === 0) {
     return 'Record<PropertyKey, never>';
   }
   const required = new Set(schema.required ?? []);
   const fields = Object.entries(schema.properties ?? {}).map(([key, value]) => `  ${JSON.stringify(key)}${required.has(key) ? '' : '?'}: ${typeFor(value, document)};`);
-  if (schema.additionalProperties && schema.additionalProperties !== false) fields.push(`  [key: string]: ${schema.additionalProperties === true ? 'JsonValue' : typeFor(schema.additionalProperties, document)};`);
+  if (schema.additionalProperties && schema.additionalProperties !== false) {fields.push(`  [key: string]: ${schema.additionalProperties === true ? 'JsonValue' : typeFor(schema.additionalProperties, document)};`);}
   return `{\n${fields.join('\n')}\n}`;
 }
 
 function conditionalObjectType(schema, document) {
-  if (!Array.isArray(schema.allOf) || schema.allOf.length === 0) return undefined;
+  if (!Array.isArray(schema.allOf) || schema.allOf.length === 0) {return;}
   const conditionals = schema.allOf;
-  if (conditionals.some((conditional) => Object.keys(conditional.if?.properties ?? {}).length !== 1 || !conditional.then)) return undefined;
+  if (conditionals.some((conditional) => Object.keys(conditional.if?.properties ?? {}).length !== 1 || !conditional.then)) {return;}
   const base = { ...schema, properties: { ...schema.properties }, required: [...(schema.required ?? [])] };
   delete base.allOf;
-  const intersect = (left, right) => left === undefined ? right : { allOf: [left, right] };
-  const makeBranch = (source, key, values, effect = {}) => {
-    if (values.length === 0) return undefined;
-    const branch = { ...source, properties: { ...source.properties }, required: [...(source.required ?? [])] };
-    const selection = values.length === 1 ? { const: values[0] } : { enum: values };
-    branch.properties[key] = intersect(branch.properties[key], selection);
-    const required = new Set(branch.required);
-    for (const [property, constraint] of Object.entries(effect.properties ?? {})) {
-      if (constraint === false) { delete branch.properties[property]; required.delete(property); }
-      else branch.properties[property] = intersect(branch.properties[property], constraint);
-    }
-    for (const property of effect.required ?? []) required.add(property);
-    branch.required = [...required];
-    return branch;
-  };
   let branches = [{ schema: base, selections: new Map() }];
   for (const conditional of conditionals) {
     const [[key, selection]] = Object.entries(conditional.if.properties);
     const baseSelection = schema.properties?.[key];
     const allValues = baseSelection?.enum ?? ('const' in (baseSelection ?? {}) ? [baseSelection.const] : undefined);
     const selected = selection.enum ?? ('const' in selection ? [selection.const] : undefined);
-    if (!allValues || !selected) return undefined;
+    if (!allValues || !selected) {return;}
     const selectedSet = new Set(selected);
     branches = branches.flatMap((branch) => {
       const compatibleValues = branch.selections.has(key) ? [branch.selections.get(key)] : allValues;
       return compatibleValues.map((value) => {
         const effect = selectedSet.has(value) ? conditional.then : conditional.else;
         const schemaBranch = makeBranch(branch.schema, key, [value], effect);
-        if (!schemaBranch) return undefined;
+        if (!schemaBranch) {return null;}
         const selections = new Map(branch.selections); selections.set(key, value);
         return { schema: schemaBranch, selections };
       }).filter(Boolean);
@@ -108,33 +108,33 @@ function conditionalObjectType(schema, document) {
   return branches.map((branch) => `(${plainObjectType(branch.schema, document)})`).join(' | ');
 }
 function typeFor(schema, document) {
-  if (schema === true) return 'JsonValue';
-  if (schema === false) return 'never';
+  if (schema === true) {return 'JsonValue';}
+  if (schema === false) {return 'never';}
   if (schema.$ref) {
     const [file, pointer = ''] = schema.$ref.split('#');
     const segments = pointer.split('/').filter(Boolean).map((key) => key.replace(/~1/g, '/').replace(/~0/g, '~'));
-    if (segments.length !== 2 || segments[0] !== '$defs' || !segments[1]) throw new Error(`unsupported generation pointer: ${schema.$ref}`);
+    if (segments.length !== 2 || segments[0] !== '$defs' || !segments[1]) {throw new Error(`unsupported generation pointer: ${schema.$ref}`);}
     const targetDocument = file ? schemaMap.get(file) : document;
-    if (!targetDocument?.$defs?.[segments[1]]) throw new Error(`unknown generation $ref: ${schema.$ref}`);
+    if (!targetDocument?.$defs?.[segments[1]]) {throw new Error(`unknown generation $ref: ${schema.$ref}`);}
     const referenced = typeName(segments[1]);
-    if (!file) return referenced;
+    if (!file) {return referenced;}
     const moduleName = `./${path.basename(file, '.schema.json')}.js`;
     return `import(${JSON.stringify(moduleName)}).${referenced}`;
   }
-  if ('const' in schema) return literal(schema.const);
-  if (schema.enum) return schema.enum.map(literal).join(' | ');
-  if (schema.oneOf || schema.anyOf) return (schema.oneOf ?? schema.anyOf).map((item) => `(${typeFor(item, document)})`).join(' | ');
-  if (Array.isArray(schema.type)) return schema.type.map((item) => typeFor({ ...schema, type: item }, document)).join(' | ');
-  if (schema.type === 'string') return 'ConstrainedString';
-  if (schema.type === 'integer') return 'JsonInteger';
-  if (schema.type === 'number') throw new Error('unbounded JSON Schema number would widen strict I-JSON declarations');
-  if (schema.type === 'boolean') return 'boolean';
-  if (schema.type === 'null') return 'null';
-  if (schema.type === 'array') return `Array<${typeFor(schema.items ?? true, document)}>`;
+  if ('const' in schema) {return literal(schema.const);}
+  if (schema.enum) {return schema.enum.map(literal).join(' | ');}
+  if (schema.oneOf || schema.anyOf) {return (schema.oneOf ?? schema.anyOf).map((item) => `(${typeFor(item, document)})`).join(' | ');}
+  if (Array.isArray(schema.type)) {return schema.type.map((item) => typeFor({ ...schema, type: item }, document)).join(' | ');}
+  if (schema.type === 'string') {return 'ConstrainedString';}
+  if (schema.type === 'integer') {return 'JsonInteger';}
+  if (schema.type === 'number') {throw new Error('unbounded JSON Schema number would widen strict I-JSON declarations');}
+  if (schema.type === 'boolean') {return 'boolean';}
+  if (schema.type === 'null') {return 'null';}
+  if (schema.type === 'array') {return `Array<${typeFor(schema.items ?? true, document)}>`;}
   if (schema.type === 'object' || schema.properties || schema.additionalProperties) {
     return conditionalObjectType(schema, document) ?? plainObjectType(schema, document);
   }
-  if (schema.allOf) return schema.allOf.map((item) => `(${typeFor(item, document)})`).join(' & ');
+  if (schema.allOf) {return schema.allOf.map((item) => `(${typeFor(item, document)})`).join(' & ');}
   throw new Error(`unsupported schema shape in ${document.$id ?? '<anonymous>'}`);
 }
 await mkdir(path.join(outputRoot, 'generated'), { recursive: true });
@@ -165,7 +165,7 @@ const candidates = [
   'version-matrix.json',
   ...schemaPaths.map((item) => `generated/${path.basename(item, '.schema.json')}.d.ts`)
 ];
-const unique = [...new Set(candidates)].sort();
+const unique = [...new Set(candidates)].toSorted();
 const artifacts = [];
 for (const relative of unique) {
   const sourceRoot = relative.startsWith('generated/') || relative === registryValuesPath ? outputRoot : root;
@@ -185,7 +185,7 @@ for (const relative of unique) {
     byteLength: bytes.byteLength,
     mediaType: extension === '.json' ? 'application/json' : extension === '.md' ? 'text/markdown' : 'text/typescript'
   };
-  if (entry.class === 'schema') entry.schemaId = parseStrictJson(bytes).$id;
+  if (entry.class === 'schema') {entry.schemaId = parseStrictJson(bytes).$id;}
   artifacts.push(entry);
 }
 const manifest = {

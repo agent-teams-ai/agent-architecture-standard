@@ -10,11 +10,11 @@ export async function walk(relative) {
   async function visit(absolute) {
     for (const entry of await readdir(absolute, { withFileTypes: true })) {
       const next = path.join(absolute, entry.name);
-      if (entry.isDirectory()) await visit(next);
-      else if (entry.isFile()) out.push(slash(path.relative(root, next)));
+      if (entry.isDirectory()) {await visit(next);}
+      else if (entry.isFile()) {out.push(slash(path.relative(root, next)));}
     }
   }
   await visit(start);
-  return out.sort();
+  return out.toSorted();
 }
 export const readJson = async (relative) => parseStrictJson(await readFile(path.join(root, relative)));

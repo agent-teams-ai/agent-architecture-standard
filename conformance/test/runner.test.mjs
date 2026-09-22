@@ -11,7 +11,7 @@ import {
   CANDIDATE_LOADER_SOURCE,
   CANDIDATE_NODE_ARGS,
   DEFAULT_BOUNDS,
-  __testOnlyTeardown,
+  testOnlyTeardown,
   createTransportPlan,
   runSuite,
   validateResponse,
@@ -209,7 +209,7 @@ test('Windows teardown never launches an environment-derived helper and kills th
       throw new Error('unexpected-external-helper');
     };
     syncBuiltinESMExports();
-    const cleanup = await __testOnlyTeardown(
+    const cleanup = await testOnlyTeardown(
       { pid: 4242, kill: (signal) => { rootKillSignals.push(signal); } },
       performance.now() + DEFAULT_BOUNDS.settlementMilliseconds,
       { isClosed: () => true, promise: Promise.resolve(true) },

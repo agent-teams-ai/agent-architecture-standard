@@ -16,7 +16,7 @@ export function assertPortablePackageInventory(paths, label = 'package inventory
     }
   }
   try { assertPortablePathCollection(paths, label); } catch (error) {
-    if (/duplicate|colliding/u.test(error.message)) throw new Error(error.message, { cause: error });
+    if (/duplicate|colliding/u.test(error.message)) {throw new Error(error.message, { cause: error });}
     throw error;
   }
 }

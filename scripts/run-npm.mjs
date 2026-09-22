@@ -27,11 +27,11 @@ export function runNpmSync(args, options, runtime = {}) {
 
 export function pnpmVersionInvocation(pnpmHome, platform = process.platform, comSpec = process.env.ComSpec, workspaceRoot = process.cwd(), execPath = process.execPath) {
   const flavor = platform === 'win32' ? path.win32 : path.posix;
-  if (typeof pnpmHome !== 'string' || !flavor.isAbsolute(pnpmHome)) throw new Error('PNPM_HOME must be an absolute trusted tool directory');
+  if (typeof pnpmHome !== 'string' || !flavor.isAbsolute(pnpmHome)) {throw new Error('PNPM_HOME must be an absolute trusted tool directory');}
   const relative = flavor.relative(workspaceRoot, pnpmHome);
-  if (relative === '' || (!relative.startsWith('..' + flavor.sep) && relative !== '..' && !flavor.isAbsolute(relative))) throw new Error('PNPM_HOME must be outside the workspace');
+  if (relative === '' || (!relative.startsWith('..' + flavor.sep) && relative !== '..' && !flavor.isAbsolute(relative))) {throw new Error('PNPM_HOME must be outside the workspace');}
   if (platform === 'win32') {
-    if (typeof execPath !== 'string' || !path.win32.isAbsolute(execPath)) throw new Error('Node executable must be an absolute trusted entrypoint');
+    if (typeof execPath !== 'string' || !path.win32.isAbsolute(execPath)) {throw new Error('Node executable must be an absolute trusted entrypoint');}
     const cli = path.win32.resolve(pnpmHome, '..', 'pnpm', 'bin', 'pnpm.cjs');
     return { command: execPath, args: [cli, '--version'] };
   }
@@ -50,6 +50,6 @@ export function runPnpmVersionSync(options, runtime = {}) {
     throw new Error(output ? `pnpm --version ${reason}\n${output}` : `pnpm --version ${reason}`);
   }
   const version = result.stdout.trim();
-  if (!version) throw new Error('pnpm --version produced no version');
+  if (!version) {throw new Error('pnpm --version produced no version');}
   return version;
 }
