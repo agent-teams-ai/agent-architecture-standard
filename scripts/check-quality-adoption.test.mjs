@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -42,23 +43,28 @@ test("lint inputs are exactly production and tooling and match Oxlint selection"
   assert.deepEqual(await selectOxlintFiles(lintPaths), lintPaths);
 });
 
-test("lint entrypoint runs from a checkout path containing # and %", async () => {
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "aas-quality-lint-entrypoint-"));
+test("quality entrypoints run from a checkout path containing spaces, #, and %", async () => {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "aas quality entrypoints #% -"));
   const checkout = join(temporaryRoot, "checkout#with%characters");
   const marker = join(temporaryRoot, "oxlint-invocations.txt");
-  const observer = join(temporaryRoot, "observe-oxlint.cjs");
-  try {
-    await symlink(repositoryRoot, checkout, "dir");
-    await writeFile(observer, `
-const { appendFileSync } = require("node:fs");
+  const observer = `data:text/javascript;base64,${Buffer.from(`
+import { appendFileSync } from "node:fs";
 if (process.argv[1]?.replaceAll("\\\\", "/").endsWith("/node_modules/oxlint/bin/oxlint")) {
   appendFileSync(process.env.AAS_OXLINT_MARKER, "invoked\\n");
 }
-`, "utf8");
+`).toString("base64")}`;
+  try {
+    await symlink(repositoryRoot, checkout, process.platform === "win32" ? "junction" : "dir");
+    const { stdout } = await execFileAsync(process.execPath, ["--preserve-symlinks-main", join(checkout, "scripts/check-quality-adoption.mjs")], {
+      cwd: checkout,
+      encoding: "utf8",
+      maxBuffer: 2 * 1024 * 1024
+    });
+    assert.match(stdout, /^AAS quality scope verified:/u);
     await execFileAsync(process.execPath, ["--preserve-symlinks-main", join(checkout, "scripts/run-quality-lint.mjs")], {
       cwd: checkout,
       encoding: "utf8",
-      env: { ...process.env, AAS_OXLINT_MARKER: marker, NODE_OPTIONS: `--require=${observer}` },
+      env: { ...process.env, AAS_OXLINT_MARKER: marker, NODE_OPTIONS: `--import=${observer}` },
       maxBuffer: 2 * 1024 * 1024
     });
     assert.deepEqual((await readFile(marker, "utf8")).trim().split("\n"), ["invoked", "invoked"]);

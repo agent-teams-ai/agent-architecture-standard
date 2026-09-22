@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -128,7 +129,7 @@ export async function readQualityAdoption(root = new URL("../", import.meta.url)
   };
 }
 
-if (process.argv[1] && new URL(`file://${process.argv[1]}`).href === import.meta.url) {
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const census = assertQualityAdoption(await readQualityAdoption());
   const counts = Object.fromEntries(["production", "tooling", "test", "fixture", "generated"].map(role => [role, census.classified.filter(source => source.role === role).length]));
   console.log(`AAS quality scope verified: ${JSON.stringify(counts)}`);
