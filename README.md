@@ -1,11 +1,11 @@
 # Agent Architecture Standard
 
-Status: private Phase 1 normative-artifact implementation; unpublished; identifiers provisional
+Status: public source preview; Phase 1 normative-artifact implementation; unpublished; identifiers provisional
 
 This README is an index and has no independent semantic authority.
 
 The immutable `spec/` Status headers identify their normative Phase 0 edition;
-[SOURCE.md](SOURCE.md) records the repository's separate private Phase 1
+[SOURCE.md](SOURCE.md) records the repository's separate Phase 1
 implementation phase. The versioned `@1` profiles are not revised in place.
 
 The Agent Architecture Standard (AAS) defines language-neutral contracts for
@@ -14,11 +14,12 @@ inputs, and reporting deterministic enforcement results. Agent Architecture
 Protocol (AAP) is only the request/response and negotiation component of AAS. It
 is not a second umbrella standard or an independently promoted product.
 
-This repository contains specification artifacts plus private deterministic
+This repository contains specification artifacts plus deterministic
 generation and verification tooling. It contains no provider runtime,
 transport, plugin system, policy-module compiler, architecture inference, or
 release automation. The artifacts describe an experimental 0.x boundary and
-do not constitute a published release or conformance claim.
+do not constitute a published release or conformance claim. Public access to
+this draft source is authorized by [ADR-0003](docs/decisions/0003-public-source-preview.md).
 
 All public identifiers in this scaffold are provisional. Before any public 0.x
 schema, identifier, conformance claim, or package, normative-standard authority
@@ -78,10 +79,10 @@ consumer rule; the normative rule is in `spec/policy-and-enforcement.md`.
 
 ## Repository governance
 
-This private repository is the current incubation specification home, and the D1
+This public draft repository is the current incubation specification home, and the D1
 neutral-authority prerequisite is not complete. [MAINTAINERS.md](MAINTAINERS.md)
-records `@777genius` as repository steward, normative maintainer for private
-incubation, and security responder for private incubation. The independent
+records `@777genius` as repository steward, normative maintainer for draft
+incubation, and security responder for draft incubation. The independent
 conformance maintainer and release maintainer are unassigned, and no namespace
 custodian is assigned or recorded. See [GOVERNANCE.md](GOVERNANCE.md),
 [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the

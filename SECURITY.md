@@ -8,8 +8,9 @@ versions, a minimal reproduction, impact, and any known mitigation.
 
 ## Supported versions
 
-No public version is supported during private incubation. Each public release
-will publish its support state and affected conformance claims explicitly.
+No released version is supported during draft incubation. Public repository
+visibility does not make the provisional source a supported release. Each
+public release will publish its support state and affected conformance claims.
 
 ## Response and release safety
 

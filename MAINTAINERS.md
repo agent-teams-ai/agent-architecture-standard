@@ -5,8 +5,8 @@
 | Role | Owner | State |
 | --- | --- | --- |
 | Repository steward | `@777genius` | Active |
-| Normative maintainer | `@777genius` | Active for private incubation |
-| Security responder | `@777genius` | Active for private incubation |
+| Normative maintainer | `@777genius` | Active for draft incubation |
+| Security responder | `@777genius` | Active for draft incubation |
 | Independent conformance maintainer | Unassigned | Blocks public prerelease |
 | Release maintainer | Unassigned | Blocks public prerelease |
 

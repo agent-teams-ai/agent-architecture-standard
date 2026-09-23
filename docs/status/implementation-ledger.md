@@ -1,7 +1,7 @@
 # AAS implementation ledger
 
-Status: current at retained observations through 2026-08-29; nonnormative;
-private; unpublished; no conformance claim.
+Status: retained implementation observations through 2026-08-29; nonnormative;
+public source preview since 2026-09-23; unpublished; no conformance claim.
 
 This page is an operational index. It does not change normative semantics,
 activate an identifier, qualify an implementation, authorize publication, or
@@ -113,8 +113,9 @@ those checks passed at that revision.
 
 ## Publication blockers and limitations
 
-- D1 relocation is incomplete; the repository remains private and its schemas,
-  identifiers, packages, marks, and claims remain unpublished.
+- D1 relocation is incomplete. [ADR-0003](../decisions/0003-public-source-preview.md)
+  allows public access to provisional source, but no official schema,
+  identifier, package, mark, or conformance claim has been released.
 - Independent conformance and release maintainers are unassigned; namespace
   custody and the required separation of approval credentials are not
   operational. See [maintainer state](../../MAINTAINERS.md).

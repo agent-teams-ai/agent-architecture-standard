@@ -57,6 +57,14 @@
       "mediaType": "text/markdown"
     },
     {
+      "path": "docs/decisions/0003-public-source-preview.md",
+      "class": "decision-provenance",
+      "contentDigest": "sha256:f28a13cf2916dc9c4c2b19126cef65f6d46e29a001bb236c29037f801a012532",
+      "aasIdentityStatus": "not-computed-phase-1",
+      "byteLength": 1741,
+      "mediaType": "text/markdown"
+    },
+    {
       "path": "docs/decisions/README.md",
       "class": "decision-provenance",
       "contentDigest": "sha256:1ea7875ced40fd0e0d68b8dbe0e2c80d333846eb5d450980efc286d340294628",

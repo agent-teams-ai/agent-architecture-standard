@@ -7,6 +7,10 @@ is a dedicated authority boundary, not yet an independent foundation or a
 multi-vendor standards body. We will not claim organizational neutrality,
 certification, or broad consensus that does not exist.
 
+[ADR-0003](docs/decisions/0003-public-source-preview.md) permits public access
+to provisional draft source. That visibility does not satisfy D1 or authorize
+the public prerelease, package, identifier, or conformance claims below.
+
 Public prerelease publication, including any public 0.x schema, identifier,
 conformance claim, or package, remains blocked unless and until all of these
 conditions are satisfied:
@@ -48,7 +52,7 @@ of authority does not satisfy it.
 - **Repository maintainer:** owns contribution review, repository continuity,
   and migration preservation.
 
-One person may help in several areas during private incubation, but a public
+One person may help in several areas during draft incubation, but a public
 release needs at least two human approvals and cannot have one person author,
 conformance-approve, and release the same semantic change.
 
