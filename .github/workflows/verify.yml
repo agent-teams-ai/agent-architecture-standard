@@ -64,6 +64,8 @@ jobs:
           cache-dependency-path: conformance/node26/pnpm-lock.yaml
       - run: test "$(pnpm config get engine-strict)" = true
         working-directory: conformance/node26
+      - run: test "$(pnpm config get strict-peer-dependencies)" = true
+        working-directory: conformance/node26
       - run: pnpm install --frozen-lockfile
         working-directory: conformance/node26
       - run: pnpm run verify

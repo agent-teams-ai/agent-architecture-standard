@@ -6,6 +6,6 @@
   "packageManager": "pnpm@11.24.0",
   "engines": { "node": ">=26.10.0 <27" },
   "scripts": {
-    "verify": "node --test ../test/*.test.mjs"
+    "verify": "node --test strict-install.test.mjs ../test/*.test.mjs"
   }
 }

@@ -21,10 +21,15 @@ node --test conformance/test/*.test.mjs
 
 The default repository verification remains on Node 24. CI also runs this
 private slice on Node 26.10.0 from `conformance/node26`, using its isolated,
-dependency-free pnpm workspace and `engine-strict=true`. That focused install
-keeps the repository's pinned Foundation dependency and its Node 24 engine
-requirement intact. It does not claim that the full repository dependency graph
-installs on Node 26. Locally, the equivalent Node 26 commands are:
+dependency-free pnpm workspace with `engineStrict: true` and
+`strictPeerDependencies: true` in `pnpm-workspace.yaml`, where pinned pnpm 11
+reads them. The lane's test installs a compatible local dependency with a
+frozen lockfile and requires an incompatible Node 24-only dependency to fail
+with `ERR_PNPM_UNSUPPORTED_ENGINE`. The root workspace has its own strict
+settings for Node 24 tooling. Its public package engine range remains `>=24`,
+while the pinned Foundation dependency still requires Node 24; this focused
+lane does not establish a full root dependency install on Node 26. Locally,
+the equivalent Node 26 commands are:
 
 ```sh
 cd conformance/node26
