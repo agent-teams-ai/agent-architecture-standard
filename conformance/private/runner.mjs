@@ -10,6 +10,7 @@ import { admitCandidate } from './candidate-admission.mjs';
 import { CANDIDATE_LOADER_SOURCE, createCandidateFrame } from './candidate-frame.mjs';
 
 const PROTOCOL = 'private-aas-json-v0';
+const NODE_MAJOR = Number(process.versions.node.split('.')[0]);
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
 const TOKEN = /^[0-9a-f]{32}$/;
 const DIAGNOSTICS = new Set([
@@ -204,7 +205,7 @@ function writePipe(stream, bytes) {
 let permissionContractCheck;
 export function verifyNodePermissionContract() {
   permissionContractCheck ??= (async () => {
-    if (process.versions.node.split('.')[0] !== '24') {return false;}
+    if (NODE_MAJOR !== 24 && NODE_MAJOR !== 26) {return false;}
     const probe = Buffer.from("const scopes=['fs.read','fs.write','child','worker','addons'];if(!scopes.every((scope)=>process.permission?.has(scope)===false))process.exitCode=91");
     const started = performance.now();
     const invocationDeadline = started + DEFAULT_BOUNDS.invocationMilliseconds;
@@ -406,7 +407,7 @@ export async function runSuite({ candidatePath, candidateName, bounds: suppliedB
       adapter: 'private-nonnormative-no-public-v0-transport',
       internalPrototypeSemantics: 'omitted-unobservable',
       nodePermissionControls: 'fs-child-worker-addon-denied',
-      networkIsolation: 'not-controlled-by-node24-permissions',
+      networkIsolation: NODE_MAJOR === 24 ? 'not-controlled-by-node24-permissions' : 'not-attested-by-runner',
       osProcessContainment: 'windows-tree-containment-absent-posix-group-or-bounded-root-termination-closure-attempt-only',
       runtimeExecutionAttestation: 'not-provided',
       multiFileClosureAttestation: 'not-provided-node-fs-denied',

@@ -1,0 +1,11 @@
+{
+  "name": "@agent-architecture-standard/node26-conformance-check",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": { "node": ">=26.10.0 <27" },
+  "scripts": {
+    "verify": "node --test ../test/*.test.mjs"
+  }
+}
