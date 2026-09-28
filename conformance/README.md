@@ -19,6 +19,24 @@ Run the slice tests with:
 node --test conformance/test/*.test.mjs
 ```
 
+The default repository verification remains on Node 24. CI also runs this
+private slice on Node 26.10.0 from `conformance/node26`, using its isolated,
+dependency-free pnpm workspace with `engineStrict: true` and
+`strictPeerDependencies: true` in `pnpm-workspace.yaml`, where pinned pnpm 11
+reads them. The lane's test installs a compatible local dependency with a
+frozen lockfile and requires an incompatible Node 24-only dependency to fail
+with `ERR_PNPM_UNSUPPORTED_ENGINE`. The root workspace has its own strict
+settings for Node 24 tooling. Its public package engine range remains `>=24`,
+while the pinned Foundation dependency still requires Node 24; this focused
+lane does not establish a full root dependency install on Node 26. Locally,
+the equivalent Node 26 commands are:
+
+```sh
+cd conformance/node26
+pnpm install --frozen-lockfile
+pnpm run verify
+```
+
 ## Artifact admission and execution
 
 The runner takes strict pre-open `lstat`/`realpath` evidence, opens one
@@ -52,20 +70,21 @@ is unavailable.
 
 ## Security and process boundary
 
-Every candidate starts as the current fixed Node 24 binary with `--permission`,
+Every candidate starts as the current Node 24 default or focused Node 26 binary with `--permission`,
 `--no-addons`, no `--allow-*` flags, fixed loader arguments, a minimal closed
 environment, no shell, and no filesystem pathname for candidate code. Node's
 permission model denies filesystem reads/writes, child processes (including
 detached attempts), workers, and addons. Tests exercise the exact command and
 prove that ordinary and detached child attempts cannot create a marker.
 
-Node 24 permission mode does not control network access. This slice supplies no
+Node 24 permission mode does not control network access. The Node 26 report
+does not attest network isolation. This slice supplies no
 network namespace, firewall policy, Windows Job Object, POSIX cgroup, or other
 OS containment. It is not a universal hostile-code sandbox. On POSIX the
 runner makes a bounded process-group kill attempt. On Windows it attempts to
 terminate only the root process with `child.kill('SIGKILL')`, then attempts to
 observe root-process closure within the same deadline. This is sufficient for
-the private Node 24 permission contract, which denies child-process creation;
+the private permission contract, which denies child-process creation;
 it does not provide Windows process-tree containment. No Windows cleanup
 outcome claims unconditional termination or closure. The closed report calls
 the result only `bounded-attempt-complete` or `bounded-attempt-deadline` and

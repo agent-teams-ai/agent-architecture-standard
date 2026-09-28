@@ -32,7 +32,8 @@ test('independent candidate passes twice with deterministic reports that omit ra
   assert.equal(first.qualification, 'none-private-nonnormative');
   assert.equal(first.candidate.artifact, 'admitted-handle-bytes-data-url-node-esm');
   assert.equal(first.boundary.nodePermissionControls, 'fs-child-worker-addon-denied');
-  assert.equal(first.boundary.networkIsolation, 'not-controlled-by-node24-permissions');
+  assert.equal(first.boundary.networkIsolation,
+    process.versions.node.startsWith('24.') ? 'not-controlled-by-node24-permissions' : 'not-attested-by-runner');
   assert.equal(first.boundary.osProcessContainment, 'windows-tree-containment-absent-posix-group-or-bounded-root-termination-closure-attempt-only');
   assert.equal(first.boundary.runtimeExecutionAttestation, 'not-provided');
   assert.equal(first.boundary.sourceBindings, 'post-load-observed-sources-not-executed-byte-attestation');
@@ -52,7 +53,7 @@ test('transport tokens and order are cryptographically fresh and independent of 
   assert(new Set(plans.map((plan) => plan.map(({ caseIndex }) => caseIndex).join(','))).size > 1);
 });
 
-test('the exact candidate command enables the fail-closed Node 24 permission contract', async () => {
+test('the exact candidate command enables the fail-closed Node 24 or 26 permission contract', async () => {
   assert.deepEqual(CANDIDATE_NODE_ARGS, [
     '--permission', '--no-addons', '--disable-proto=delete', '--input-type=module', '--eval', CANDIDATE_LOADER_SOURCE,
   ]);

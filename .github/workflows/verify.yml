@@ -45,3 +45,28 @@ jobs:
         with:
           name: exact-head-post-gate-evidence-${{ matrix.os }}
           path: ${{ runner.temp }}/exact-head-evidence.json
+
+  node26-conformance:
+    name: Node 26 strict-install private conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.10.0
+          cache: pnpm
+          cache-dependency-path: conformance/node26/pnpm-lock.yaml
+      - run: test "$(pnpm config get engine-strict)" = true
+        working-directory: conformance/node26
+      - run: test "$(pnpm config get strict-peer-dependencies)" = true
+        working-directory: conformance/node26
+      - run: pnpm install --frozen-lockfile
+        working-directory: conformance/node26
+      - run: pnpm run verify
+        working-directory: conformance/node26

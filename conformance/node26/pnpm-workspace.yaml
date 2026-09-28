@@ -1,0 +1,6 @@
+packages:
+  - .
+
+engineStrict: true
+strictPeerDependencies: true
+onlyBuiltDependencies: []
