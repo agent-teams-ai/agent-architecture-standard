@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 3,
+  "workspace": {
+    "kind": "pnpm",
+    "manifest": "pnpm-workspace.yaml"
+  },
+  "rootPackage": true,
+  "packageRoots": [],
+  "governedRoots": [
+    "lib",
+    "scripts",
+    "conformance/private"
+  ],
+  "boundaries": [
+    {
+      "id": "private-verifier",
+      "dependencyMode": "development",
+      "roots": [
+        "lib"
+      ],
+      "entrypoints": [
+        "lib/binding-selection.mjs",
+        "lib/canonical-json.mjs",
+        "lib/diagnostics.mjs",
+        "lib/digests.mjs",
+        "lib/document-validation.mjs",
+        "lib/identity-framing.mjs",
+        "lib/identity-validation.mjs",
+        "lib/invocation-kernel.mjs",
+        "lib/portable-path.mjs",
+        "lib/registry-validation.mjs",
+        "lib/release-validation.mjs",
+        "lib/resource-accounting.mjs",
+        "lib/result-invariants.mjs",
+        "lib/result-validation.mjs",
+        "lib/schema-admission-core.mjs",
+        "lib/schema-admission.mjs",
+        "lib/schema-graph.mjs",
+        "lib/schema-registry.mjs",
+        "lib/strict-json.mjs",
+        "lib/unicode-case-fold-17.mjs",
+        "lib/unicode-normalization-17.mjs"
+      ],
+      "allow": {
+        "boundaries": [],
+        "packages": [
+          "ajv"
+        ],
+        "builtins": [
+          "node:crypto",
+          "node:fs",
+          "node:module",
+          "node:util"
+        ],
+        "runtimeReferences": [
+          "commonjs"
+        ]
+      }
+    },
+    {
+      "id": "repository-tooling",
+      "dependencyMode": "development",
+      "roots": [
+        "scripts"
+      ],
+      "entrypoints": [
+        "scripts/check-clean-generation.mjs",
+        "scripts/check-index.mjs",
+        "scripts/check-package.mjs",
+        "scripts/check-quality-adoption.mjs",
+        "scripts/check-schemas.mjs",
+        "scripts/ci-head-evidence.mjs",
+        "scripts/evidence-helpers.mjs",
+        "scripts/files.mjs",
+        "scripts/generate-unicode-case-folding.mjs",
+        "scripts/generate-unicode-normalization.mjs",
+        "scripts/generate.mjs",
+        "scripts/github-heading-slug.mjs",
+        "scripts/package-paths.mjs",
+        "scripts/profile-source-closure.mjs",
+        "scripts/run-corpus-tests.mjs",
+        "scripts/run-npm.mjs",
+        "scripts/run-quality-lint.mjs"
+      ],
+      "allow": {
+        "boundaries": [
+          "private-verifier"
+        ],
+        "packages": [
+          "ajv"
+        ],
+        "builtins": [
+          "node:assert/strict",
+          "node:buffer",
+          "node:child_process",
+          "node:crypto",
+          "node:fs",
+          "node:fs/promises",
+          "node:net",
+          "node:os",
+          "node:path",
+          "node:test",
+          "node:url",
+          "node:util"
+        ],
+        "runtimeReferences": [
+          "dynamic"
+        ]
+      }
+    },
+    {
+      "id": "private-conformance",
+      "dependencyMode": "development",
+      "roots": [
+        "conformance/private"
+      ],
+      "entrypoints": [
+        "conformance/private/candidate-admission.mjs",
+        "conformance/private/candidate-frame.mjs",
+        "conformance/private/oracle.mjs",
+        "conformance/private/runner.mjs"
+      ],
+      "allow": {
+        "boundaries": [
+          "private-verifier"
+        ],
+        "packages": [],
+        "builtins": [
+          "node:child_process",
+          "node:crypto",
+          "node:fs",
+          "node:fs/promises",
+          "node:path",
+          "node:perf_hooks",
+          "node:url"
+        ],
+        "runtimeReferences": []
+      }
+    }
+  ]
+}

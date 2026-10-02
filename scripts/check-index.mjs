@@ -1,5 +1,6 @@
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { root, walk, readJson } from './files.mjs';
 import { assertPortablePackageInventory } from './package-paths.mjs';
 import { sha256 } from '../lib/digests.mjs';
@@ -86,7 +87,10 @@ for (const schema of schemas) {
   if (generatedEntries.filter((entry) => entry.path === expected).length !== 1) {throw new Error(`missing exactly-once generated declaration: ${expected}`);}
 }
 
-const markdownPaths = (await walk('.')).filter((item) => item.endsWith('.md') && !item.startsWith('node_modules/'));
+// Validate repository-owned documents, including intended new files. Runtime
+// packets, package caches and ignored build output are not document owners.
+const repositoryPaths = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+const markdownPaths = [...new Set(repositoryPaths)].filter((item) => item.endsWith('.md'));
 const headings = new Map();
 for (const relative of markdownPaths) {
   const source = await readFile(path.join(root, relative), 'utf8');

@@ -6,7 +6,7 @@ engineStrict: true
 strictPeerDependencies: true
 resolutionMode: highest
 minimumReleaseAgeExclude:
-  - '@agent-teams/engineering-foundation@1.5.0'
+  - '@agent-teams/engineering-foundation@1.7.1'
   - '@oxlint/binding-android-arm-eabi@1.85.0'
   - '@oxlint/binding-android-arm64@1.85.0'
   - '@oxlint/binding-darwin-arm64@1.85.0'

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "agent-architecture-standard"
+  },
+  "capabilities": {
+    "architecture.source-dependencies": {
+      "configPath": "architecture/foundation/source-dependencies.yaml"
+    }
+  }
+}
