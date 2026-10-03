@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { lstat, readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
@@ -10,7 +10,10 @@ const PROFILE_PATH = "architecture/foundation/javascript-quality-profile.json";
 const FOUNDATION_PRESET = "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json";
 const SOURCE_SUFFIXES = [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"];
 const EXACT_SCRIPTS = {
-  "quality:scope": "node --test scripts/check-quality-adoption.test.mjs",
+  "check:critical": "agent-teams-node-test --contract architecture/foundation/required-node-tests.json -- test/strict-json.test.mjs test/operator-authority.test.mjs",
+  "check:corpus": "pnpm check:critical && node scripts/run-corpus-tests.mjs",
+  "quality:source": "agent-teams-foundation check && agent-teams-foundation assert-dev-only && agent-teams-foundation assert-registry",
+  "quality:scope": "node --test scripts/check-quality-adoption.test.mjs scripts/foundation-installed.test.mjs && pnpm quality:source",
   "quality:lint": "node scripts/run-quality-lint.mjs",
   "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
   verify: "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
@@ -60,6 +63,7 @@ function assertConfig(lintConfig) {
 }
 
 function assertWorkflow(workflow) {
+  assert.match(workflow, /node-version: 24\.21\.0/u, "the required-test tooling lane must support execution events");
   assert.equal((workflow.match(/^\s*- run: pnpm verify\s*$/gmu) ?? []).length, 1, "CI must execute pnpm verify exactly once");
   for (const splitGate of ["check:fast", "check:generated", "check:package", "check:conformance", "quality:lint"]) {
     assert.doesNotMatch(workflow, new RegExp(`^\\s*- run: pnpm ${splitGate}\\s*$`, "mu"), `CI must not split ${splitGate} from verify`);
@@ -68,13 +72,13 @@ function assertWorkflow(workflow) {
   assert.match(workflow, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/u);
 }
 
-export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPaths, workflow }) {
-  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.5.0");
+export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPaths, workflow, requiredNodeTests, foundationConfig, sourcePolicy }) {
+  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.7.2");
   assert.equal(manifest.devDependencies?.oxlint, "1.85.0");
   assert.equal(profile.schemaVersion, 1);
   assert.deepEqual(profile.adoption, {
     mode: "active-foundation",
-    foundationVersion: "1.5.0",
+    foundationVersion: "1.7.2",
     publicPreset: FOUNDATION_PRESET,
     sourceCoverage: "consumer-exact-js-census"
   });
@@ -91,7 +95,31 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
     configPath: ".oxlintrc.json",
     includedRoles: ["production", "tooling"]
   });
+  assert.deepEqual(foundationConfig, {
+    schemaVersion: 1,
+    project: { id: "agent-architecture-standard" },
+    capabilities: { "architecture.source-dependencies": { configPath: "architecture/foundation/source-dependencies.yaml" } }
+  });
+  assert.equal(sourcePolicy.schemaVersion, 3);
+  assert.equal(sourcePolicy.rootPackage, true);
+  assert.deepEqual(sourcePolicy.packageRoots, []);
+  assert.deepEqual(sourcePolicy.governedRoots, ["lib", "scripts", "conformance/private"]);
+  assert.deepEqual(sourcePolicy.boundaries.map(({ id, roots }) => ({ id, roots })), [
+    { id: "private-verifier", roots: ["lib"] },
+    { id: "repository-tooling", roots: ["scripts"] },
+    { id: "private-conformance", roots: ["conformance/private"] }
+  ]);
   assert.equal(profile.typedCoverage, false, "JavaScript lint cannot claim typed coverage");
+  assert.deepEqual(requiredNodeTests, {
+    schemaVersion: 1,
+    required: [
+      { file: "test/strict-json.test.mjs", names: ["duplicate decoded keys are rejected"], kind: "test" },
+      { file: "test/strict-json.test.mjs", names: ["decimal spelling is validated before binary64 rounding"], kind: "test" },
+      { file: "test/operator-authority.test.mjs", names: ["oversized admission fails before copying, parsing, or target resolution"], kind: "test" },
+      { file: "test/operator-authority.test.mjs", names: ["resolver coordinates reject mutation, non-NFC paths, forged cohorts, and request resolver lookalikes"], kind: "test" }
+    ],
+    exceptions: []
+  }, "critical identity inventory and platform applicability must stay exact");
   assertConfig(lintConfig);
 
   for (const [name, command] of Object.entries(EXACT_SCRIPTS)) {assert.equal(manifest.scripts?.[name], command, `${name} must stay canonical`);}
@@ -101,6 +129,7 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
 
   const census = classifyTrackedSources(trackedPaths, profile);
   assert.deepEqual(census.unclassified, [], `unclassified JS/TS source: ${census.unclassified.join(", ")}`);
+  assert.deepEqual(census.classified.filter(source => ["production", "tooling"].includes(source.role) && source.kind === "typescript"), [], "TypeScript production requires an explicit typed quality adoption");
   for (const role of ["production", "tooling", "test", "fixture", "generated"]) {
     assert.ok(census.classified.some(source => source.role === role), `${role} source census is empty`);
   }
@@ -115,16 +144,25 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
 
 export async function readQualityAdoption(root = new URL("../", import.meta.url)) {
   const readJson = async path => JSON.parse(await readFile(new URL(path, root), "utf8"));
-  const { stdout } = await execFileAsync("git", ["ls-files", "-z"], {
+  const { stdout } = await execFileAsync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], {
     cwd: new URL(".", root),
     encoding: "utf8",
     maxBuffer: 2 * 1024 * 1024
   });
+  const trackedPaths = [...new Set(stdout.split("\0").filter(Boolean))];
+  for (const path of trackedPaths.filter(isTrackedSource)) {
+    const location = new URL(path, root);
+    assert.ok((await lstat(location)).isFile(), `declared source is not a regular file: ${path}`);
+    await readFile(location);
+  }
   return {
+    foundationConfig: await readJson("foundation.config.yaml"),
+    sourcePolicy: await readJson("architecture/foundation/source-dependencies.yaml"),
     manifest: await readJson("package.json"),
     profile: await readJson(PROFILE_PATH),
+    requiredNodeTests: await readJson("architecture/foundation/required-node-tests.json"),
     lintConfig: await readJson(".oxlintrc.json"),
-    trackedPaths: stdout.split("\0").filter(Boolean),
+    trackedPaths,
     workflow: await readFile(new URL(".github/workflows/verify.yml", root), "utf8")
   };
 }

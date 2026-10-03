@@ -74,9 +74,17 @@ if (process.argv[1]?.replaceAll("\\\\", "/").endsWith("/node_modules/oxlint/bin/
 });
 
 const mutations = {
+  "a detached installed source boundary": value => { delete value.foundationConfig.capabilities["architecture.source-dependencies"]; },
+  "a dropped governed tooling root": value => { value.sourcePolicy.governedRoots.pop(); },
+  "TypeScript production without typed quality adoption": value => { value.trackedPaths.push("lib/new-capability.ts"); },
+  "an older execution-event tooling pin": value => { value.workflow = value.workflow.replace("node-version: 24.21.0", "node-version: 24.20.0"); },
+  "a dropped mandatory entry file": value => { value.manifest.scripts["check:critical"] = value.manifest.scripts["check:critical"].replace(" test/operator-authority.test.mjs", ""); },
+  "a detached critical test command": value => { value.manifest.scripts["check:corpus"] = "node scripts/run-corpus-tests.mjs"; },
+  "a removed mandatory identity": value => { value.requiredNodeTests.required.pop(); },
+  "a blanket critical test exception": value => { value.requiredNodeTests.exceptions.push({ ...value.requiredNodeTests.required[0], status: "skipped", reason: "skip all tests", applicability: { platforms: ["linux", "darwin", "win32"] } }); },
   "an unclassified source suffix": value => { value.trackedPaths.push("other/new-source.jsx"); },
   "a missing Foundation pin": value => { delete value.manifest.devDependencies["@agent-teams/engineering-foundation"]; },
-  "a ranged Foundation pin": value => { value.manifest.devDependencies["@agent-teams/engineering-foundation"] = "^1.5.0"; },
+  "a ranged Foundation pin": value => { value.manifest.devDependencies["@agent-teams/engineering-foundation"] = "^1.7.2"; },
   "a no-op scope route": value => { value.manifest.scripts["quality:scope"] = "true"; },
   "a detached fast route": value => { value.manifest.scripts["check:fast"] = "pnpm check:index"; },
   "a removed lint route": value => { value.manifest.scripts.verify = "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance"; },

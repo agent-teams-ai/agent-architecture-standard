@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "required": [
+    { "file": "test/strict-json.test.mjs", "names": ["duplicate decoded keys are rejected"], "kind": "test" },
+    { "file": "test/strict-json.test.mjs", "names": ["decimal spelling is validated before binary64 rounding"], "kind": "test" },
+    { "file": "test/operator-authority.test.mjs", "names": ["oversized admission fails before copying, parsing, or target resolution"], "kind": "test" },
+    { "file": "test/operator-authority.test.mjs", "names": ["resolver coordinates reject mutation, non-NFC paths, forged cohorts, and request resolver lookalikes"], "kind": "test" }
+  ],
+  "exceptions": []
+}
