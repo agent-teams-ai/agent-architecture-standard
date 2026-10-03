@@ -33,7 +33,7 @@
     "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
   },
   "devDependencies": {
-    "@agent-teams/engineering-foundation": "1.7.1",
+    "@agent-teams/engineering-foundation": "1.7.2",
     "ajv": "8.20.0",
     "oxlint": "1.85.0",
     "typescript": "7.0.2"
