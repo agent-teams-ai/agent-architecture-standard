@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "adoption": {
     "mode": "active-foundation",
-    "foundationVersion": "1.7.1",
+    "foundationVersion": "1.7.2",
     "publicPreset": "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json",
     "sourceCoverage": "consumer-exact-js-census"
   },

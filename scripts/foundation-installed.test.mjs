@@ -44,6 +44,9 @@ test("installed Node runner rejects omission and skip of actual critical identit
   // Ajv is existing private verifier tooling; the fixture uses the installed carrier.
   const { symlink } = await import("node:fs/promises");
   await symlink(join(repository, "node_modules"), join(root, "node_modules"), process.platform === "win32" ? "junction" : "dir");
+  const baseline = await critical(root);
+  assert.equal(baseline.code, 0, baseline.output);
+  assert.match(baseline.output, /4 required identities completed/u);
   const path = join(root, selected[0]);
   const source = await readFile(path, "utf8");
   await writeFile(path, source.replace("test('duplicate decoded keys are rejected'", "test('renamed critical identity'"));

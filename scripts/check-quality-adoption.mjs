@@ -73,12 +73,12 @@ function assertWorkflow(workflow) {
 }
 
 export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPaths, workflow, requiredNodeTests, foundationConfig, sourcePolicy }) {
-  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.7.1");
+  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.7.2");
   assert.equal(manifest.devDependencies?.oxlint, "1.85.0");
   assert.equal(profile.schemaVersion, 1);
   assert.deepEqual(profile.adoption, {
     mode: "active-foundation",
-    foundationVersion: "1.7.1",
+    foundationVersion: "1.7.2",
     publicPreset: FOUNDATION_PRESET,
     sourceCoverage: "consumer-exact-js-census"
   });
