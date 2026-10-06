@@ -15,12 +15,22 @@ env:
 
 jobs:
   reproducibility:
-    name: ${{ matrix.os }} reproducibility
+    name: ${{ matrix.os }} ${{ matrix.job-name }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [24, 26]
+        include:
+          - node: 24
+            node-version: 24.21.0
+            job-name: reproducibility
+            artifact-suffix: ''
+          - node: 26
+            node-version: 26.10.0
+            job-name: Node 26 reproducibility
+            artifact-suffix: '-node26'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -34,17 +44,18 @@ jobs:
           run_install: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 24.21.0
+          node-version: ${{ matrix.node-version }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --config.engine-strict=true --config.strict-peer-dependencies=true
       - run: pnpm verify
       - run: node scripts/ci-head-evidence.mjs
         env:
           AAS_EVIDENCE_PATH: ${{ runner.temp }}/exact-head-evidence.json
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: exact-head-post-gate-evidence-${{ matrix.os }}
+          name: exact-head-post-gate-evidence-${{ matrix.os }}${{ matrix.artifact-suffix }}
           path: ${{ runner.temp }}/exact-head-evidence.json
+          if-no-files-found: error
 
   node26-conformance:
     name: Node 26 strict-install private conformance
@@ -62,11 +73,11 @@ jobs:
           node-version: 26.10.0
           cache: pnpm
           cache-dependency-path: conformance/node26/pnpm-lock.yaml
-      - run: test "$(pnpm config get engine-strict)" = true
+      - run: test "$(pnpm config get engine-strict --config.engine-strict=true --config.strict-peer-dependencies=true)" = true
         working-directory: conformance/node26
-      - run: test "$(pnpm config get strict-peer-dependencies)" = true
+      - run: test "$(pnpm config get strict-peer-dependencies --config.engine-strict=true --config.strict-peer-dependencies=true)" = true
         working-directory: conformance/node26
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --config.engine-strict=true --config.strict-peer-dependencies=true
         working-directory: conformance/node26
       - run: pnpm run verify
         working-directory: conformance/node26
