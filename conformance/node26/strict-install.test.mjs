@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { tmpdir } from 'node:os';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -43,7 +44,7 @@ async function installFixture(directory, name, engine) {
 
 test('Node 26 frozen install accepts a compatible dependency and rejects a Node 24 only dependency', async () => {
   assert.match(process.version, /^v26\./);
-  const directory = await mkdtemp(path.join(workspace, '.engine-test-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'aas-node26-engine-test-'));
   try {
     const compatible = await installFixture(directory, 'compatible', '>=26.10.0 <27');
     assert.equal(compatible.result.status, 0, compatible.result.stdout + compatible.result.stderr);

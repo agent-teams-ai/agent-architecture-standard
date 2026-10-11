@@ -1,10 +1,14 @@
 # JavaScript quality adoption
 
 AAS pins `@agent-teams/engineering-foundation@1.7.2` and `oxlint@1.85.0`
-as development tools. Use pnpm 11.24.0 and Node 24.21.0 for the repository
-verification lane. The patch upgrade from Node 24.20.0 enables Foundation's
-execution events; the product engine range, existing private Node 26 lane and
-historical source evidence remain under their existing owners.
+as development tools. Use pnpm 11.24.0 and Node 26.11.1 for default repository
+verification. CI retains Node 24.21.0 compatibility verification on all three
+operating systems, with separate Node 24 evidence artifacts. Both runtimes
+support Foundation's required execution events. The product engine range remains
+`>=24`; dependency versions, module boundaries and historical evidence are unchanged.
+Node 26 does not bundle Corepack. Invoke an existing trusted Corepack JavaScript
+entrypoint with the selected Node binary, and expose an owned pnpm shim for nested
+commands. Keep frozen installs, engine strictness and strict peer checks enabled.
 
 `pnpm quality:scope` checks the complete tracked and intended new JS/TS census,
 readable regular inputs, exact routes, generated provenance, config shape and
