@@ -6,7 +6,7 @@ private and nonnormative because AAS V0 exposes no public provider transport.
 A neutral authority, independent oracle review, and a public provider
 transport remain qualification blockers.
 
-Run the independent example candidate with Node 24:
+Run the independent example candidate with Node 26.11.1 (or Node 24.21.0 for compatibility):
 
 ```sh
 node conformance/private/runner.mjs \
@@ -19,21 +19,22 @@ Run the slice tests with:
 node --test conformance/test/*.test.mjs
 ```
 
-The default repository verification remains on Node 24. CI also runs this
-private slice on Node 26.10.0 from `conformance/node26`, using its isolated,
+Default repository verification uses Node 26.11.1, with explicit Node 24.21.0
+compatibility rows and separate evidence retained in CI. CI also runs the private
+slice on Node 26.11.1 from `conformance/node26`, using its isolated,
 dependency-free pnpm workspace with `engineStrict: true` and
 `strictPeerDependencies: true` in `pnpm-workspace.yaml`, where pinned pnpm 11
 reads them. The lane's test installs a compatible local dependency with a
 frozen lockfile and requires an incompatible Node 24-only dependency to fail
-with `ERR_PNPM_UNSUPPORTED_ENGINE`. The root workspace has its own strict
-settings for Node 24 tooling. Its public package engine range remains `>=24`,
-while the pinned Foundation dependency still requires Node 24; this focused
-lane does not establish a full root dependency install on Node 26. Locally,
-the equivalent Node 26 commands are:
+with `ERR_PNPM_UNSUPPORTED_ENGINE`. The root workspace also retains strict
+settings. Its public package engine range remains `>=24`, and the pinned
+Foundation dependency accepts both Node 24 and Node 26. The isolated lane
+checks its private slice; full root qualification requires the separate root
+frozen install and `pnpm verify`. Locally, the equivalent Node 26 commands are:
 
 ```sh
 cd conformance/node26
-pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile --config.engine-strict=true --config.strict-peer-dependencies=true
 pnpm run verify
 ```
 
@@ -70,7 +71,7 @@ is unavailable.
 
 ## Security and process boundary
 
-Every candidate starts as the current Node 24 default or focused Node 26 binary with `--permission`,
+Every candidate starts as the current Node 26 default or Node 24 compatibility binary with `--permission`,
 `--no-addons`, no `--allow-*` flags, fixed loader arguments, a minimal closed
 environment, no shell, and no filesystem pathname for candidate code. Node's
 permission model denies filesystem reads/writes, child processes (including

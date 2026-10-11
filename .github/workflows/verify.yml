@@ -21,16 +21,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [24, 26]
+        node: [26, 24]
         include:
-          - node: 24
-            node-version: 24.21.0
+          - node: 26
+            node-version: 26.11.1
             job-name: reproducibility
             artifact-suffix: ''
-          - node: 26
-            node-version: 26.10.0
-            job-name: Node 26 reproducibility
-            artifact-suffix: '-node26'
+          - node: 24
+            node-version: 24.21.0
+            job-name: Node 24 compatibility reproducibility
+            artifact-suffix: '-node24'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -70,7 +70,7 @@ jobs:
           run_install: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 26.10.0
+          node-version: 26.11.1
           cache: pnpm
           cache-dependency-path: conformance/node26/pnpm-lock.yaml
       - run: test "$(pnpm config get engine-strict --config.engine-strict=true --config.strict-peer-dependencies=true)" = true

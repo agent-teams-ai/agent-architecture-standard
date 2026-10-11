@@ -63,7 +63,10 @@ function assertConfig(lintConfig) {
 }
 
 function assertWorkflow(workflow) {
-  assert.match(workflow, /node-version: 24\.21\.0/u, "the required-test tooling lane must support execution events");
+  assert.match(workflow, /node: \[26, 24\]/u, "Node 26 must be the default matrix lane");
+  assert.match(workflow, /- node: 26\s+node-version: 26\.11\.1\s+job-name: reproducibility\s+artifact-suffix: ''/u, "default verification and evidence must use Node 26.11.1");
+  assert.match(workflow, /- node: 24\s+node-version: 24\.21\.0\s+job-name: Node 24 compatibility reproducibility\s+artifact-suffix: '-node24'/u, "Node 24 compatibility must retain verification and separate evidence");
+  assert.match(workflow, /node26-conformance:[\s\S]*node-version: 26\.11\.1/u, "private conformance must use the default Node 26.11.1 runtime");
   assert.equal((workflow.match(/^\s*- run: pnpm verify\s*$/gmu) ?? []).length, 1, "CI must execute pnpm verify exactly once");
   for (const splitGate of ["check:fast", "check:generated", "check:package", "check:conformance", "quality:lint"]) {
     assert.doesNotMatch(workflow, new RegExp(`^\\s*- run: pnpm ${splitGate}\\s*$`, "mu"), `CI must not split ${splitGate} from verify`);
