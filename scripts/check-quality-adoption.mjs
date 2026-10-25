@@ -234,9 +234,34 @@ export function assertQualityAdoption({
   gitignore,
   formatterIgnore,
   installedStack,
+  workspace,
 }) {
   assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "3.0.0");
   assertStackBinding(manifest, installedStack);
+  assert.deepEqual(
+    workspace.allowBuilds,
+    { bun: false },
+    "only Bun's build script is explicitly denied",
+  );
+  assert.equal(
+    workspace.strictDepBuilds,
+    true,
+    "unreviewed dependency scripts must fail installation",
+  );
+  for (const name of [
+    "dangerouslyAllowAllBuilds",
+    "ignoreScripts",
+    "onlyBuiltDependencies",
+    "onlyBuiltDependenciesFile",
+    "neverBuiltDependencies",
+    "ignoredBuiltDependencies",
+  ]) {
+    assert.equal(
+      workspace[name],
+      undefined,
+      "no broad build approval, bypass or obsolete build policy",
+    );
+  }
   assert.equal(manifest.devDependencies?.yaml, "2.9.1");
   assert.equal(manifest.devDependencies?.oxlint, undefined, "Stack owns the linter pin");
   assert.equal(
@@ -433,6 +458,7 @@ export async function readQualityAdoption(root = new URL("../", import.meta.url)
     sourcePolicy: await readYaml("architecture/foundation/source-dependencies.yaml"),
     manifest: await readJson("package.json"),
     installedStack: await readStackInstallation(root),
+    workspace: await readYaml("pnpm-workspace.yaml"),
     gitignore: await readFile(new URL(".gitignore", root), "utf8"),
     formatterIgnore: await readFile(new URL(".prettierignore", root), "utf8").catch((error) => {
       if (error.code === "ENOENT") {

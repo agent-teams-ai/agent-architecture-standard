@@ -20,6 +20,13 @@ support Foundation's required execution events. The product engine range remains
 Node 26 does not bundle Corepack. Invoke an existing trusted Corepack JavaScript
 entrypoint with the selected Node binary, and expose an owned pnpm shim for nested
 commands. Keep frozen installs, engine strictness and strict peer checks enabled.
+The pnpm 11 workspace explicitly denies Bun's wrapper postinstall with
+`allowBuilds: { bun: false }`; Stack uses the pinned optional native binary
+directly. `strictDepBuilds: true` keeps unreviewed scripts fatal. Global build
+approval or script-ignore settings must not bypass that review.
+A newly introduced dependency build script changes the reviewed installation
+capabilities and requires a specific policy review; ordinary compatible version
+updates retain this policy.
 
 `pnpm quality:scope` checks the complete tracked and intended new JS/TS census,
 readable regular inputs, exact routes, generated provenance, config shape and

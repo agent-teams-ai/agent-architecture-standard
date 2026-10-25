@@ -205,6 +205,7 @@ test("owned formatted YAML keeps its shape and rejects syntax errors and duplica
     "foundation.config.yaml",
     "architecture/foundation/source-dependencies.yaml",
     "package.json",
+    "pnpm-workspace.yaml",
     ".gitignore",
     "toolchain.config.json",
     "tsconfig.json",
@@ -251,6 +252,30 @@ test("owned formatted YAML keeps its shape and rejects syntax errors and duplica
 });
 
 const mutations = {
+  "missing explicit Bun build denial": (value) => {
+    value.workspace.allowBuilds = {};
+  },
+  "Bun install-script execution": (value) => {
+    value.workspace.allowBuilds.bun = true;
+  },
+  "broad build approval": (value) => {
+    value.workspace.allowBuilds["*"] = true;
+  },
+  "blanket build denial hiding unreviewed scripts": (value) => {
+    value.workspace.allowBuilds["*"] = false;
+  },
+  "disabled strict build review": (value) => {
+    value.workspace.strictDepBuilds = false;
+  },
+  "global build approval": (value) => {
+    value.workspace.dangerouslyAllowAllBuilds = true;
+  },
+  "global script-ignore bypass": (value) => {
+    value.workspace.ignoreScripts = true;
+  },
+  "obsolete build approval policy": (value) => {
+    value.workspace.onlyBuiltDependencies = [];
+  },
   "an incorrect Node 24 artifact suffix": (value) => {
     value.workflow = value.workflow.replace("-node24", "-other");
   },

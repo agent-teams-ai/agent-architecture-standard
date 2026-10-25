@@ -31,4 +31,6 @@ minimumReleaseAgeExclude:
   - "@agent-teams/repository-mutation@0.4.2"
   - stack-toolchain@0.1.1
 
-onlyBuiltDependencies: []
+strictDepBuilds: true
+allowBuilds:
+  bun: false
