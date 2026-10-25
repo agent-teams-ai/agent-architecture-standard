@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "adoption": {
     "mode": "active-foundation",
-    "foundationVersion": "1.7.2",
-    "publicPreset": "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json",
+    "foundationVersion": "3.0.0",
+    "publicPreset": "./node_modules/stack-toolchain/presets/oxlint/type-aware.json",
     "sourceCoverage": "consumer-exact-js-census"
   },
   "sourceUniverse": {

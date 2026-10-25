@@ -16,6 +16,9 @@ const packageRoot = new URL(
 const metadata = JSON.parse(await readFile(new URL("package.json", packageRoot), "utf8"));
 const sourceCli = fileURLToPath(new URL(metadata.bin["agent-teams-foundation"], packageRoot));
 const testCli = fileURLToPath(new URL(metadata.bin["agent-teams-node-test"], packageRoot));
+const stackRoot = new URL("../node_modules/stack-toolchain/", import.meta.url);
+const stackMetadata = JSON.parse(await readFile(new URL("package.json", stackRoot), "utf8"));
+const stackCli = fileURLToPath(new URL(stackMetadata.bin["stack-toolchain"], stackRoot));
 const selected = ["test/strict-json.test.mjs", "test/operator-authority.test.mjs"];
 const contractPath = "architecture/foundation/required-node-tests.json";
 
@@ -212,4 +215,38 @@ test("installed source boundary rejects missing inputs and forbidden governed di
   assert.equal(governedDist.code, 1, governedDist.output);
   assert.match(governedDist.output, /lib\/dist\/forbidden\.mjs/u);
   assert.match(governedDist.output, /node:net/u);
+});
+
+// The public route must still reject authored JavaScript syntax violations even
+// though its type-aware preset deliberately makes no typed JavaScript claim.
+test("installed Stack lint preserves JavaScript syntax rejection", async (t) => {
+  const root = await fixture(t, [".oxlintrc.json"]);
+  const { symlink } = await import("node:fs/promises");
+  await symlink(
+    join(repository, "node_modules"),
+    join(root, "node_modules"),
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  await writeFile(
+    join(root, "tsconfig.json"),
+    JSON.stringify({ compilerOptions: { strict: true, noEmit: true }, files: ["probe.ts"] }),
+  );
+  await writeFile(join(root, "probe.ts"), "export {};\n");
+  await writeFile(
+    join(root, "toolchain.config.json"),
+    JSON.stringify({
+      schemaVersion: 1,
+      profile: "typescript-node",
+      typecheck: { projects: ["tsconfig.json"] },
+      lint: { config: ".oxlintrc.json", paths: ["probe.mjs"] },
+      format: { paths: ["probe.mjs"] },
+    }),
+  );
+  await writeFile(join(root, "probe.mjs"), "export const result = 1;\n");
+  const accepted = await invoke(stackCli, ["lint", "--json"], root);
+  assert.equal(accepted.code, 0, accepted.output);
+  await writeFile(join(root, "probe.mjs"), "export const result = eval('1');\n");
+  const rejected = await invoke(stackCli, ["lint", "--json"], root);
+  assert.equal(rejected.code, 1, rejected.output);
+  assert.match(rejected.output, /no-eval/u);
 });

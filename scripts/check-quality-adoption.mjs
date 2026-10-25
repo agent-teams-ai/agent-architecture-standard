@@ -1,14 +1,34 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { lstat, readFile } from "node:fs/promises";
-import { pathToFileURL } from "node:url";
+import { lstat, readFile, realpath } from "node:fs/promises";
+import { createRequire } from "node:module";
+import { dirname, isAbsolute, join, relative, sep } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { promisify } from "node:util";
+import { parseDocument } from "yaml";
 
 const execFileAsync = promisify(execFile);
 
 const PROFILE_PATH = "architecture/foundation/javascript-quality-profile.json";
-const FOUNDATION_PRESET =
-  "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json";
+const FOUNDATION_PRESET = "./node_modules/stack-toolchain/presets/oxlint/type-aware.json";
+const FROZEN_FORMAT_ROOTS = [
+  "generated",
+  "decisions",
+  "spec",
+  "profiles",
+  "registries",
+  "schemas",
+  "vectors",
+  "docs/research",
+  "docs/decisions",
+  "conformance/candidates",
+];
+const FROZEN_FORMAT_FILES = [
+  "artifacts.json",
+  "version-matrix.json",
+  "SOURCE.md",
+  "conformance/artifact-baseline.json",
+];
 const SOURCE_SUFFIXES = [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"];
 const EXACT_SCRIPTS = {
   "check:critical":
@@ -22,7 +42,8 @@ const EXACT_SCRIPTS = {
   "check:fast":
     "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
   verify:
-    "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint",
+    "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint && pnpm format:check",
+  "format:check": "stack-toolchain format:check",
 };
 
 const inside = (path, root) => path === root || path.startsWith(`${root}/`);
@@ -77,12 +98,26 @@ export function deriveLintPaths(census, profile) {
     .toSorted();
 }
 
+export function deriveFormatPaths(trackedPaths, artifactPaths) {
+  const protectedPaths = new Set([
+    ...artifactPaths,
+    ...FROZEN_FORMAT_FILES,
+    "lib/unicode-case-fold-17.mjs",
+    "lib/unicode-normalization-17.mjs",
+  ]);
+  return trackedPaths
+    .filter(
+      (path) =>
+        /\.(?:[cm]?[jt]sx?|json|ya?ml|md)$/u.test(path) &&
+        !protectedPaths.has(path) &&
+        !FROZEN_FORMAT_ROOTS.some((root) => inside(path, root)) &&
+        !path.endsWith("pnpm-lock.yaml"),
+    )
+    .toSorted();
+}
+
 function assertConfig(lintConfig) {
-  assert.deepEqual(
-    Object.keys(lintConfig).toSorted(),
-    ["$schema", "extends", "options"].toSorted(),
-  );
-  assert.equal(lintConfig.$schema, "./node_modules/oxlint/configuration_schema.json");
+  assert.deepEqual(Object.keys(lintConfig).toSorted(), ["extends", "options"].toSorted());
   assert.deepEqual(lintConfig.extends, [FOUNDATION_PRESET]);
   assert.deepEqual(lintConfig.options, {
     reportUnusedDisableDirectives: "error",
@@ -133,6 +168,57 @@ function assertWorkflow(workflow) {
   assert.match(workflow, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/u);
 }
 
+export function assertStackBinding(manifest, installedStack) {
+  const pin = manifest.devDependencies?.["stack-toolchain"];
+  assert.equal(typeof pin, "string", "Stack needs one canonical stable exact dev pin");
+  assert.match(
+    pin,
+    /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u,
+    "Stack needs one canonical stable exact dev pin",
+  );
+  assert.ok(
+    pin.split(".").every((part) => Number.isSafeInteger(Number(part))),
+    "Stack pin must be valid registry semver",
+  );
+  for (const section of ["dependencies", "optionalDependencies", "peerDependencies"]) {
+    assert.equal(
+      Object.hasOwn(manifest[section] ?? {}, "stack-toolchain"),
+      false,
+      "Stack must be declared only in root devDependencies",
+    );
+  }
+  assert.equal(installedStack?.name, "stack-toolchain", "installed Stack package identity");
+  assert.equal(installedStack.version, pin, "installed Stack must match the root dev pin");
+  assert.equal(
+    installedStack.toolchainManifest?.schemaVersion,
+    1,
+    "supported public Stack manifest schema",
+  );
+}
+
+function assertContainedStackPath(parent, child) {
+  const path = relative(parent, child);
+  assert.ok(
+    path !== "" && path !== ".." && !path.startsWith(`..${sep}`) && !isAbsolute(path),
+    "Stack public metadata must resolve inside consumer node_modules and its package",
+  );
+}
+
+export async function readStackInstallation(root) {
+  const consumer = await realpath(fileURLToPath(root));
+  const require = createRequire(join(consumer, "package.json"));
+  const metadataPath = await realpath(require.resolve("stack-toolchain/package.json"));
+  assertContainedStackPath(join(consumer, "node_modules"), metadataPath);
+  const manifestPath = await realpath(require.resolve("stack-toolchain/toolchain-manifest.json"));
+  assertContainedStackPath(dirname(metadataPath), manifestPath);
+  const metadata = JSON.parse(await readFile(metadataPath, "utf8"));
+  return {
+    name: metadata.name,
+    version: metadata.version,
+    toolchainManifest: JSON.parse(await readFile(manifestPath, "utf8")),
+  };
+}
+
 export function assertQualityAdoption({
   manifest,
   profile,
@@ -142,13 +228,26 @@ export function assertQualityAdoption({
   requiredNodeTests,
   foundationConfig,
   sourcePolicy,
+  toolchainConfig,
+  tsconfig,
+  artifactPaths,
+  gitignore,
+  formatterIgnore,
+  installedStack,
 }) {
-  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.7.2");
-  assert.equal(manifest.devDependencies?.oxlint, "1.85.0");
+  assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "3.0.0");
+  assertStackBinding(manifest, installedStack);
+  assert.equal(manifest.devDependencies?.yaml, "2.9.1");
+  assert.equal(manifest.devDependencies?.oxlint, undefined, "Stack owns the linter pin");
+  assert.equal(
+    manifest.devDependencies?.typescript,
+    "7.0.2",
+    "installed package verification retains its compiler",
+  );
   assert.equal(profile.schemaVersion, 1);
   assert.deepEqual(profile.adoption, {
     mode: "active-foundation",
-    foundationVersion: "1.7.2",
+    foundationVersion: "3.0.0",
     publicPreset: FOUNDATION_PRESET,
     sourceCoverage: "consumer-exact-js-census",
   });
@@ -224,7 +323,7 @@ export function assertQualityAdoption({
   for (const [name, command] of Object.entries(EXACT_SCRIPTS)) {
     assert.equal(manifest.scripts?.[name], command, `${name} must stay canonical`);
   }
-  assert.equal(manifest.scripts?.[profile.scripts.typecheck], "tsc --noEmit");
+  assert.equal(manifest.scripts?.[profile.scripts.typecheck], "stack-toolchain typecheck");
   assert.equal(manifest.scripts?.[profile.scripts.generate], "node scripts/generate.mjs");
   assert.equal(
     manifest.scripts?.[profile.scripts.generatedCheck],
@@ -263,12 +362,57 @@ export function assertQualityAdoption({
   assert.ok(
     census.classified.some((source) => source.role === "test" && source.kind === "typescript"),
   );
+  assert.deepEqual(
+    toolchainConfig,
+    {
+      schemaVersion: 1,
+      profile: "typescript-node",
+      typecheck: { projects: ["tsconfig.json"] },
+      lint: { config: ".oxlintrc.json", paths: lintPaths },
+      format: { paths: deriveFormatPaths(trackedPaths, artifactPaths) },
+    },
+    "Stack scopes must match the independent source and maintained-file census",
+  );
+  assert.ok(toolchainConfig.format.paths.length > 0, "maintained format census is empty");
+  assert.equal(
+    gitignore,
+    ".DS_Store\nnode_modules/\ncoverage/\ndist/\n*.log\n*.tgz\n.package-check/\n",
+    "review format exclusions before changing repository ignores",
+  );
+  assert.equal(
+    formatterIgnore,
+    undefined,
+    "a formatter ignore file must not hide maintained inputs",
+  );
+  assert.deepEqual(
+    tsconfig,
+    {
+      compilerOptions: {
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
+        noEmit: true,
+        strict: true,
+        target: "ES2024",
+        skipLibCheck: true,
+      },
+      include: ["generated/**/*.d.ts", "test/**/*.ts"],
+    },
+    "ordinary TypeScript scope and strictness must remain intact",
+  );
   assertWorkflow(workflow);
   return census;
 }
 
 export async function readQualityAdoption(root = new URL("../", import.meta.url)) {
   const readJson = async (path) => JSON.parse(await readFile(new URL(path, root), "utf8"));
+  const readYaml = async (path) => {
+    const document = parseDocument(await readFile(new URL(path, root), "utf8"), {
+      strict: true,
+      uniqueKeys: true,
+    });
+    assert.equal(document.errors.length, 0, `invalid YAML configuration: ${path}`);
+    return document.toJS();
+  };
   const { stdout } = await execFileAsync(
     "git",
     ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
@@ -285,9 +429,20 @@ export async function readQualityAdoption(root = new URL("../", import.meta.url)
     await readFile(location);
   }
   return {
-    foundationConfig: await readJson("foundation.config.yaml"),
-    sourcePolicy: await readJson("architecture/foundation/source-dependencies.yaml"),
+    foundationConfig: await readYaml("foundation.config.yaml"),
+    sourcePolicy: await readYaml("architecture/foundation/source-dependencies.yaml"),
     manifest: await readJson("package.json"),
+    installedStack: await readStackInstallation(root),
+    gitignore: await readFile(new URL(".gitignore", root), "utf8"),
+    formatterIgnore: await readFile(new URL(".prettierignore", root), "utf8").catch((error) => {
+      if (error.code === "ENOENT") {
+        return;
+      }
+      throw error;
+    }),
+    toolchainConfig: await readJson("toolchain.config.json"),
+    tsconfig: await readJson("tsconfig.json"),
+    artifactPaths: (await readJson("artifacts.json")).artifacts.map((artifact) => artifact.path),
     profile: await readJson(PROFILE_PATH),
     requiredNodeTests: await readJson("architecture/foundation/required-node-tests.json"),
     lintConfig: await readJson(".oxlintrc.json"),
