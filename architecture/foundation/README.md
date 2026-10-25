@@ -69,8 +69,11 @@ any mechanical change needs explicit review with its existing artifact proof.
 The reviewed formatting prerequisite is merged at
 `7855315889312026d25f8f57724fbbecec70f55d`. This adoption retains that source and
 its compatibility guards, including the current private conformance hashes.
-Adoption remains pending required exact-head CI and the first real Get Modular
-canary qualification. Source boundary discovery also inspects governed nested
+Before merging adoption, require exact-head CI and a real Get Modular canary.
+The first canary was accepted at Get Modular commit
+`8305ea6409757da8e60dca074dce163d95c85e88`, with the public Node 26 route,
+64 native checks and six artifact-matrix checks passing. Source boundary
+discovery also inspects governed nested
 `dist` source; the installed-boundary fixture places a forbidden import there
 and must reject it. A scope configuration alone is not completed qualification.
 
