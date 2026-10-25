@@ -33,13 +33,13 @@ operational.
 
 ## Normative document map
 
-| Document | Sole subject authority |
-| --- | --- |
-| [core.md](spec/core.md) | Scope, terminology, artifact authority, result semantics, versions, and registries |
-| [identity.md](spec/identity.md) | Strict JSON input, RFC 8785 canonicalization, domain framing, and identity definitions |
-| [policy-and-enforcement.md](spec/policy-and-enforcement.md) | Effective policy, bindings, precedence, defaults, exceptions, enforcement, and diagnostics |
-| [security-and-conformance.md](spec/security-and-conformance.md) | Portable-bounded threat profile, claim requirements, and release manifests |
-| [governance.md](spec/governance.md) | Phase 0 governance, publication sequence, and change control |
+| Document                                                        | Sole subject authority                                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [core.md](spec/core.md)                                         | Scope, terminology, artifact authority, result semantics, versions, and registries         |
+| [identity.md](spec/identity.md)                                 | Strict JSON input, RFC 8785 canonicalization, domain framing, and identity definitions     |
+| [policy-and-enforcement.md](spec/policy-and-enforcement.md)     | Effective policy, bindings, precedence, defaults, exceptions, enforcement, and diagnostics |
+| [security-and-conformance.md](spec/security-and-conformance.md) | Portable-bounded threat profile, claim requirements, and release manifests                 |
+| [governance.md](spec/governance.md)                             | Phase 0 governance, publication sequence, and change control                               |
 
 Normative keywords have the meanings assigned by BCP 14 when, and only when,
 they appear in uppercase. Every normative requirement is intended to receive a

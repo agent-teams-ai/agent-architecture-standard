@@ -2,13 +2,13 @@
 
 ## Bootstrap owners
 
-| Role | Owner | State |
-| --- | --- | --- |
-| Repository steward | `@777genius` | Active |
-| Normative maintainer | `@777genius` | Active for draft incubation |
-| Security responder | `@777genius` | Active for draft incubation |
-| Independent conformance maintainer | Unassigned | Blocks public prerelease |
-| Release maintainer | Unassigned | Blocks public prerelease |
+| Role                               | Owner        | State                       |
+| ---------------------------------- | ------------ | --------------------------- |
+| Repository steward                 | `@777genius` | Active                      |
+| Normative maintainer               | `@777genius` | Active for draft incubation |
+| Security responder                 | `@777genius` | Active for draft incubation |
+| Independent conformance maintainer | Unassigned   | Blocks public prerelease    |
+| Release maintainer                 | Unassigned   | Blocks public prerelease    |
 
 The table is intentionally honest: this repository does not yet have independent
 organizational stewardship. A public RC requires at least one additional named
