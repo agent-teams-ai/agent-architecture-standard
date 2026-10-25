@@ -26,11 +26,11 @@ jobs:
           - node: 26
             node-version: 26.11.1
             job-name: reproducibility
-            artifact-suffix: ''
+            artifact-suffix: ""
           - node: 24
             node-version: 24.21.0
             job-name: Node 24 compatibility reproducibility
-            artifact-suffix: '-node24'
+            artifact-suffix: "-node24"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -1,6 +1,7 @@
 # Agent instructions
 
 <!-- agent-teams:quality-standard:start -->
+
 Before planning, implementing, or reviewing changes, read and follow the
 [organization Engineering Quality Standard](https://github.com/agent-teams-ai/.github/blob/main/docs/engineering-quality-standard.md).
 Apply it with this repository's instructions, accepted decisions and local

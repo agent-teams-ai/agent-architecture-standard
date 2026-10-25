@@ -7,24 +7,34 @@ import { promisify } from "node:util";
 const execFileAsync = promisify(execFile);
 
 const PROFILE_PATH = "architecture/foundation/javascript-quality-profile.json";
-const FOUNDATION_PRESET = "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json";
+const FOUNDATION_PRESET =
+  "./node_modules/@agent-teams/engineering-foundation/presets/oxlint/node.json";
 const SOURCE_SUFFIXES = [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"];
 const EXACT_SCRIPTS = {
-  "check:critical": "agent-teams-node-test --contract architecture/foundation/required-node-tests.json -- test/strict-json.test.mjs test/operator-authority.test.mjs",
+  "check:critical":
+    "agent-teams-node-test --contract architecture/foundation/required-node-tests.json -- test/strict-json.test.mjs test/operator-authority.test.mjs",
   "check:corpus": "pnpm check:critical && node scripts/run-corpus-tests.mjs",
-  "quality:source": "agent-teams-foundation check && agent-teams-foundation assert-dev-only && agent-teams-foundation assert-registry",
-  "quality:scope": "node --test scripts/check-quality-adoption.test.mjs scripts/foundation-installed.test.mjs && pnpm quality:source",
+  "quality:source":
+    "agent-teams-foundation check && agent-teams-foundation assert-dev-only && agent-teams-foundation assert-registry",
+  "quality:scope":
+    "node --test scripts/check-quality-adoption.test.mjs scripts/foundation-installed.test.mjs && pnpm quality:source",
   "quality:lint": "node scripts/run-quality-lint.mjs",
-  "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
-  verify: "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
+  "check:fast":
+    "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
+  verify:
+    "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint",
 };
 
 const inside = (path, root) => path === root || path.startsWith(`${root}/`);
-const isTrackedSource = path => SOURCE_SUFFIXES.some(suffix => path.endsWith(suffix));
+const isTrackedSource = (path) => SOURCE_SUFFIXES.some((suffix) => path.endsWith(suffix));
 
 function sourceKind(path) {
-  if (path.endsWith(".d.ts") || path.endsWith(".d.mts") || path.endsWith(".d.cts")) {return "declaration";}
-  if ([".ts", ".tsx", ".mts", ".cts"].some(suffix => path.endsWith(suffix))) {return "typescript";}
+  if (path.endsWith(".d.ts") || path.endsWith(".d.mts") || path.endsWith(".d.cts")) {
+    return "declaration";
+  }
+  if ([".ts", ".tsx", ".mts", ".cts"].some((suffix) => path.endsWith(suffix))) {
+    return "typescript";
+  }
   return "javascript";
 }
 
@@ -34,48 +44,105 @@ export function classifyTrackedSources(paths, profile) {
   const unclassified = [];
   for (const path of [...new Set(paths)].filter(isTrackedSource).toSorted()) {
     let role;
-    if (source.generatedFiles.includes(path) || source.generatedRoots.some(root => inside(path, root))) {role = "generated";}
-    else if (source.fixtureRoots.some(root => inside(path, root))) {role = "fixture";}
-    else if (source.testRoots.some(root => inside(path, root)) || /\.test\.[cm]?[jt]sx?$/u.test(path)) {role = "test";}
-    else if (source.productionRoots.some(root => inside(path, root))) {role = "production";}
-    else if (source.toolingRoots.some(root => inside(path, root))) {role = "tooling";}
-    if (role === undefined) {unclassified.push(path);}
-    else {classified.push({ path, role, kind: sourceKind(path) });}
+    if (
+      source.generatedFiles.includes(path) ||
+      source.generatedRoots.some((root) => inside(path, root))
+    ) {
+      role = "generated";
+    } else if (source.fixtureRoots.some((root) => inside(path, root))) {
+      role = "fixture";
+    } else if (
+      source.testRoots.some((root) => inside(path, root)) ||
+      /\.test\.[cm]?[jt]sx?$/u.test(path)
+    ) {
+      role = "test";
+    } else if (source.productionRoots.some((root) => inside(path, root))) {
+      role = "production";
+    } else if (source.toolingRoots.some((root) => inside(path, root))) {
+      role = "tooling";
+    }
+    if (role === undefined) {
+      unclassified.push(path);
+    } else {
+      classified.push({ path, role, kind: sourceKind(path) });
+    }
   }
   return { classified, unclassified };
 }
 
 export function deriveLintPaths(census, profile) {
   return census.classified
-    .filter(source => profile.lint.includedRoles.includes(source.role))
-    .map(source => source.path)
+    .filter((source) => profile.lint.includedRoles.includes(source.role))
+    .map((source) => source.path)
     .toSorted();
 }
 
 function assertConfig(lintConfig) {
-  assert.deepEqual(Object.keys(lintConfig).toSorted(), ["$schema", "extends", "options"].toSorted());
+  assert.deepEqual(
+    Object.keys(lintConfig).toSorted(),
+    ["$schema", "extends", "options"].toSorted(),
+  );
   assert.equal(lintConfig.$schema, "./node_modules/oxlint/configuration_schema.json");
   assert.deepEqual(lintConfig.extends, [FOUNDATION_PRESET]);
   assert.deepEqual(lintConfig.options, {
     reportUnusedDisableDirectives: "error",
-    respectEslintDisableDirectives: false
+    respectEslintDisableDirectives: false,
   });
 }
 
 function assertWorkflow(workflow) {
   assert.match(workflow, /node: \[26, 24\]/u, "Node 26 must be the default matrix lane");
-  assert.match(workflow, /- node: 26\s+node-version: 26\.11\.1\s+job-name: reproducibility\s+artifact-suffix: ''/u, "default verification and evidence must use Node 26.11.1");
-  assert.match(workflow, /- node: 24\s+node-version: 24\.21\.0\s+job-name: Node 24 compatibility reproducibility\s+artifact-suffix: '-node24'/u, "Node 24 compatibility must retain verification and separate evidence");
-  assert.match(workflow, /node26-conformance:[\s\S]*node-version: 26\.11\.1/u, "private conformance must use the default Node 26.11.1 runtime");
-  assert.equal((workflow.match(/^\s*- run: pnpm verify\s*$/gmu) ?? []).length, 1, "CI must execute pnpm verify exactly once");
-  for (const splitGate of ["check:fast", "check:generated", "check:package", "check:conformance", "quality:lint"]) {
-    assert.doesNotMatch(workflow, new RegExp(`^\\s*- run: pnpm ${splitGate}\\s*$`, "mu"), `CI must not split ${splitGate} from verify`);
+  assert.match(
+    workflow,
+    /- node: 26\s+node-version: 26\.11\.1\s+job-name: reproducibility\s+artifact-suffix: (['"])\1/u,
+    "default verification and evidence must use Node 26.11.1",
+  );
+  assert.match(
+    workflow,
+    /- node: 24\s+node-version: 24\.21\.0\s+job-name: Node 24 compatibility reproducibility\s+artifact-suffix: (['"])-node24\1/u,
+    "Node 24 compatibility must retain verification and separate evidence",
+  );
+  assert.match(
+    workflow,
+    /node26-conformance:[\s\S]*node-version: 26\.11\.1/u,
+    "private conformance must use the default Node 26.11.1 runtime",
+  );
+  assert.equal(
+    (workflow.match(/^\s*- run: pnpm verify\s*$/gmu) ?? []).length,
+    1,
+    "CI must execute pnpm verify exactly once",
+  );
+  for (const splitGate of [
+    "check:fast",
+    "check:generated",
+    "check:package",
+    "check:conformance",
+    "quality:lint",
+  ]) {
+    assert.doesNotMatch(
+      workflow,
+      new RegExp(`^\\s*- run: pnpm ${splitGate}\\s*$`, "mu"),
+      `CI must not split ${splitGate} from verify`,
+    );
   }
-  assert.equal((workflow.match(/ci-head-evidence\.mjs/gmu) ?? []).length, 2, "CI must retain pre/post exact-head evidence");
+  assert.equal(
+    (workflow.match(/ci-head-evidence\.mjs/gmu) ?? []).length,
+    2,
+    "CI must retain pre/post exact-head evidence",
+  );
   assert.match(workflow, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/u);
 }
 
-export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPaths, workflow, requiredNodeTests, foundationConfig, sourcePolicy }) {
+export function assertQualityAdoption({
+  manifest,
+  profile,
+  lintConfig,
+  trackedPaths,
+  workflow,
+  requiredNodeTests,
+  foundationConfig,
+  sourcePolicy,
+}) {
   assert.equal(manifest.devDependencies?.["@agent-teams/engineering-foundation"], "1.7.2");
   assert.equal(manifest.devDependencies?.oxlint, "1.85.0");
   assert.equal(profile.schemaVersion, 1);
@@ -83,7 +150,7 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
     mode: "active-foundation",
     foundationVersion: "1.7.2",
     publicPreset: FOUNDATION_PRESET,
-    sourceCoverage: "consumer-exact-js-census"
+    sourceCoverage: "consumer-exact-js-census",
   });
   assert.deepEqual(profile.sourceUniverse, {
     productionRoots: ["lib"],
@@ -92,66 +159,125 @@ export function assertQualityAdoption({ manifest, profile, lintConfig, trackedPa
     fixtureRoots: ["conformance/candidates"],
     generatedRoots: ["generated"],
     generatedFiles: ["lib/unicode-case-fold-17.mjs", "lib/unicode-normalization-17.mjs"],
-    trackedExtensions: SOURCE_SUFFIXES
+    trackedExtensions: SOURCE_SUFFIXES,
   });
   assert.deepEqual(profile.lint, {
     configPath: ".oxlintrc.json",
-    includedRoles: ["production", "tooling"]
+    includedRoles: ["production", "tooling"],
   });
   assert.deepEqual(foundationConfig, {
     schemaVersion: 1,
     project: { id: "agent-architecture-standard" },
-    capabilities: { "architecture.source-dependencies": { configPath: "architecture/foundation/source-dependencies.yaml" } }
+    capabilities: {
+      "architecture.source-dependencies": {
+        configPath: "architecture/foundation/source-dependencies.yaml",
+      },
+    },
   });
   assert.equal(sourcePolicy.schemaVersion, 3);
   assert.equal(sourcePolicy.rootPackage, true);
   assert.deepEqual(sourcePolicy.packageRoots, []);
   assert.deepEqual(sourcePolicy.governedRoots, ["lib", "scripts", "conformance/private"]);
-  assert.deepEqual(sourcePolicy.boundaries.map(({ id, roots }) => ({ id, roots })), [
-    { id: "private-verifier", roots: ["lib"] },
-    { id: "repository-tooling", roots: ["scripts"] },
-    { id: "private-conformance", roots: ["conformance/private"] }
-  ]);
-  assert.equal(profile.typedCoverage, false, "JavaScript lint cannot claim typed coverage");
-  assert.deepEqual(requiredNodeTests, {
-    schemaVersion: 1,
-    required: [
-      { file: "test/strict-json.test.mjs", names: ["duplicate decoded keys are rejected"], kind: "test" },
-      { file: "test/strict-json.test.mjs", names: ["decimal spelling is validated before binary64 rounding"], kind: "test" },
-      { file: "test/operator-authority.test.mjs", names: ["oversized admission fails before copying, parsing, or target resolution"], kind: "test" },
-      { file: "test/operator-authority.test.mjs", names: ["resolver coordinates reject mutation, non-NFC paths, forged cohorts, and request resolver lookalikes"], kind: "test" }
+  assert.deepEqual(
+    sourcePolicy.boundaries.map(({ id, roots }) => ({ id, roots })),
+    [
+      { id: "private-verifier", roots: ["lib"] },
+      { id: "repository-tooling", roots: ["scripts"] },
+      { id: "private-conformance", roots: ["conformance/private"] },
     ],
-    exceptions: []
-  }, "critical identity inventory and platform applicability must stay exact");
+  );
+  assert.equal(profile.typedCoverage, false, "JavaScript lint cannot claim typed coverage");
+  assert.deepEqual(
+    requiredNodeTests,
+    {
+      schemaVersion: 1,
+      required: [
+        {
+          file: "test/strict-json.test.mjs",
+          names: ["duplicate decoded keys are rejected"],
+          kind: "test",
+        },
+        {
+          file: "test/strict-json.test.mjs",
+          names: ["decimal spelling is validated before binary64 rounding"],
+          kind: "test",
+        },
+        {
+          file: "test/operator-authority.test.mjs",
+          names: ["oversized admission fails before copying, parsing, or target resolution"],
+          kind: "test",
+        },
+        {
+          file: "test/operator-authority.test.mjs",
+          names: [
+            "resolver coordinates reject mutation, non-NFC paths, forged cohorts, and request resolver lookalikes",
+          ],
+          kind: "test",
+        },
+      ],
+      exceptions: [],
+    },
+    "critical identity inventory and platform applicability must stay exact",
+  );
   assertConfig(lintConfig);
 
-  for (const [name, command] of Object.entries(EXACT_SCRIPTS)) {assert.equal(manifest.scripts?.[name], command, `${name} must stay canonical`);}
+  for (const [name, command] of Object.entries(EXACT_SCRIPTS)) {
+    assert.equal(manifest.scripts?.[name], command, `${name} must stay canonical`);
+  }
   assert.equal(manifest.scripts?.[profile.scripts.typecheck], "tsc --noEmit");
   assert.equal(manifest.scripts?.[profile.scripts.generate], "node scripts/generate.mjs");
-  assert.equal(manifest.scripts?.[profile.scripts.generatedCheck], "node scripts/check-clean-generation.mjs");
+  assert.equal(
+    manifest.scripts?.[profile.scripts.generatedCheck],
+    "node scripts/check-clean-generation.mjs",
+  );
 
   const census = classifyTrackedSources(trackedPaths, profile);
-  assert.deepEqual(census.unclassified, [], `unclassified JS/TS source: ${census.unclassified.join(", ")}`);
-  assert.deepEqual(census.classified.filter(source => ["production", "tooling"].includes(source.role) && source.kind === "typescript"), [], "TypeScript production requires an explicit typed quality adoption");
+  assert.deepEqual(
+    census.unclassified,
+    [],
+    `unclassified JS/TS source: ${census.unclassified.join(", ")}`,
+  );
+  assert.deepEqual(
+    census.classified.filter(
+      (source) => ["production", "tooling"].includes(source.role) && source.kind === "typescript",
+    ),
+    [],
+    "TypeScript production requires an explicit typed quality adoption",
+  );
   for (const role of ["production", "tooling", "test", "fixture", "generated"]) {
-    assert.ok(census.classified.some(source => source.role === role), `${role} source census is empty`);
+    assert.ok(
+      census.classified.some((source) => source.role === role),
+      `${role} source census is empty`,
+    );
   }
   const lintPaths = deriveLintPaths(census, profile);
   assert.ok(lintPaths.length > 0, "authored lint source census is empty");
-  assert.ok(census.classified.some(source => source.role === "generated" && source.kind === "declaration"));
-  assert.ok(census.classified.some(source => source.role === "generated" && source.kind === "javascript"));
-  assert.ok(census.classified.some(source => source.role === "test" && source.kind === "typescript"));
+  assert.ok(
+    census.classified.some(
+      (source) => source.role === "generated" && source.kind === "declaration",
+    ),
+  );
+  assert.ok(
+    census.classified.some((source) => source.role === "generated" && source.kind === "javascript"),
+  );
+  assert.ok(
+    census.classified.some((source) => source.role === "test" && source.kind === "typescript"),
+  );
   assertWorkflow(workflow);
   return census;
 }
 
 export async function readQualityAdoption(root = new URL("../", import.meta.url)) {
-  const readJson = async path => JSON.parse(await readFile(new URL(path, root), "utf8"));
-  const { stdout } = await execFileAsync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], {
-    cwd: new URL(".", root),
-    encoding: "utf8",
-    maxBuffer: 2 * 1024 * 1024
-  });
+  const readJson = async (path) => JSON.parse(await readFile(new URL(path, root), "utf8"));
+  const { stdout } = await execFileAsync(
+    "git",
+    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+    {
+      cwd: new URL(".", root),
+      encoding: "utf8",
+      maxBuffer: 2 * 1024 * 1024,
+    },
+  );
   const trackedPaths = [...new Set(stdout.split("\0").filter(Boolean))];
   for (const path of trackedPaths.filter(isTrackedSource)) {
     const location = new URL(path, root);
@@ -166,12 +292,17 @@ export async function readQualityAdoption(root = new URL("../", import.meta.url)
     requiredNodeTests: await readJson("architecture/foundation/required-node-tests.json"),
     lintConfig: await readJson(".oxlintrc.json"),
     trackedPaths,
-    workflow: await readFile(new URL(".github/workflows/verify.yml", root), "utf8")
+    workflow: await readFile(new URL(".github/workflows/verify.yml", root), "utf8"),
   };
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const census = assertQualityAdoption(await readQualityAdoption());
-  const counts = Object.fromEntries(["production", "tooling", "test", "fixture", "generated"].map(role => [role, census.classified.filter(source => source.role === role).length]));
+  const counts = Object.fromEntries(
+    ["production", "tooling", "test", "fixture", "generated"].map((role) => [
+      role,
+      census.classified.filter((source) => source.role === role).length,
+    ]),
+  );
   console.log(`AAS quality scope verified: ${JSON.stringify(counts)}`);
 }

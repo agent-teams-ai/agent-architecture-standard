@@ -4,16 +4,34 @@
   "private": true,
   "description": "Unpublished provisional AAS normative artifacts and deterministic validation tooling",
   "license": "Apache-2.0",
+  "files": [
+    "CONTRIBUTING.md",
+    "GOVERNANCE.md",
+    "MAINTAINERS.md",
+    "SECURITY.md",
+    "SOURCE.md",
+    "artifacts.json",
+    "version-matrix.json",
+    "generated/",
+    "profiles/",
+    "decisions/",
+    "docs/decisions/",
+    "docs/status/",
+    "registries/",
+    "schemas/",
+    "spec/",
+    "templates/normative-traceability.md",
+    "vectors/"
+  ],
   "type": "module",
-  "packageManager": "pnpm@11.24.0",
-  "engines": { "node": ">=24" },
-  "files": ["CONTRIBUTING.md", "GOVERNANCE.md", "MAINTAINERS.md", "SECURITY.md", "SOURCE.md", "artifacts.json", "version-matrix.json", "generated/", "profiles/", "decisions/", "docs/decisions/", "docs/status/", "registries/", "schemas/", "spec/", "templates/normative-traceability.md", "vectors/"],
   "exports": {
     "./artifacts": "./artifacts.json",
     "./version-matrix": "./version-matrix.json",
     "./schemas/*": "./schemas/*.json",
     "./registries/*": "./registries/*.json",
-    "./generated/*": { "types": "./generated/*.d.ts" }
+    "./generated/*": {
+      "types": "./generated/*.d.ts"
+    }
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",
@@ -37,5 +55,9 @@
     "ajv": "8.20.0",
     "oxlint": "1.85.0",
     "typescript": "7.0.2"
-  }
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.24.0"
 }

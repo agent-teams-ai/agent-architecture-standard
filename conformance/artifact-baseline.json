@@ -2,10 +2,10 @@
   "schemaVersion": "private-conformance-artifact-baseline-v0",
   "artifacts": {
     "vectors/json/corpus.json": "sha256:d4cf39a72df13b025b77d4dbf0633cc2cb083684c9d3c178af802d37cfccbb21",
-    "conformance/private/oracle.mjs": "sha256:dd3b04b726b66ca2606afaea406e385ae9dc9065bb3ac93f3d18a45aab9a956f",
-    "conformance/private/runner.mjs": "sha256:00128e3ceea0c35ee302a853c82abfb6c9ce205de95b0ff65753ae1103cfd5c6",
-    "conformance/private/candidate-admission.mjs": "sha256:91bb49ff6e2a6734e7790a806e01b33a8facb7720156e878e2df5d47317202a5",
-    "conformance/private/candidate-frame.mjs": "sha256:bb07b5ccf1bc97820f94e0b1721a4373613511a162b5d069b6d619a8584e26a4",
+    "conformance/private/oracle.mjs": "sha256:e37c72f6356bc9bdbd048fd2c407b3b0a6ce2a592b02548351cce6a68fc5f0b1",
+    "conformance/private/runner.mjs": "sha256:cc064e882d7d094559e9117ef7e2ea59223ec5bc030c6b5cd0f68ee470bd9d1c",
+    "conformance/private/candidate-admission.mjs": "sha256:07305f53c6046d4e7064250e3609059150b02797b3ab7df6986f2d0b3ceed7c4",
+    "conformance/private/candidate-frame.mjs": "sha256:d86bc08ef69a11988a439d67731c06e254687ef8a3ebaff9fa8fa278b636dfec",
     "conformance/candidates/good-strict-json.mjs": "sha256:0a59217e3e7b9a79ad3aaef86e6b4811ad92b0ee7e46c7d3637b587812208c22"
   }
 }
