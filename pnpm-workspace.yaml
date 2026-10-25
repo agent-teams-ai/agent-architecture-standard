@@ -6,7 +6,7 @@ engineStrict: true
 strictPeerDependencies: true
 resolutionMode: highest
 minimumReleaseAgeExclude:
-  - "@agent-teams/engineering-foundation@1.7.1 || 1.7.2"
+  - "@agent-teams/engineering-foundation@1.7.1 || 1.7.2 || 3.0.0"
   - "@oxlint/binding-android-arm-eabi@1.85.0"
   - "@oxlint/binding-android-arm64@1.85.0"
   - "@oxlint/binding-darwin-arm64@1.85.0"
@@ -27,5 +27,10 @@ minimumReleaseAgeExclude:
   - "@oxlint/binding-win32-ia32-msvc@1.85.0"
   - "@oxlint/binding-win32-x64-msvc@1.85.0"
   - oxlint@1.85.0
+  - "@agent-teams/document-authoring@0.3.6"
+  - "@agent-teams/repository-mutation@0.4.2"
+  - stack-toolchain@0.1.1
 
-onlyBuiltDependencies: []
+strictDepBuilds: true
+allowBuilds:
+  bun: false

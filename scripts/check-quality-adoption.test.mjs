@@ -1,17 +1,18 @@
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm, symlink } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import {
   assertQualityAdoption,
   classifyTrackedSources,
   deriveLintPaths,
   readQualityAdoption,
+  readStackInstallation,
 } from "./check-quality-adoption.mjs";
 import { selectOxlintFiles } from "./run-quality-lint.mjs";
 
@@ -21,6 +22,86 @@ const accepted = await readQualityAdoption();
 
 test("quality activation retains the accepted Foundation contract", () => {
   assertQualityAdoption(accepted);
+});
+
+test("one exact root Stack pin accepts matching future metadata without qualifying future tools", () => {
+  const future = structuredClone(accepted);
+  future.manifest.devDependencies["stack-toolchain"] = "18.2.7";
+  future.installedStack.version = "18.2.7";
+  assertQualityAdoption(future); // Binding only; no future engine or installation is exercised.
+  for (const pin of [
+    "latest",
+    "npm:stack-toolchain@1.2.3",
+    "file:../stack",
+    "git+https://example.invalid/stack",
+    "workspace:*",
+    "1.2.3-rc.1",
+    "1.2.3+build",
+    "01.2.3",
+    "1.2",
+    "v1.2.3",
+    "9007199254740992.0.0",
+  ]) {
+    const value = structuredClone(accepted);
+    value.manifest.devDependencies["stack-toolchain"] = pin;
+    assert.throws(() => assertQualityAdoption(value), /Stack.*(?:pin|semver)/u);
+  }
+  for (const section of ["dependencies", "optionalDependencies", "peerDependencies"]) {
+    const value = structuredClone(accepted);
+    value.manifest[section] = {
+      "stack-toolchain": value.manifest.devDependencies["stack-toolchain"],
+    };
+    assert.throws(() => assertQualityAdoption(value), /only in root devDependencies/u);
+  }
+});
+
+async function writeStackMetadata(root) {
+  const directory = join(root, "node_modules", "stack-toolchain");
+  await mkdir(directory, { recursive: true });
+  await writeFile(
+    join(directory, "package.json"),
+    JSON.stringify({
+      name: accepted.installedStack.name,
+      version: accepted.installedStack.version,
+      exports: {
+        "./package.json": "./package.json",
+        "./toolchain-manifest.json": "./toolchain-manifest.json",
+      },
+    }),
+  );
+  await writeFile(
+    join(directory, "toolchain-manifest.json"),
+    JSON.stringify(accepted.installedStack.toolchainManifest),
+  );
+}
+
+test("Stack public metadata rejects missing, ancestor and escaping installations", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "aas-stack-binding-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const missing = join(root, "missing", "consumer");
+  await mkdir(missing, { recursive: true });
+  await assert.rejects(readStackInstallation(pathToFileURL(`${missing}/`)), {
+    code: "MODULE_NOT_FOUND",
+  });
+  const parent = join(root, "ancestor");
+  const consumer = join(parent, "consumer");
+  await mkdir(consumer, { recursive: true });
+  await writeStackMetadata(parent);
+  await assert.rejects(
+    readStackInstallation(pathToFileURL(`${consumer}/`)),
+    /inside consumer node_modules/u,
+  );
+  const escaped = join(root, "escaped");
+  await mkdir(join(escaped, "node_modules"), { recursive: true });
+  await symlink(
+    join(parent, "node_modules", "stack-toolchain"),
+    join(escaped, "node_modules", "stack-toolchain"),
+    process.platform === "win32" ? "junction" : "dir",
+  );
+  await assert.rejects(
+    readStackInstallation(pathToFileURL(`${escaped}/`)),
+    /inside consumer node_modules/u,
+  );
 });
 
 test("quality workflow guards accept both quote styles with the same exact values", () => {
@@ -98,7 +179,7 @@ if (process.argv[1]?.replaceAll("\\\\", "/").endsWith("/node_modules/oxlint/bin/
       },
     );
     assert.match(stdout, /^AAS quality scope verified:/u);
-    await execFileAsync(
+    const lint = await execFileAsync(
       process.execPath,
       ["--preserve-symlinks-main", join(checkout, "scripts/run-quality-lint.mjs")],
       {
@@ -108,15 +189,101 @@ if (process.argv[1]?.replaceAll("\\\\", "/").endsWith("/node_modules/oxlint/bin/
         maxBuffer: 2 * 1024 * 1024,
       },
     );
-    assert.deepEqual((await readFile(marker, "utf8")).trim().split("\n"), ["invoked", "invoked"]);
+    assert.match(lint.stdout, /Found 0 warnings and 0 errors/u);
+    // Stack's typed Node wrapper receives an explicit environment without
+    // NODE_OPTIONS; this observer sees only the independent debug wrapper.
+    assert.deepEqual((await readFile(marker, "utf8")).trim().split("\n"), ["invoked"]);
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }
 });
 
+test("owned formatted YAML keeps its shape and rejects syntax errors and duplicate keys", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "aas-owned-yaml-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const files = [
+    "foundation.config.yaml",
+    "architecture/foundation/source-dependencies.yaml",
+    "package.json",
+    "pnpm-workspace.yaml",
+    ".gitignore",
+    "toolchain.config.json",
+    "tsconfig.json",
+    "artifacts.json",
+    "architecture/foundation/javascript-quality-profile.json",
+    "architecture/foundation/required-node-tests.json",
+    ".oxlintrc.json",
+    ".github/workflows/verify.yml",
+  ];
+  for (const file of files) {
+    await mkdir(dirname(join(root, file)), { recursive: true });
+    await cp(join(repositoryRoot, file), join(root, file));
+  }
+  await writeStackMetadata(root);
+  await execFileAsync("git", ["init", "--quiet"], { cwd: root });
+  const fixtureRoot = pathToFileURL(`${root}/`);
+  const parsed = await readQualityAdoption(fixtureRoot);
+  assert.deepEqual(parsed.foundationConfig, {
+    schemaVersion: 1,
+    project: { id: "agent-architecture-standard" },
+    capabilities: {
+      "architecture.source-dependencies": {
+        configPath: "architecture/foundation/source-dependencies.yaml",
+      },
+    },
+  });
+  assert.equal(parsed.sourcePolicy.schemaVersion, 3);
+  assert.deepEqual(parsed.sourcePolicy.boundaries[1].allow.packages, [
+    "ajv",
+    "stack-toolchain",
+    "yaml",
+  ]);
+  for (const file of [
+    "foundation.config.yaml",
+    "architecture/foundation/source-dependencies.yaml",
+  ]) {
+    const source = await readFile(join(root, file), "utf8");
+    for (const malformed of ["value: [\n", "schemaVersion: 1\nschemaVersion: 1\n"]) {
+      await writeFile(join(root, file), malformed);
+      await assert.rejects(readQualityAdoption(fixtureRoot), /invalid YAML configuration/u);
+    }
+    await writeFile(join(root, file), source);
+  }
+});
+
 const mutations = {
+  "missing explicit Bun build denial": (value) => {
+    value.workspace.allowBuilds = {};
+  },
+  "Bun install-script execution": (value) => {
+    value.workspace.allowBuilds.bun = true;
+  },
+  "broad build approval": (value) => {
+    value.workspace.allowBuilds["*"] = true;
+  },
+  "blanket build denial hiding unreviewed scripts": (value) => {
+    value.workspace.allowBuilds["*"] = false;
+  },
+  "disabled strict build review": (value) => {
+    value.workspace.strictDepBuilds = false;
+  },
+  "global build approval": (value) => {
+    value.workspace.dangerouslyAllowAllBuilds = true;
+  },
+  "global script-ignore bypass": (value) => {
+    value.workspace.ignoreScripts = true;
+  },
+  "obsolete build approval policy": (value) => {
+    value.workspace.onlyBuiltDependencies = [];
+  },
   "an incorrect Node 24 artifact suffix": (value) => {
     value.workflow = value.workflow.replace("-node24", "-other");
+  },
+  "a missing direct YAML parser": (value) => {
+    delete value.manifest.devDependencies.yaml;
+  },
+  "a ranged YAML parser pin": (value) => {
+    value.manifest.devDependencies.yaml = "^2.9.1";
   },
   "a detached installed source boundary": (value) => {
     delete value.foundationConfig.capabilities["architecture.source-dependencies"];
@@ -153,11 +320,74 @@ const mutations = {
   "an unclassified source suffix": (value) => {
     value.trackedPaths.push("other/new-source.jsx");
   },
+  "hidden formatter inputs": (value) => {
+    value.formatterIgnore = "lib/**";
+  },
+  "repository ignores hiding maintained inputs": (value) => {
+    value.gitignore += "lib/**\n";
+  },
+  "a missing Stack pin": (value) => {
+    delete value.manifest.devDependencies["stack-toolchain"];
+  },
+  "a ranged Stack pin": (value) => {
+    value.manifest.devDependencies["stack-toolchain"] = "^0.1.1";
+  },
+  "an installed Stack version mismatch": (value) => {
+    value.installedStack.version = "999.0.0";
+  },
+  "an installed Stack with the wrong name": (value) => {
+    value.installedStack.name = "other";
+  },
+  "an unsupported public Stack manifest schema": (value) => {
+    value.installedStack.toolchainManifest.schemaVersion = 2;
+  },
+  "an unsupported Stack config schema": (value) => {
+    value.toolchainConfig.schemaVersion = 2;
+  },
+  "a second direct linter pin": (value) => {
+    value.manifest.devDependencies.oxlint = "1.85.0";
+  },
+  "an empty Stack lint scope": (value) => {
+    value.toolchainConfig.lint.paths = [];
+  },
+  "a dropped authored Stack lint input": (value) => {
+    value.toolchainConfig.lint.paths.pop();
+  },
+  "a weakened Stack lint configuration": (value) => {
+    value.toolchainConfig.lint.config = "local.json";
+  },
+  "a detached Stack typecheck": (value) => {
+    value.manifest.scripts.typecheck = "true";
+  },
+  "a second ordinary TypeScript project": (value) => {
+    value.toolchainConfig.typecheck.projects.push("tsconfig.local.json");
+  },
+  "a weakened ordinary TypeScript scope": (value) => {
+    value.tsconfig.include = ["test/type-projections.ts"];
+  },
+  "a no-op format route": (value) => {
+    value.manifest.scripts["format:check"] = "true";
+  },
+  "a detached format gate": (value) => {
+    value.manifest.scripts.verify = value.manifest.scripts.verify.replace(
+      " && pnpm format:check",
+      "",
+    );
+  },
+  "a dropped maintained format input": (value) => {
+    value.toolchainConfig.format.paths.pop();
+  },
+  "a generated format input": (value) => {
+    value.toolchainConfig.format.paths.push("lib/unicode-case-fold-17.mjs");
+  },
+  "a frozen normative format input": (value) => {
+    value.toolchainConfig.format.paths.push("spec/core.md");
+  },
   "a missing Foundation pin": (value) => {
     delete value.manifest.devDependencies["@agent-teams/engineering-foundation"];
   },
   "a ranged Foundation pin": (value) => {
-    value.manifest.devDependencies["@agent-teams/engineering-foundation"] = "^1.7.2";
+    value.manifest.devDependencies["@agent-teams/engineering-foundation"] = "^3.0.0";
   },
   "a no-op scope route": (value) => {
     value.manifest.scripts["quality:scope"] = "true";

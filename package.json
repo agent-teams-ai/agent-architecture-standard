@@ -42,19 +42,21 @@
     "check:generated": "node scripts/check-clean-generation.mjs",
     "check:package": "node scripts/check-package.mjs",
     "check:conformance": "node --test conformance/test/*.test.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "stack-toolchain typecheck",
     "quality:source": "agent-teams-foundation check && agent-teams-foundation assert-dev-only && agent-teams-foundation assert-registry",
     "quality:scope": "node --test scripts/check-quality-adoption.test.mjs scripts/foundation-installed.test.mjs && pnpm quality:source",
     "quality:lint": "node scripts/run-quality-lint.mjs",
+    "format:check": "stack-toolchain format:check",
     "check:fast": "pnpm quality:scope && pnpm check:index && pnpm check:schemas && pnpm check:corpus && pnpm typecheck",
     "check:changed": "pnpm check:fast",
-    "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint"
+    "verify": "pnpm check:fast && pnpm check:generated && pnpm check:package && pnpm check:conformance && pnpm quality:lint && pnpm format:check"
   },
   "devDependencies": {
-    "@agent-teams/engineering-foundation": "1.7.2",
+    "@agent-teams/engineering-foundation": "3.0.0",
     "ajv": "8.20.0",
-    "oxlint": "1.85.0",
-    "typescript": "7.0.2"
+    "stack-toolchain": "0.1.1",
+    "typescript": "7.0.2",
+    "yaml": "2.9.1"
   },
   "engines": {
     "node": ">=24"
