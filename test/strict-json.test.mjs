@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { parseStrictJson } from "../lib/strict-json.mjs";
+import { canonicalJson, canonicalJsonBytes } from "../lib/canonical-json.mjs";
 
 const vectorRoot = new URL("../", import.meta.url);
 
@@ -89,6 +90,27 @@ test("deep caller-bounded input uses an explicit stack without losing syntax gua
       token,
     );
   }
+});
+
+test("canonical serialization preserves vectors and is stack safe for deep values", () => {
+  const object = Object.assign(Object.create(null), {
+    z: [0, { c: "🎯", a: true, b: null }],
+    a: { "9": 9, "1": 1, key: "/" },
+  });
+  const expected = '{"a":{"1":1,"9":9,"key":"/"},"z":[0,{"a":true,"b":null,"c":"🎯"}]}';
+  assert.equal(canonicalJson(object), expected);
+  assert.equal(canonicalJsonBytes(object), Buffer.byteLength(expected));
+  const depth = 12000;
+  let nested = 0;
+  for (let index = 0; index < depth; index += 1) {
+    nested = [nested];
+  }
+  assert.equal(canonicalJson(nested), `${"[".repeat(depth)}0${"]".repeat(depth)}`);
+  const cyclic = {};
+  cyclic.self = cyclic;
+  assert.throws(() => canonicalJson(cyclic), /cyclic canonical JSON value/);
+  const shared = { child: [1] };
+  assert.equal(canonicalJson({ a: shared, b: shared }), '{"a":{"child":[1]},"b":{"child":[1]}}');
 });
 
 test("BOM and invalid UTF-8 are rejected", async () => {

@@ -345,9 +345,10 @@ test("joint validation does not admit the same request twice", async () => {
   const onceReads = reads;
   reads = 0;
   assert.equal(assertRequestResultInvariants(request, result, bytes), result);
-  assert(
-    onceReads < reads,
-    "result validation should reuse its completed request admission for joint checks",
+  assert.equal(
+    onceReads,
+    reads,
+    "joint checks must reuse the one request admission already performed by result validation",
   );
 });
 
