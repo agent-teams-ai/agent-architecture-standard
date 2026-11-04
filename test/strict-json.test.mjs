@@ -61,6 +61,36 @@ test("depth and encoded-size ceilings are deterministic", async () => {
     (error) => error.code === "aas.json.depth-exceeded",
   );
 });
+test("deep caller-bounded input uses an explicit stack without losing syntax guarantees", () => {
+  const depth = 12000;
+  const input = Buffer.from(`${"[".repeat(depth)}0${"]".repeat(depth)}`);
+  const limits = { maxBytes: input.length, maxDepth: depth };
+  let value = parseStrictJson(input, limits);
+  for (let index = 0; index < depth; index += 1) {
+    assert(Array.isArray(value), `container ${index}`);
+    assert.equal(value.length, 1);
+    value = value[0];
+  }
+  assert.equal(value, 0);
+  assert.throws(
+    () => parseStrictJson(input, { ...limits, maxDepth: depth - 1 }),
+    (error) => error.code === "aas.json.depth-exceeded",
+  );
+  assert.throws(
+    () => parseStrictJson(input),
+    (error) => error.code === "aas.json.depth-exceeded",
+    "default admission remains bounded at its documented depth",
+  );
+  for (const token of ['{"a":1,}', '{"a":1 "b":2}', "[1,]", "[1 2]", '{"x":1,"x":2}']) {
+    const code = token.includes('"x":2') ? "aas.json.duplicate-key" : "aas.json.invalid-syntax";
+    assert.throws(
+      () => parseStrictJson(Buffer.from(token)),
+      (error) => error.code === code,
+      token,
+    );
+  }
+});
+
 test("BOM and invalid UTF-8 are rejected", async () => {
   const fixture = await readFile(new URL("../vectors/json/negative/bom.json", import.meta.url));
   assert.throws(
