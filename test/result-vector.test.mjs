@@ -19,6 +19,11 @@ import {
 } from "../lib/result-validation.mjs";
 import { parseStrictJson } from "../lib/strict-json.mjs";
 import { deriveBindingDecision } from "../lib/binding-selection.mjs";
+import {
+  knownPathLowerBounds,
+  pathBounds,
+  rawRequestLowerBounds,
+} from "../lib/resource-accounting.mjs";
 
 const canonicalize = (value) => {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -973,6 +978,33 @@ test("binding selection is bounded under 2048 equal-rank candidates", async () =
     /aas.problem.binding-set-conflict/,
     "a lower-rank conflict must fail even when a higher-ranked binding is selected",
   );
+});
+
+test("raw request accounting streams overlay paths without flatMap materialization", async () => {
+  const fixtures = parseStrictJson(
+    await readFile(new URL("../vectors/schema/definition-fixtures.json", import.meta.url)),
+  );
+  const request = fixtures["request-positive"];
+  const rawInputBytes = 1024;
+  const original = rawRequestLowerBounds(request, rawInputBytes);
+  Object.defineProperty(request.targets, "flatMap", {
+    value() {
+      throw new Error("target materialization must not occur");
+    },
+  });
+  assert.deepEqual(rawRequestLowerBounds(request, rawInputBytes), original);
+  assert.deepEqual(pathBounds(["a/b", ""]), { pathSegments: 2, pathBytes: 3 });
+  const coordinate = { [request.targets[0].id]: { path: "src/example/file.ts" } };
+  assert.deepEqual(knownPathLowerBounds(request, coordinate), {
+    pathSegments: Math.max(
+      3,
+      ...request.targets[0].input.operations.map(({ path }) => (path === "" ? 0 : path.split("/").length)),
+    ),
+    pathBytes: Math.max(
+      Buffer.byteLength("src/example/file.ts"),
+      ...request.targets[0].input.operations.map(({ path }) => Buffer.byteLength(path)),
+    ),
+  });
 });
 
 test("componentwise minimum iterates safely across the maximum 100000-target source count", async () => {
