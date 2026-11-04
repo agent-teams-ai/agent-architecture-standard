@@ -38,6 +38,7 @@ instead of searching the entire result for each request target.
 
 The private profile and closed schema dependency graphs traverse with explicit
 stacks rather than relying on JavaScript call-stack depth. The schema catalog
-also checks duplicate names using a set. These changes are implementation-only:
+uses canonical, uniquely prefixed IDs, so a duplicate basename is already a
+duplicate ID. These changes are implementation-only:
 they do not alter JSON schemas, identities, selected bindings, error codes,
 published interfaces, or conformance claims.
