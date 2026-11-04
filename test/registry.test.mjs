@@ -146,6 +146,25 @@ test("a full-sized schema catalog has bounded acyclic and cyclic dependency walk
   );
 });
 
+test("long registry replacement chains are bounded and cycles fail closed", () => {
+  const count = 12000;
+  const entries = Array.from({ length: count }, (_, index) => ({
+    id: `action-${index}`,
+    kind: "action",
+    status: index + 1 < count ? "deprecated" : "active",
+    vectors: ["vectors/registry/corpus.json"],
+    ...(index + 1 < count ? { replacement: `action-${index + 1}` } : {}),
+  }));
+  const registry = { registry: "actions", entries };
+  assert.doesNotThrow(() => assertRegistryInvariants(registry, "registries/actions.json"));
+  entries[count - 1].status = "deprecated";
+  entries[count - 1].replacement = entries[0].id;
+  assert.throws(
+    () => assertRegistryInvariants(registry, "registries/actions.json"),
+    /replacement cycle at/,
+  );
+});
+
 test("runtime diagnostic projection exactly matches the normative registry", async () => {
   const registry = parseStrictJson(
     await readFile(new URL("../registries/diagnostics.json", import.meta.url)),

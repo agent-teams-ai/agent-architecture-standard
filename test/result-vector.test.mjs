@@ -18,6 +18,7 @@ import {
   requestIdentityProjection,
 } from "../lib/result-validation.mjs";
 import { parseStrictJson } from "../lib/strict-json.mjs";
+import { deriveBindingDecision } from "../lib/binding-selection.mjs";
 
 const canonicalize = (value) => {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -914,90 +915,64 @@ test("binding-set permutations use locale-independent candidate order and reject
   });
 });
 
-test("two-candidate binding selection caches the base top rank and exact accessor trace", async () => {
+test("binding selection is bounded under 2048 equal-rank candidates", async () => {
   const fixtures = parseStrictJson(
     await readFile(new URL("../vectors/schema/definition-fixtures.json", import.meta.url)),
   );
-  const first = structuredClone(fixtures["binding-required-positive"]);
-  first.id = "binding-z";
-  first.aasIdentity = computeBindingAasIdentity(first);
-  const second = structuredClone(first);
-  second.id = "binding-a";
-  second.aasIdentity = computeBindingAasIdentity(second);
+  const first = fixtures["binding-required-positive"];
+  const count = 2048;
+  let subjectReads = 0;
+  const bindings = Array.from({ length: count }, (_, index) => {
+    const scope = { ...first.scope };
+    const subjectId = scope.subjectId;
+    Object.defineProperty(scope, "subjectId", {
+      enumerable: true,
+      get() {
+        subjectReads += 1;
+        return subjectId;
+      },
+    });
+    return {
+      ...first,
+      id: `binding-${String(index).padStart(4, "0")}`,
+      aasIdentity: `aas:v0:sha256:${index.toString(16).padStart(64, "0")}`,
+      scope,
+    };
+  });
   const coordinate = {
-    aasIdentity: "",
-    targetId: "target-1",
     consumer: first.consumer,
     repository: first.repository,
-    subjectId: first.scope.subjectId,
     pathProfile: first.pathProfile,
+    subjectId: first.scope.subjectId,
     path: "src/a.ts",
     ruleId: first.scope.ruleId,
     rolloutCohorts: [],
+    targetId: "target-1",
   };
-  coordinate.aasIdentity = computeTargetSelectionAasIdentity(coordinate);
-  const set = { aasIdentity: "", bindings: [first, second] };
-  set.aasIdentity = computeBindingSetAasIdentity(set);
-  const trace = [];
-  for (const [index, binding] of set.bindings.entries())
-    for (const key of ["subjectId", "ruleId"]) {
-      const value = binding.scope[key];
-      Object.defineProperty(binding.scope, key, {
-        enumerable: true,
-        get() {
-          trace.push(`${index}:${key}`);
-          return value;
-        },
-      });
-    }
-  const selection = deriveBindingSelection(set, coordinate);
-  assert.deepEqual(
-    selection.decision.candidateBindings.map(({ id }) => id),
-    ["binding-z", "binding-a"],
+  const fail = (message) => {
+    throw new Error(message);
+  };
+  const selection = deriveBindingDecision(bindings.toReversed(), coordinate, fail);
+  assert.equal(selection.applicable.length, count);
+  assert.equal(selection.decision.candidateBindings.length, count);
+  assert.equal(selection.decision.selectedBindingId, "binding-0000");
+  assert(
+    subjectReads <= count * 8,
+    `equal-rank validation must be linear, got ${subjectReads} reads for ${count} bindings`,
   );
-  assert.equal(selection.decision.selectedBindingId, "binding-z");
-  assert.deepEqual(trace, [
-    "0:subjectId",
-    "0:ruleId",
-    "1:subjectId",
-    "1:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "1:subjectId",
-    "1:ruleId",
-    "0:subjectId",
-    "0:subjectId",
-    "0:ruleId",
-    "0:ruleId",
-    "1:subjectId",
-    "1:subjectId",
-    "1:ruleId",
-    "1:ruleId",
-    "1:subjectId",
-    "1:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "1:subjectId",
-    "1:ruleId",
-    "0:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "0:subjectId",
-    "1:ruleId",
-    "1:subjectId",
-    "0:ruleId",
-    "0:subjectId",
-    "0:subjectId",
-    "0:ruleId",
-    "0:subjectId",
-    "0:ruleId",
-    "1:subjectId",
-    "1:ruleId",
-  ]);
+  const lower = { ...bindings[0], scope: { ...first.scope } };
+  delete lower.scope.subjectId;
+  lower.id = "lower-a";
+  const other = {
+    ...lower,
+    id: "lower-b",
+    policyAasIdentity: `aas:v0:sha256:${"f".repeat(64)}`,
+  };
+  assert.throws(
+    () => deriveBindingDecision([bindings[0], lower, other], coordinate, fail),
+    /aas.problem.binding-set-conflict/,
+    "a lower-rank conflict must fail even when a higher-ranked binding is selected",
+  );
 });
 
 test("componentwise minimum iterates safely across the maximum 100000-target source count", async () => {
