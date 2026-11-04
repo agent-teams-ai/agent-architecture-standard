@@ -95,7 +95,7 @@ test("deep caller-bounded input uses an explicit stack without losing syntax gua
 test("canonical serialization preserves vectors and is stack safe for deep values", () => {
   const object = Object.assign(Object.create(null), {
     z: [0, { c: "🎯", a: true, b: null }],
-    a: { "9": 9, "1": 1, key: "/" },
+    a: { 9: 9, 1: 1, key: "/" },
   });
   const expected = '{"a":{"1":1,"9":9,"key":"/"},"z":[0,{"a":true,"b":null,"c":"🎯"}]}';
   assert.equal(canonicalJson(object), expected);

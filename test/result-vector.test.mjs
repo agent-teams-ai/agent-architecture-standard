@@ -1027,7 +1027,9 @@ test("raw request accounting streams overlay paths without flatMap materializati
   assert.deepEqual(knownPathLowerBounds(request, coordinate), {
     pathSegments: Math.max(
       3,
-      ...request.targets[0].input.operations.map(({ path }) => (path === "" ? 0 : path.split("/").length)),
+      ...request.targets[0].input.operations.map(({ path }) =>
+        path === "" ? 0 : path.split("/").length,
+      ),
     ),
     pathBytes: Math.max(
       Buffer.byteLength("src/example/file.ts"),
