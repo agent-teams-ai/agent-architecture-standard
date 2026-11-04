@@ -303,6 +303,20 @@ test("result validation retains the base global evaluation lookup access trace",
   ]);
 });
 
+test("result invariants do not rescan entire diagnostic and omission collections for each target", async () => {
+  const result = parseStrictJson(
+    await readFile(new URL("../vectors/schema/positive/result.json", import.meta.url)),
+  );
+  for (const collection of [result.diagnostics, result.omissions]) {
+    Object.defineProperty(collection, "filter", {
+      value() {
+        throw new Error("result-wide rescan is not permitted");
+      },
+    });
+  }
+  assert.equal(assertResultInvariants(result), result);
+});
+
 test("result cross-field invariants reject identity, coverage, and count inconsistencies", async () => {
   const original = parseStrictJson(
     await readFile(new URL("../vectors/schema/positive/result.json", import.meta.url)),

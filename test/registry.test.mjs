@@ -132,6 +132,20 @@ test("offline reference graph rejects cycles, unknowns, and network references",
     );
   }
 });
+test("a full-sized schema catalog has bounded acyclic and cyclic dependency walks", () => {
+  const count = 4096;
+  const names = Array.from({ length: count }, (_, index) => `chain-${index}`);
+  const chain = names.map((name, index) =>
+    schema(name, index + 1 < count ? [names[index + 1]] : []),
+  );
+  assert.doesNotThrow(() => assertAcyclicSchemaGraph(chain));
+  chain[count - 1] = schema(names[count - 1], [names[0]]);
+  assert.throws(
+    () => assertAcyclicSchemaGraph(chain),
+    (error) => error.code === "aas.schema.ref-cycle",
+  );
+});
+
 test("runtime diagnostic projection exactly matches the normative registry", async () => {
   const registry = parseStrictJson(
     await readFile(new URL("../registries/diagnostics.json", import.meta.url)),

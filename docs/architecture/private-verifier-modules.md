@@ -26,3 +26,18 @@ budget minima, counters, and lower bounds; invariants own request/result
 cross-field checks. No focused module imports the facade, and no verifier module
 depends on Engineering Foundation. The Node fs/Ajv adapter reads and compiles
 schemas only on first admission, so facade and identity-only imports are inert.
+
+## Bounded verification work
+
+The normative request/result shape allows up to 100,000 target resolutions and
+large shared diagnostic collections. Result invariants group diagnostics and
+omissions by target once; per-target validation scans only the corresponding
+group. After the exact ordered request/response bijection has been validated,
+the invocation kernel reconciles target resolutions through a keyed lookup
+instead of searching the entire result for each request target.
+
+The private profile and closed schema dependency graphs traverse with explicit
+stacks rather than relying on JavaScript call-stack depth. The schema catalog
+also checks duplicate names using a set. These changes are implementation-only:
+they do not alter JSON schemas, identities, selected bindings, error codes,
+published interfaces, or conformance claims.
