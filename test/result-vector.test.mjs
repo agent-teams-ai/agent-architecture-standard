@@ -323,6 +323,34 @@ test("result invariants do not rescan entire diagnostic and omission collections
   assert.equal(assertResultInvariants(result), result);
 });
 
+test("joint validation does not admit the same request twice", async () => {
+  const fixtures = parseStrictJson(
+    await readFile(new URL("../vectors/schema/definition-fixtures.json", import.meta.url)),
+  );
+  const request = fixtures["request-positive"];
+  const result = parseStrictJson(
+    await readFile(new URL("../vectors/schema/positive/result.json", import.meta.url)),
+  );
+  const bytes = result.realizedCounters.inputBytes;
+  let reads = 0;
+  const identity = request.aasIdentity;
+  Object.defineProperty(request, "aasIdentity", {
+    enumerable: true,
+    get() {
+      reads += 1;
+      return identity;
+    },
+  });
+  assert.equal(assertResultInvariants(result, request, bytes), result);
+  const onceReads = reads;
+  reads = 0;
+  assert.equal(assertRequestResultInvariants(request, result, bytes), result);
+  assert(
+    onceReads < reads,
+    "result validation should reuse its completed request admission for joint checks",
+  );
+});
+
 test("result cross-field invariants reject identity, coverage, and count inconsistencies", async () => {
   const original = parseStrictJson(
     await readFile(new URL("../vectors/schema/positive/result.json", import.meta.url)),
