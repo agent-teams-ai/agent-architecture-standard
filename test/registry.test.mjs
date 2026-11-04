@@ -165,6 +165,19 @@ test("long registry replacement chains are bounded and cycles fail closed", () =
   );
 });
 
+test("schema admission terminates on cyclic in-memory object graphs", () => {
+  const cyclic = schema("self");
+  cyclic.next = cyclic;
+  assert.throws(
+    () => assertAcyclicSchemaGraph([cyclic]),
+    (error) => error.code === "aas.schema.alias-id",
+  );
+  const shared = { title: "shared" };
+  assert.doesNotThrow(() =>
+    assertAcyclicSchemaGraph([{ ...schema("shared"), left: shared, right: shared }]),
+  );
+});
+
 test("runtime diagnostic projection exactly matches the normative registry", async () => {
   const registry = parseStrictJson(
     await readFile(new URL("../registries/diagnostics.json", import.meta.url)),

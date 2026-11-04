@@ -42,3 +42,26 @@ uses canonical, uniquely prefixed IDs, so a duplicate basename is already a
 duplicate ID. These changes are implementation-only:
 they do not alter JSON schemas, identities, selected bindings, error codes,
 published interfaces, or conformance claims.
+
+## Foundation refactor guarantees and intentionally retained seams
+
+- Binding decisions first match their coordinate, then sort by stable rank and
+  ASCII identity, and inspect each equal-rank group once. All ranks (including
+  lower ranks) must still reject semantic conflicts. The historic exact getter
+  access count was an implementation trace, not a normative output contract.
+- Registry replacements, release dependencies, profiles, and schema references
+  use bounded iterative graph walks; cyclic in-memory schema inputs fail closed.
+- Strict raw-byte JSON admission and canonical identity serialization have
+  explicit stacks. Existing exact spelling, decoded-key, UTF-8 and identity
+  vectors remain the compatibility oracle. The default admission depth is not
+  widened. Identity framing hashes each length-prefixed component without a
+  second full concatenated frame.
+- Accounting streams path upper bounds rather than constructing a second
+  target-count-sized collection. Result checks retain aggregate diagnostic
+  counts and omission reasons, not copies of all diagnostic objects per target.
+  Request admission occurs once when result validation delegates to joint
+  request/result invariants.
+
+The private implementation stays source-owned; the 26-name facade and the
+existing normative artifacts remain unchanged. This refactor does not qualify
+a provider, introduce a public rule DSL, or make a publication claim.

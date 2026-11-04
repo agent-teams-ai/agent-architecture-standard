@@ -24,6 +24,38 @@ test("release vectors close identity, cohort, DAG pins, and publication order", 
   assert.doesNotThrow(() => assertReleaseCohortsNonReuse(...manifests));
 });
 
+test("release DAG admits a long pinned chain without recursion and rejects its cycle", async () => {
+  const manifest = await load("release-manifest-rc.json");
+  const template = manifest.members[0];
+  const members = Array.from({ length: 2048 }, (_, index) => ({
+    ...structuredClone(template),
+    name: `member-${index}`,
+    artifact: {
+      ...template.artifact,
+      aasIdentity: `aas:v0:sha256:${index.toString(16).padStart(64, "0")}`,
+    },
+  }));
+  manifest.members = members.toReversed();
+  manifest.supportedVersions = [template.version];
+  manifest.publicationOrder = members.map(({ name }) => name);
+  manifest.dependencies = members.slice(1).map((member, index) => ({
+    from: member.name,
+    to: members[index].name,
+    version: members[index].version,
+    artifactAasIdentity: members[index].artifact.aasIdentity,
+  }));
+  resign(manifest);
+  assert.doesNotThrow(() => assertReleaseManifestInvariants(manifest));
+  manifest.dependencies.push({
+    from: members[0].name,
+    to: members.at(-1).name,
+    version: members.at(-1).version,
+    artifactAasIdentity: members.at(-1).artifact.aasIdentity,
+  });
+  resign(manifest);
+  assert.throws(() => assertReleaseManifestInvariants(manifest), /dependency cycle at/);
+});
+
 test("numeric cohort cannot relabel RC artifacts, claims, sidecars, or evidence", async () => {
   const rc = await load("release-manifest-rc.json");
   const numeric = await load("release-manifest-numeric.json");
