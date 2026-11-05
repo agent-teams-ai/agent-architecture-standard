@@ -51,6 +51,8 @@ published interfaces, or conformance claims.
   access count was an implementation trace, not a normative output contract.
 - Registry replacements, release dependencies, profiles, and schema references
   use bounded iterative graph walks; cyclic in-memory schema inputs fail closed.
+  Repeated shared acyclic schema nodes are examined only when reached at a
+  deeper level, retaining maxDepth enforcement without exponential revisits.
 - Strict raw-byte JSON admission uses an explicit stack; canonical identity
   serialization retains its proven recursive implementation under the existing
   schema-depth ceiling. Exact spelling, decoded-key, UTF-8 and identity vectors

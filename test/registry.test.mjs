@@ -178,6 +178,41 @@ test("schema admission terminates on cyclic in-memory object graphs", () => {
   );
 });
 
+test("shared acyclic schema graphs have bounded work without bypassing maxDepth", () => {
+  let reads = 0;
+  let shared = { type: "string" };
+  for (let index = 0; index < 32; index += 1) {
+    const child = shared;
+    shared = {
+      get left() {
+        reads += 1;
+        if (reads > 500) throw new Error("shared-subgraph rewalk budget exceeded");
+        return child;
+      },
+      get right() {
+        reads += 1;
+        if (reads > 500) throw new Error("shared-subgraph rewalk budget exceeded");
+        return child;
+      },
+    };
+  }
+  assert.doesNotThrow(() => assertAcyclicSchemaGraph([{ ...schema("shared-dag"), shared }]));
+  assert(reads <= 256, `shared graph was traversed ${reads} times`);
+
+  // LIFO traversal sees the shallow occurrence first. A deeper second path
+  // must still be examined to enforce the caller's actual maxDepth.
+  const subtree = { branch: { leaf: { type: "string" } } };
+  const depthSensitive = {
+    ...schema("shared-depth"),
+    deep: { branch: subtree },
+    shallow: subtree,
+  };
+  assert.throws(
+    () => assertAcyclicSchemaGraph([depthSensitive], { maxSchemas: 1, maxDepth: 3 }),
+    (error) => error.code === "aas.schema.depth-exceeded",
+  );
+});
+
 test("runtime diagnostic projection exactly matches the normative registry", async () => {
   const registry = parseStrictJson(
     await readFile(new URL("../registries/diagnostics.json", import.meta.url)),
