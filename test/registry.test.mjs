@@ -132,6 +132,87 @@ test("offline reference graph rejects cycles, unknowns, and network references",
     );
   }
 });
+test("a full-sized schema catalog has bounded acyclic and cyclic dependency walks", () => {
+  const count = 4096;
+  const names = Array.from({ length: count }, (_, index) => `chain-${index}`);
+  const chain = names.map((name, index) =>
+    schema(name, index + 1 < count ? [names[index + 1]] : []),
+  );
+  assert.doesNotThrow(() => assertAcyclicSchemaGraph(chain));
+  chain[count - 1] = schema(names[count - 1], [names[0]]);
+  assert.throws(
+    () => assertAcyclicSchemaGraph(chain),
+    (error) => error.code === "aas.schema.ref-cycle",
+  );
+});
+
+test("long registry replacement chains are bounded and cycles fail closed", () => {
+  const count = 12000;
+  const entries = Array.from({ length: count }, (_, index) => ({
+    id: `action-${index}`,
+    kind: "action",
+    status: index + 1 < count ? "deprecated" : "active",
+    vectors: ["vectors/registry/corpus.json"],
+    ...(index + 1 < count ? { replacement: `action-${index + 1}` } : {}),
+  }));
+  const registry = { registry: "actions", entries };
+  assert.doesNotThrow(() => assertRegistryInvariants(registry, "registries/actions.json"));
+  entries[count - 1].status = "deprecated";
+  entries[count - 1].replacement = entries[0].id;
+  assert.throws(
+    () => assertRegistryInvariants(registry, "registries/actions.json"),
+    /replacement cycle at/,
+  );
+});
+
+test("schema admission terminates on cyclic in-memory object graphs", () => {
+  const cyclic = schema("self");
+  cyclic.next = cyclic;
+  assert.throws(
+    () => assertAcyclicSchemaGraph([cyclic]),
+    (error) => error.code === "aas.schema.alias-id",
+  );
+  const shared = { title: "shared" };
+  assert.doesNotThrow(() =>
+    assertAcyclicSchemaGraph([{ ...schema("shared"), left: shared, right: shared }]),
+  );
+});
+
+test("shared acyclic schema graphs have bounded work without bypassing maxDepth", () => {
+  let reads = 0;
+  let shared = { type: "string" };
+  for (let index = 0; index < 32; index += 1) {
+    const child = shared;
+    shared = {
+      get left() {
+        reads += 1;
+        if (reads > 500) throw new Error("shared-subgraph rewalk budget exceeded");
+        return child;
+      },
+      get right() {
+        reads += 1;
+        if (reads > 500) throw new Error("shared-subgraph rewalk budget exceeded");
+        return child;
+      },
+    };
+  }
+  assert.doesNotThrow(() => assertAcyclicSchemaGraph([{ ...schema("shared-dag"), shared }]));
+  assert(reads <= 256, `shared graph was traversed ${reads} times`);
+
+  // LIFO traversal sees the shallow occurrence first. A deeper second path
+  // must still be examined to enforce the caller's actual maxDepth.
+  const subtree = { branch: { leaf: { type: "string" } } };
+  const depthSensitive = {
+    ...schema("shared-depth"),
+    deep: { branch: subtree },
+    shallow: subtree,
+  };
+  assert.throws(
+    () => assertAcyclicSchemaGraph([depthSensitive], { maxSchemas: 1, maxDepth: 3 }),
+    (error) => error.code === "aas.json.depth-exceeded",
+  );
+});
+
 test("runtime diagnostic projection exactly matches the normative registry", async () => {
   const registry = parseStrictJson(
     await readFile(new URL("../registries/diagnostics.json", import.meta.url)),
