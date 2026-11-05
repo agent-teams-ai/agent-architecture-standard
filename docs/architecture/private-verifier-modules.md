@@ -51,11 +51,12 @@ published interfaces, or conformance claims.
   access count was an implementation trace, not a normative output contract.
 - Registry replacements, release dependencies, profiles, and schema references
   use bounded iterative graph walks; cyclic in-memory schema inputs fail closed.
-- Strict raw-byte JSON admission and canonical identity serialization have
-  explicit stacks. Existing exact spelling, decoded-key, UTF-8 and identity
-  vectors remain the compatibility oracle. The default admission depth is not
-  widened. Identity framing hashes each length-prefixed component without a
-  second full concatenated frame.
+- Strict raw-byte JSON admission uses an explicit stack; canonical identity
+  serialization retains its proven recursive implementation under the existing
+  schema-depth ceiling. Exact spelling, decoded-key, UTF-8 and identity vectors
+  remain the compatibility oracle. The default admission depth is not widened.
+  Identity framing hashes length-prefixed components without concatenating a
+  second full frame.
 - Accounting streams path upper bounds rather than constructing a second
   target-count-sized collection. Result checks retain aggregate diagnostic
   counts and omission reasons, not copies of all diagnostic objects per target.
