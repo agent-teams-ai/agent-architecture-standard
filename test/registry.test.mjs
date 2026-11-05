@@ -209,7 +209,7 @@ test("shared acyclic schema graphs have bounded work without bypassing maxDepth"
   };
   assert.throws(
     () => assertAcyclicSchemaGraph([depthSensitive], { maxSchemas: 1, maxDepth: 3 }),
-    (error) => error.code === "aas.schema.depth-exceeded",
+    (error) => error.code === "aas.json.depth-exceeded",
   );
 });
 
