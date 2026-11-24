@@ -63,6 +63,26 @@ The indexes are normative about artifact ownership and admission requirements,
 but they do not fabricate schemas, registered values, or conformance evidence
 that Phase 0 has not produced.
 
+## Delivery focus
+
+Owner direction, 2026-11-24: continue the independent specification and the
+smallest executable conformance runner for the selected normative scope.
+Develop it independently from Agent Teams product implementation. The existing
+[private conformance slice](conformance/README.md) is a starting point, not a
+public provider protocol or conformance claim.
+
+Before adding further evaluator or enforcement mechanisms, review the existing
+normative requirements, artifact traceability, exact black-box vectors and
+independently authored candidates. Prioritize reproducible results, bounded
+execution, negative controls and independent conformance authority over a broad
+enforcement platform. Keep AAS usable without Engineering Foundation,
+Get Modular, any product, framework or programming language. Consumer-specific
+integrations and any organization ecosystem plan remain nonnormative context.
+
+This is a delivery preference, not a change to normative semantics, phase
+admission, D1 neutral governance prerequisites, identifiers, conformance claims
+or public release authorization.
+
 ## Non-goals
 
 AAS does not infer an architecture from directory names, define DDD, Clean
