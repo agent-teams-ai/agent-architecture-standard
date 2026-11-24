@@ -68,8 +68,10 @@ that Phase 0 has not produced.
 Owner direction, 2026-11-24: continue the independent specification and the
 smallest executable conformance runner for the selected normative scope.
 Develop it independently from Agent Teams product implementation. The existing
-[private conformance slice](conformance/README.md) is a starting point, not a
-public provider protocol or conformance claim.
+private conformance slice, documented in the source-only
+`conformance/README.md`, is a starting point, not a public provider protocol
+or conformance claim. The private runner and its documentation remain outside
+the provisional artifact package.
 
 Before adding further evaluator or enforcement mechanisms, review the existing
 normative requirements, artifact traceability, exact black-box vectors and
