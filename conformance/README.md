@@ -128,7 +128,7 @@ or neutral qualification.
 
 ## Positive-zero regression plan — 2026-11-26
 
-Status: scoped implementation plan; two critique rounds precede the correction.
+Status: revised after independent first-round critique; second round pending.
 Base: `08372edb3e30fd23c1d2de499fc6f4c2c77c3aa1`. The owner authorized this
 specific repair and its end-to-end review, checks and ordinary PR delivery.
 
@@ -143,11 +143,15 @@ disagreement on Linux / Node 24.22.3. It was not full repository qualification.
 
 - Correct positive-zero handling in the existing single-file
   `conformance/candidates/good-strict-json.mjs`, after rejecting negative zero
-  and before exponent/scale limits. Do not import the main parser or oracle.
+  and before exponent/scale limits. Require a syntax-valid numeric token and
+  preserve whole-document/trailing-input validation before accepting a result.
+  Do not import the main parser or oracle.
 - Extend the existing `conformance/test/candidate-frame.test.mjs` process test
   through its framed source loader and the existing permission-mode command.
   Use literal expected diagnostics and the independently fixed digest of `0`.
   Reuse its existing bounded process helper; add no separate runner or library.
+  Keep close-observed completion and its whole-child deadline; propagate input
+  errors without claiming successful completion before the child closes.
 - Update only the corrected candidate's digest in
   `conformance/artifact-baseline.json`. Keep the corpus, oracle, runner, loader,
   normative artifacts, public claims, dependencies and toolchain pins unchanged.
@@ -163,8 +167,10 @@ disagreement on Linux / Node 24.22.3. It was not full repository qualification.
 1. Record independent first-round critique and a second critique after changes.
 2. Add a focused regression and observe it fail on the original candidate.
 3. Accept positive-zero decimal/exponent spellings with one exact value digest.
-   Keep negative zero, nonzero fractions, unsafe integers and invalid syntax
-   rejected. Restore the old zero behavior in a disposable test input and show
+   Keep `-0.00`, `-0e10000000`, tiny nonzero `1e-10000000`, ordinary fractions,
+   unsafe integers and malformed exponents (`0e`, `0e+`) rejected. A normal safe
+   nonzero integer with a zero-padded exponent must retain its literal expected
+   digest. Restore the old zero behavior in a disposable test input and show
    that the same independent expectations detect it.
 4. Recompute the one candidate digest; independently verify all other baseline
    entries and normative/artifact bytes remain unchanged.
