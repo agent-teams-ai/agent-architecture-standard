@@ -6,6 +6,6 @@
     "conformance/private/runner.mjs": "sha256:cc064e882d7d094559e9117ef7e2ea59223ec5bc030c6b5cd0f68ee470bd9d1c",
     "conformance/private/candidate-admission.mjs": "sha256:07305f53c6046d4e7064250e3609059150b02797b3ab7df6986f2d0b3ceed7c4",
     "conformance/private/candidate-frame.mjs": "sha256:d86bc08ef69a11988a439d67731c06e254687ef8a3ebaff9fa8fa278b636dfec",
-    "conformance/candidates/good-strict-json.mjs": "sha256:0a59217e3e7b9a79ad3aaef86e6b4811ad92b0ee7e46c7d3637b587812208c22"
+    "conformance/candidates/good-strict-json.mjs": "sha256:925e861b0683bac5144bc22ef091c3de28ac3599b96a39ea3a7ac97a7435ef7e"
   }
 }

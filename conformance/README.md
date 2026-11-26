@@ -128,7 +128,8 @@ or neutral qualification.
 
 ## Positive-zero regression plan — 2026-11-26
 
-Status: revised after independent first-round critique; second round pending.
+Status: scoped correction implemented; exact-head verification is tracked in
+[PR #30](https://github.com/agent-teams-ai/agent-architecture-standard/pull/30).
 Base: `08372edb3e30fd23c1d2de499fc6f4c2c77c3aa1`. The owner authorized this
 specific repair and its end-to-end review, checks and ordinary PR delivery.
 
@@ -184,3 +185,21 @@ Estimate: production **P=0**; additional TEST/fixture code **T=80–160 lines**,
 excluding Markdown and the one digest update. Smaller sufficient changes are
 preferred. Complexity **2/10**, expected reliability for this numeric boundary
 **9/10**, estimate confidence **7/10**; these are judgments, not readiness claims.
+
+### Critique and implementation checkpoint
+
+Independent round 1 reviewed `33e60f27a109b2ca1c260c8a2da10040afacfb00` and
+required the syntax, negative-zero, nonzero-underflow and child-close controls
+above. Independent round 2 accepted the revised plan at
+`5b6588dc2ff68af880368dafed446837e56b75d2` before implementation.
+
+The candidate correction adds two lines. The existing frame test now checks
+16 inputs through the real framed loader and permission-mode command, with
+literal zero/one digests and rejecting diagnostics. On Linux / Node 26.11.1,
+the new regression first failed on `0.00`; after correction all four frame-file
+tests passed with no skips. Temporarily restoring the original candidate made
+the same semantic assertion fail again; the corrected bytes were then restored.
+All six baseline entries were independently rehashed, with only the corrected
+candidate digest changed. Production LOC remain zero; TEST changes are +69/-4
+lines before this prose, smaller than the initial estimate. The linked PR owns
+the final full-gate, independent diff-review and actual-main delivery receipts.

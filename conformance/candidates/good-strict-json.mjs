@@ -45,6 +45,8 @@ function parseExactInteger(token) {
     throw new ParseFault('aas.json.invalid-number');
   }
   const digits = `${match[2]}${match[3] ?? ''}`;
+  // Positive zero stays integral at every scale; negative zero was rejected above.
+  if (/^0+$/.test(digits)) return 0;
   const exponentText = match[4] ?? '0';
   const exponentNegative = exponentText.startsWith('-');
   const exponentDigits = exponentText.replace(/^[+-]/, '').replace(/^0+/, '') || '0';
