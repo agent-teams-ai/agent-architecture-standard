@@ -125,3 +125,81 @@ post-load observations of source paths; they do not attest bytes already
 executed by Node. Runtime binary/module execution attestation is not provided.
 The report remains private, nonnormative, non-claiming, and supplies no public
 or neutral qualification.
+
+## Positive-zero regression plan — 2026-11-26
+
+Status: scoped correction implemented; exact-head verification is tracked in
+[PR #30](https://github.com/agent-teams-ai/agent-architecture-standard/pull/30).
+Base: `08372edb3e30fd23c1d2de499fc6f4c2c77c3aa1`. The owner authorized this
+specific repair and its end-to-end review, checks and ordinary PR delivery.
+
+The independent candidate rejects `0.00`, `0e-2`, `0e17` and `0e10000000`
+as invalid numbers. They denote positive mathematical zero under the existing
+[strict numeric contract](../spec/identity.md#2-strict-i-json-input-profile).
+The main parser already accepts them; the retained 18-case corpus misses this
+candidate defect. A read-only probe of the exact base sources reproduced the
+disagreement on Linux / Node 24.22.3. It was not full repository qualification.
+
+### Scope and independence
+
+- Correct positive-zero handling in the existing single-file
+  `conformance/candidates/good-strict-json.mjs`, after rejecting negative zero
+  and before exponent/scale limits. Require a syntax-valid numeric token and
+  preserve whole-document/trailing-input validation before accepting a result.
+  Do not import the main parser or oracle.
+- Extend the existing `conformance/test/candidate-frame.test.mjs` process test
+  through its framed source loader and the existing permission-mode command.
+  Use literal expected diagnostics and the independently fixed digest of `0`.
+  Reuse its existing bounded process helper; add no separate runner or library.
+  Keep close-observed completion and its whole-child deadline; propagate input
+  errors without claiming successful completion before the child closes.
+- Update only the corrected candidate's digest in
+  `conformance/artifact-baseline.json`. Keep the corpus, oracle, runner, loader,
+  normative artifacts, public claims, dependencies and toolchain pins unchanged.
+- Keep these localized corrections in the two existing legacy `.mjs` files:
+  converting their single-file executed fixture and process suite would expand
+  the repair into a source/loader/type-coverage migration. This applies the
+  [small-correction rule](https://github.com/agent-teams-ai/.github/blob/main/docs/engineering-quality-standard.md#existing-maintained-javascript),
+  introduces no new maintained helper responsibility, and claims no strict
+  TypeScript coverage for these legacy files. New unrelated code is out of scope.
+
+### Verification and delivery
+
+1. Record independent first-round critique and a second critique after changes.
+2. Add a focused regression and observe it fail on the original candidate.
+3. Accept positive-zero decimal/exponent spellings with one exact value digest.
+   Keep `-0.00`, `-0e10000000`, tiny nonzero `1e-10000000`, ordinary fractions,
+   unsafe integers and malformed exponents (`0e`, `0e+`) rejected. A normal safe
+   nonzero integer with a zero-padded exponent must retain its literal expected
+   digest. Restore the old zero behavior in a disposable test input and show
+   that the same independent expectations detect it.
+4. Recompute the one candidate digest; independently verify all other baseline
+   entries and normative/artifact bytes remain unchanged.
+5. Run focused private tests, then the owning `pnpm verify` route with the pinned
+   compiler/tool graph. Existing hosted Node 26.11.1 and Node 24.21.0 OS lanes
+   and the strict-install private-conformance lane retain their exact gates.
+6. Publish coherent commits immediately, review the exact final diff and checks,
+   and hand the green PR to the owner for merge and actual-main verification.
+
+Estimate: production **P=0**; additional TEST/fixture code **T=80–160 lines**,
+excluding Markdown and the one digest update. Smaller sufficient changes are
+preferred. Complexity **2/10**, expected reliability for this numeric boundary
+**9/10**, estimate confidence **7/10**; these are judgments, not readiness claims.
+
+### Critique and implementation checkpoint
+
+Independent round 1 reviewed `33e60f27a109b2ca1c260c8a2da10040afacfb00` and
+required the syntax, negative-zero, nonzero-underflow and child-close controls
+above. Independent round 2 accepted the revised plan at
+`5b6588dc2ff68af880368dafed446837e56b75d2` before implementation.
+
+The candidate correction adds two lines. The existing frame test now checks
+16 inputs through the real framed loader and permission-mode command, with
+literal zero/one digests and rejecting diagnostics. On Linux / Node 26.11.1,
+the new regression first failed on `0.00`; after correction all four frame-file
+tests passed with no skips. Temporarily restoring the original candidate made
+the same semantic assertion fail again; the corrected bytes were then restored.
+All six baseline entries were independently rehashed, with only the corrected
+candidate digest changed. Production LOC remain zero; TEST changes are +69/-4
+lines before this prose, smaller than the initial estimate. The linked PR owns
+the final full-gate, independent diff-review and actual-main delivery receipts.
