@@ -4,6 +4,9 @@ Status: public source preview; Phase 1 normative-artifact implementation; unpubl
 
 This README is an index and has no independent semantic authority.
 
+For task-oriented navigation across normative and supporting material, see the
+[documentation map](docs/README.md).
+
 The immutable `spec/` Status headers identify their normative Phase 0 edition;
 [SOURCE.md](SOURCE.md) records the repository's separate Phase 1
 implementation phase. The versioned `@1` profiles are not revised in place.
