@@ -1,5 +1,7 @@
 # Agent instructions
 
+Use the [documentation map](docs/README.md) to select the applicable normative authority or nonnormative implementation material.
+
 <!-- agent-teams:quality-standard:start -->
 
 Before planning, implementing, or reviewing changes, read and follow the

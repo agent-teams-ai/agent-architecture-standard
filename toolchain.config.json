@@ -81,6 +81,7 @@
       "conformance/test/candidate-frame.test.mjs",
       "conformance/test/isolation.test.mjs",
       "conformance/test/runner.test.mjs",
+      "docs/README.md",
       "docs/architecture/private-verifier-modules.md",
       "docs/status/implementation-ledger.md",
       "foundation.config.yaml",
